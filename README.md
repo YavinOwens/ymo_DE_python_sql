@@ -2,6 +2,109 @@
 
 This comprehensive learning project covers essential skills in data engineering, focusing on Python programming and SQL database management. The project provides hands-on experience with real-world data processing, analysis, and engineering tasks.
 
+## Getting Started for Beginners
+
+If you're new to programming or data engineering, follow these step-by-step instructions:
+
+### Step 1: Set Up Your Computer
+1. **Install Required Software**:
+   - Download and install [Python 3.8](https://www.python.org/downloads/release/python-388/) (Click "Windows installer (64-bit)")
+   - Download and install [Visual Studio Code](https://code.visualstudio.com/download)
+   - Download and install [Git](https://git-scm.com/downloads)
+
+2. **Verify Installation**:
+   - Open Command Prompt (search for "cmd" in Windows start menu)
+   - Type `python --version` (should show Python 3.8.x)
+   - Type `git --version` (should show the Git version)
+
+### Step 2: Get the Project Files
+1. **Create a Project Folder**:
+   - Open Command Prompt
+   - Navigate to your Documents: `cd %USERPROFILE%\Documents`
+   - Create a new folder: `mkdir DataEngineering`
+   - Go to the folder: `cd DataEngineering`
+
+2. **Download the Project**:
+   ```bash
+   git clone https://github.com/yourusername/ymo_DE_python_sql-1.git
+   cd ymo_DE_python_sql-1
+   ```
+
+### Step 3: Set Up Your Development Environment
+1. **Create a Virtual Environment**:
+   ```bash
+   python -m venv .venv
+   .venv\Scripts\activate
+   ```
+   Note: Your command prompt should now show `(.venv)` at the beginning
+
+2. **Install Required Packages**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+   This may take a few minutes to complete.
+
+### Step 4: Start Learning
+1. **Open Visual Studio Code**:
+   ```bash
+   code .
+   ```
+
+2. **Install Recommended Extensions**:
+   - When VS Code opens, it may suggest installing Python extensions
+   - Click "Install" for any recommended extensions
+
+3. **Begin the Course**:
+   - Open the `notebooks` folder
+   - Start with `Week_1` materials
+   - Open the first notebook (files ending in `.ipynb`)
+   - Follow the instructions in each notebook
+
+### Step 5: Weekly Progress
+Follow this recommended weekly schedule:
+
+#### Week 1: Basics (2-3 hours per day)
+- Day 1-2: Python installation and basics
+- Day 3-4: SQL fundamentals
+- Day 5-7: Basic data operations
+
+#### Week 2: Data Handling (2-3 hours per day)
+- Day 1-2: Database connections
+- Day 3-4: Data loading
+- Day 5-7: Basic transformations
+
+#### Week 3: Analysis (2-3 hours per day)
+- Day 1-2: Data cleaning
+- Day 3-4: Analysis techniques
+- Day 5-7: Creating visualizations
+
+#### Week 4: Advanced Topics (2-3 hours per day)
+- Day 1-2: ETL processes
+- Day 3-4: Automation
+- Day 5-7: Final project
+
+### Common Issues and Solutions
+
+1. **Python Not Found**
+   - Make sure Python is added to PATH during installation
+   - Try restarting your computer
+
+2. **Package Installation Errors**
+   - Make sure you're in the virtual environment (see `.venv\Scripts\activate`)
+   - Try running: `pip install --upgrade pip`
+
+3. **Jupyter Notebook Won't Open**
+   - In VS Code, make sure you've selected the correct Python interpreter
+   - Try running: `pip install jupyter notebook`
+
+### Getting Help
+
+If you encounter issues:
+1. Check the error message carefully
+2. Search the error on Google
+3. Visit [Stack Overflow](https://stackoverflow.com) for similar issues
+4. Join Python communities on Discord or Reddit for help
+
 ## Learning Outcomes
 
 ### Technical Skills
@@ -21,7 +124,6 @@ This comprehensive learning project covers essential skills in data engineering,
 - Problem-solving and debugging strategies
 - Documentation writing
 - Project organization
-
 
 ## Project Structure
 
@@ -112,15 +214,6 @@ This comprehensive learning project covers essential skills in data engineering,
 - Error handling and logging
 - Performance optimization
 
-## Getting Started
-
-1. Review the project structure and requirements
-2. Set up your development environment using the setup scripts
-3. Follow the notebooks in sequential order
-4. Complete the exercises in each notebook
-5. Build your own data engineering projects using these patterns
-
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
-
