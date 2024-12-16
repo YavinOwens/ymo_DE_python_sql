@@ -32,22 +32,28 @@ def parse_arguments() -> argparse.Namespace:
     return parser.parse_args()
 
 def get_required_packages() -> List[str]:
-    """Return a list of required packages."""
+    """Return a list of required packages with versions."""
     return [
-        'pandas',
-        'faker',
-        'sqlalchemy',
-        'psycopg2-binary',
-        'polars',
-        'seaborn',
-        'plotly',
-        'pyspark',
-        'jupyter',
-        'matplotlib',
-        'numpy',
-        'pyarrow',  # Added for better compatibility with pandas and polars
-        'ipykernel',  # Added for Jupyter support
-        'notebook'  # Added for Jupyter notebook
+        'pandas>=1.3.0',
+        'numpy>=1.21.0',
+        'matplotlib>=3.4.0',
+        'seaborn>=0.11.0',
+        'plotly>=5.1.0',
+        'faker',  # For generating dummy data
+        'sqlalchemy',  # For database operations
+        'sqlite3',  # For SQLite database
+        'jupyter',  # For notebook support
+        'ipykernel',  # For Jupyter kernel
+        'notebook',  # For Jupyter notebook
+        'pyarrow',  # For better data handling
+        'openpyxl',  # For Excel support
+        'python-dateutil>=2.8.2',  # For date handling
+        'pytz>=2020.1',  # For timezone support
+        'six>=1.5',  # Common dependencies
+        'cycler>=0.10',  # For matplotlib
+        'kiwisolver>=1.0.1',  # For matplotlib
+        'pyparsing>=2.2.1',  # For matplotlib
+        'pillow>=6.2.0',  # For image handling
     ]
 
 def create_directory(directory: Path) -> None:
@@ -87,20 +93,24 @@ def setup_data_analysis_environment():
     # Create output directory
     output_dir = Path("setup_outputs")
     create_directory(output_dir)
+    
+    # Create src directory for Python modules
+    src_dir = Path("src")
+    create_directory(src_dir)
+    
+    # Create directories for data and visualizations
+    data_dir = Path("data")
+    vis_dir = Path("visualizations")
+    create_directory(data_dir)
+    create_directory(vis_dir)
 
     # Now we can safely import the required packages
     import pandas as pd
     from faker import Faker
     import numpy as np
-    import polars as pl
-    import seaborn as sns
+    import sqlite3
     import matplotlib.pyplot as plt
-    import plotly.express as px
-    from pyspark.sql import SparkSession
-
-    # Create dummy_data folder
-    dummy_data_folder = output_dir / "dummy_data"
-    create_directory(dummy_data_folder)
+    import seaborn as sns
 
     # Initialize Faker
     fake = Faker()
@@ -112,46 +122,51 @@ def setup_data_analysis_environment():
     # Create dummy data
     people_data = []
     for _ in range(1000):
-        people_data.append({
+        person = {
             'name': fake.name(),
             'nino': generate_nino(),
             'job': fake.job(),
             'company': fake.company(),
-            'date_of_birth': fake.date_of_birth()
-        })
+            'date_of_birth': fake.date_of_birth(),
+            'per_id': _ + 1,
+            'age': fake.random_int(min=18, max=70)
+        }
+        people_data.append(person)
 
-    # Save people data
-    df_people = pd.DataFrame(people_data)
-    date_str = datetime.now().strftime("%Y%m%d")
-    people_filename = f"PER_ALL_PEOPLE_F_{date_str}.csv"
-    df_people.to_csv(dummy_data_folder / people_filename, index=False)
-    logging.info(f"Created dummy data file: {people_filename}")
+    # Create addresses data
+    addresses_data = []
+    for i in range(1000):
+        address = {
+            'street_address': fake.street_address(),
+            'city': fake.city(),
+            'country': fake.country(),
+            'postcode': fake.postcode(),
+            'hr_id': i + 1
+        }
+        addresses_data.append(address)
 
-    # Example visualizations
-    # Seaborn
-    sns.set_theme()
-    plt.figure(figsize=(10, 6))
-    sns.histplot(data=df_people, x='job')
-    plt.xticks(rotation=45)
-    plt.tight_layout()
-    plt.savefig(output_dir / 'job_distribution.png')
-    plt.close()
-
-    # Plotly
-    fig = px.histogram(df_people, x='job', title='Job Distribution')
-    fig.write_html(output_dir / "job_distribution.html")
-
-    # PySpark example
-    spark = SparkSession.builder \
-        .master("local[*]") \
-        .appName("Local Spark") \
-        .getOrCreate()
-
-    df_spark = spark.createDataFrame(df_people)
-    df_spark.createOrReplaceTempView("people")
-    spark.sql("SELECT job, COUNT(*) as count FROM people GROUP BY job ORDER BY count DESC LIMIT 5").show()
+    # Create SQLite database
+    conn = sqlite3.connect(data_dir / 'hr_database.sqlite')
     
-    spark.stop()
+    # Convert to DataFrames and save to SQLite
+    df_people = pd.DataFrame(people_data)
+    df_addresses = pd.DataFrame(addresses_data)
+    
+    df_people.to_sql('per', conn, if_exists='replace', index=False)
+    df_people.to_sql('assignments', conn, if_exists='replace', index=False)
+    df_addresses.to_sql('addresses', conn, if_exists='replace', index=False)
+    
+    conn.close()
+    logging.info("Created SQLite database with dummy data")
+
+    # Create example visualizations
+    plt.figure(figsize=(10, 6))
+    plt.hist(df_people['age'], bins=30, edgecolor='black')
+    plt.title('Age Distribution')
+    plt.xlabel('Age')
+    plt.ylabel('Count')
+    plt.savefig(vis_dir / 'age_distribution.png')
+    plt.close()
 
     logging.info("Data analysis environment setup completed successfully")
 
@@ -182,13 +197,23 @@ def main():
     logging.info("Setting up data analysis environment...")
     setup_data_analysis_environment()
 
+    # Create requirements.txt
+    with open('requirements.txt', 'w') as f:
+        f.write('\n'.join(required_packages))
+    logging.info("Created requirements.txt")
+
     # Final message
     print("\nSetup process completed!")
     print(f"1. Offline packages have been downloaded to: {offline_packages_dir}")
     print("2. Data analysis environment has been set up")
-    print("3. Example data and visualizations have been generated in the 'setup_outputs' directory")
+    print("3. Example data and visualizations have been generated")
+    print("\nProject structure created:")
+    print("  - /data: Contains the SQLite database")
+    print("  - /src: Contains Python source files")
+    print("  - /visualizations: Contains generated plots")
+    print("  - requirements.txt: Lists all package dependencies")
     print("\nTo install packages offline on another machine:")
-    print(f"pip install --no-index --find-links={offline_packages_dir} <package_name>")
+    print(f"pip install --no-index --find-links={offline_packages_dir} -r requirements.txt")
     print("\nCheck setup_log.log for detailed information about the setup process.")
 
 if __name__ == "__main__":

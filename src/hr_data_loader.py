@@ -2,25 +2,26 @@ import pandas as pd
 import sqlite3
 
 def load_hr_data():
-    """Load data from SQLite database into pandas DataFrames with direct relationships."""
-    conn = sqlite3.connect('hr_database.sqlite')
+    """Load data from SQLite database into pandas DataFrames with correct joins."""
+    conn = sqlite3.connect('data/hr_database.sqlite')
     
-    # Load base tables
+    # Load tables
     per_df = pd.read_sql_query("SELECT * FROM per", conn)
     assignments_df = pd.read_sql_query("SELECT * FROM assignments", conn)
     addresses_df = pd.read_sql_query("SELECT * FROM addresses", conn)
     
-    # Join tables directly using per_id
-    merged_df = pd.read_sql_query("""
-        SELECT p.*, a.*, addr.*
-        FROM per p
-        LEFT JOIN assignments a ON p.per_id = a.per_id
-        LEFT JOIN addresses addr ON p.per_id = addr.hr_id
+    # Join person_assignments with person_addresses
+    person_assignments_df = pd.read_sql_query("""
+        SELECT * FROM person_assignments
+    """, conn)
+    
+    person_addresses_df = pd.read_sql_query("""
+        SELECT * FROM person_addresses
     """, conn)
     
     conn.close()
     
-    return merged_df
+    return per_df, assignments_df, addresses_df, person_assignments_df, person_addresses_df
 
 def get_data_summary(df):
     """Get summary of the loaded data."""
@@ -34,7 +35,7 @@ def get_data_summary(df):
 
 def get_table_info():
     """Get information about table structures."""
-    conn = sqlite3.connect('hr_database.sqlite')
+    conn = sqlite3.connect('data/hr_database.sqlite')
     cursor = conn.cursor()
     
     tables = {}

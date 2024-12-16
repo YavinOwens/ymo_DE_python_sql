@@ -8,6 +8,16 @@ from hr_data_loader import load_hr_data, get_data_summary
 # Set style for better visualizations
 plt.style.use('seaborn')
 
+def merge_data(per_df, assignments_df, addresses_df):
+    """Merge dataframes using appropriate keys"""
+    # Merge person with assignments
+    merged_df = pd.merge(per_df, assignments_df, on='per_id', suffixes=('', '_assignment'))
+    
+    # Merge with addresses
+    merged_df = pd.merge(merged_df, addresses_df, left_on='per_id', right_on='hr_id', suffixes=('', '_address'))
+    
+    return merged_df
+
 def clean_data(df):
     """Clean the dataframe by removing duplicate columns"""
     # Get list of duplicate columns
@@ -24,7 +34,10 @@ def analyze_hr_data():
     """Perform comprehensive HR data analysis"""
     # Load and clean the data
     print("Loading HR data...")
-    df = load_hr_data()
+    per_df, assignments_df, addresses_df, _, _ = load_hr_data()
+    
+    # Merge the dataframes
+    df = merge_data(per_df, assignments_df, addresses_df)
     df = clean_data(df)
     
     # 1. Basic Statistics
@@ -38,7 +51,7 @@ def analyze_hr_data():
     plt.title('Age Distribution of Employees')
     plt.xlabel('Age')
     plt.ylabel('Count')
-    plt.savefig('age_distribution.png')
+    plt.savefig('visualizations/age_distribution.png')
     plt.close()
     
     # 3. Job Distribution
@@ -48,7 +61,7 @@ def analyze_hr_data():
     plt.title('Top 10 Job Positions')
     plt.xticks(rotation=45, ha='right')
     plt.tight_layout()
-    plt.savefig('job_distribution.png')
+    plt.savefig('visualizations/job_distribution.png')
     plt.close()
     
     # 4. Company Analysis
@@ -58,7 +71,7 @@ def analyze_hr_data():
     plt.title('Top 10 Companies')
     plt.xticks(rotation=45, ha='right')
     plt.tight_layout()
-    plt.savefig('company_distribution.png')
+    plt.savefig('visualizations/company_distribution.png')
     plt.close()
     
     # 5. Geographic Analysis
