@@ -1,6 +1,7 @@
 import subprocess
 import sys
 import os
+from pathlib import Path
 import csv
 from datetime import datetime
 import logging
@@ -11,6 +12,15 @@ logging.basicConfig(filename='setup_log.log', level=logging.INFO,
 
 def install(package):
     subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+def setup_output_directory():
+    output_dir = Path("setup_outputs")
+    output_dir.mkdir(exist_ok=True)
+    logging.info(f"Created output directory: {output_dir}")
+    return output_dir
+
+# Create output directory
+output_dir = setup_output_directory()
 
 # Install required packages
 packages = ['pandas', 'faker', 'sqlalchemy', 'psycopg2-binary', 'polars', 'seaborn', 'plotly', 'pyspark']
@@ -27,9 +37,9 @@ logging.info("All required packages installed")
 import pandas as pd
 from faker import Faker
 
-# Create dummy_data folder
-dummy_data_folder = "dummy_data"
-os.makedirs(dummy_data_folder, exist_ok=True)
+# Create dummy_data folder inside setup_outputs
+dummy_data_folder = output_dir / "dummy_data"
+dummy_data_folder.mkdir(exist_ok=True)
 logging.info(f"Created folder: {dummy_data_folder}")
 
 # Initialize Faker
@@ -39,15 +49,21 @@ fake = Faker()
 def create_dummy_data(filename, num_records, fields):
     data = []
     for _ in range(num_records):
-        record = {field: getattr(fake, field)() for field in fields}
+        record = {}
+        for field in fields:
+            if field == 'date_this_century':
+                record[field] = fake.date_this_century()
+            else:
+                record[field] = getattr(fake, field)()
         data.append(record)
     
     df = pd.DataFrame(data)
+    df = df.rename(columns={'date_this_century': 'date_joined'})
     
     # Add date to filename
     date_str = datetime.now().strftime("%Y%m%d")
     full_filename = f"{filename}_{date_str}.csv"
-    file_path = os.path.join(dummy_data_folder, full_filename)
+    file_path = dummy_data_folder / full_filename
     
     df.to_csv(file_path, index=False)
     logging.info(f"Created dummy data file: {full_filename}")
@@ -70,12 +86,12 @@ for _ in range(1000):
 df_people = pd.DataFrame(people_data)
 date_str = datetime.now().strftime("%Y%m%d")
 people_filename = f"PER_ALL_PEOPLE_F_{date_str}.csv"
-df_people.to_csv(os.path.join(dummy_data_folder, people_filename), index=False)
+df_people.to_csv(dummy_data_folder / people_filename, index=False)
 logging.info(f"Created dummy data file: {people_filename}")
 
 # Create dummy data for PER_ALL_ASSIGNMENTS_F
 create_dummy_data("PER_ALL_ASSIGNMENTS_F", 1000, 
-                  ['job', 'company', 'date_joined'])
+                  ['job', 'company', 'date_this_century'])
 
 # Create dummy data for PER_ALL_ADDRESS or HR_ALL_ADDRESSES
 create_dummy_data("HR_ALL_ADDRESSES", 1000, 
@@ -87,7 +103,7 @@ create_dummy_data("HR_ALL_ADDRESSES", 1000,
 logging.info("Running SQL example")
 import sqlite3
 
-conn = sqlite3.connect('example.db')
+conn = sqlite3.connect(output_dir / 'example.db')
 c = conn.cursor()
 c.execute('''CREATE TABLE IF NOT EXISTS users
              (id INTEGER PRIMARY KEY, name TEXT, age INTEGER)''')
@@ -128,12 +144,12 @@ import plotly.express as px
 sns.set_theme()
 tips = sns.load_dataset("tips")
 sns.scatterplot(data=tips, x="total_bill", y="tip")
-plt.savefig('seaborn_plot.png')
+plt.savefig(output_dir / 'seaborn_plot.png')
 plt.close()
 logging.info("Seaborn plot saved as 'seaborn_plot.png'")
 
 fig = px.scatter(tips, x="total_bill", y="tip", color="size")
-fig.write_html("plotly_plot.html")
+fig.write_html(output_dir / "plotly_plot.html")
 logging.info("Plotly plot saved as 'plotly_plot.html'")
 
 # 6. Simulating Databricks-like Environment Locally (Spark)
@@ -153,3 +169,4 @@ logging.info("PySpark example completed")
 
 logging.info("Environment setup complete")
 print("Environment setup complete. Check setup_log.log for details.")
+print(f"Output files are stored in the '{output_dir}' directory.")
