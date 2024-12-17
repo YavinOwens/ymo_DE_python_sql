@@ -40,6 +40,7 @@ Pillow==9.1.1
 great-expectations==0.15.50
 pytest==7.4.3
 pytest-cov==4.1.0
+ydata-profiling==4.6.3
 
 # Code Quality
 black==22.3.0
