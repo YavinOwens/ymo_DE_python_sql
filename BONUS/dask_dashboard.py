@@ -1,18 +1,227 @@
+# Import required libraries
 import dash
-from dash import html, dcc, Input, Output, dash_table
+from dash import dcc, html, dash_table
+from dash.dependencies import Input, Output, State
 import dash_bootstrap_components as dbc
+import pandas as pd
+import numpy as np
+from datetime import datetime
 import plotly.express as px
 import plotly.graph_objs as go
-import pandas as pd
-from datetime import datetime
+import uuid
+import json
+import os
+
+# Constants
+SEVERITY_LEVELS = ['Critical', 'High', 'Medium', 'Low']
+DEFAULT_PAGE_SIZE = 10
+
+# Load rule templates
+def initialize_rule_templates():
+    """Initialize rule templates file with default rules if it doesn't exist."""
+    default_templates = {
+        "validation_rules": [
+            {
+                "id": "v1",
+                "name": "Email Format Check",
+                "description": "Validates email format in specified columns",
+                "type": "Format",
+                "severity": "High",
+                "validation_code": "df[column_name].str.match(r'^[\\w\\.-]+@[\\w\\.-]+\\.\\w+$')",
+                "active": True
+            },
+            {
+                "id": "v2",
+                "name": "Date Format Check",
+                "description": "Validates date format (YYYY-MM-DD)",
+                "type": "Format",
+                "severity": "Medium",
+                "validation_code": "pd.to_datetime(df[column_name], errors='coerce')",
+                "active": True
+            },
+            {
+                "id": "v3",
+                "name": "SSN Pattern Check",
+                "description": "Checks for potential SSN patterns",
+                "type": "PII",
+                "severity": "Critical",
+                "validation_code": "df[column_name].str.match(r'\\b\\d{3}-\\d{2}-\\d{4}\\b')",
+                "active": True
+            }
+        ],
+        "data_quality_rules": [
+            {
+                "id": "dq1",
+                "name": "Null Check",
+                "description": "Checks for null values in specified columns",
+                "type": "Completeness",
+                "severity": "High",
+                "validation_code": "df[column_name].isnull()",
+                "active": True
+            },
+            {
+                "id": "dq2",
+                "name": "Duplicate Check",
+                "description": "Identifies duplicate records",
+                "type": "Uniqueness",
+                "severity": "Medium",
+                "validation_code": "df.duplicated(subset=[column_name])",
+                "active": True
+            }
+        ]
+    }
+    
+    template_path = os.path.join(os.path.dirname(__file__), 'rule_templates.json')
+    if not os.path.exists(template_path):
+        with open(template_path, 'w') as f:
+            json.dump(default_templates, f, indent=4)
+        print(f"Created default rule templates at {template_path}")
+    return default_templates
+
+def load_rule_templates():
+    """Load rule templates from JSON file."""
+    try:
+        template_path = os.path.join(os.path.dirname(__file__), 'rule_templates.json')
+        if not os.path.exists(template_path):
+            return initialize_rule_templates()
+        
+        with open(template_path, 'r') as f:
+            return json.load(f)
+    except Exception as e:
+        print(f"Error loading rule templates: {str(e)}")
+        return initialize_rule_templates()
+
+# Save rule templates
+def save_rule_templates(templates):
+    """Save rule templates to JSON file."""
+    try:
+        template_path = os.path.join(os.path.dirname(__file__), 'rule_templates.json')
+        with open(template_path, 'w') as f:
+            json.dump(templates, f, indent=4)
+        return True, "Templates saved successfully"
+    except Exception as e:
+        print(f"Error saving templates: {str(e)}")
+        return False, f"Error saving templates: {str(e)}"
+
+# Update rule status in templates
+def update_rule_status_in_templates(category, rule_id, new_status):
+    """Update a rule's status in the templates."""
+    templates = load_rule_templates()
+    if category not in templates:
+        return False, f"Category {category} not found"
+    
+    rule = next((r for r in templates[category] if r['id'] == rule_id), None)
+    if not rule:
+        return False, f"Rule {rule_id} not found in {category}"
+    
+    rule['active'] = new_status == 'active'
+    success, message = save_rule_templates(templates)
+    return success, message
+
+# Initialize rule catalogue with templates
+rule_templates = load_rule_templates()
+rule_catalogue = {
+    'gdpr': rule_templates.get('gdpr_rules', []),
+    'data_quality': rule_templates.get('data_quality_rules', []),
+    'business_rules': rule_templates.get('business_rules', []),
+    'table_level': rule_templates.get('table_level_rules', [])
+}
+
+# Initialize recent activities list
+recent_activities = [
+    {'action': 'Rule Update', 'description': 'Updated data quality rules', 'timestamp': '2024-12-17 21:49'},
+    {'action': 'Rule Added', 'description': 'Added new business rule', 'timestamp': '2024-12-17 21:48'}
+]
+
+# Activity log to track recent changes
+activity_log = []
+
+# Add activity to the activity log with timestamp
+def add_activity(action_type, description, activity_type='info'):
+    """Add an activity to the activity log with timestamp and type."""
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    activity_log.append({
+        'action': action_type,
+        'description': description,
+        'timestamp': timestamp,
+        'type': activity_type
+    })
+    # Keep only the last 100 activities
+    if len(activity_log) > 100:
+        activity_log.pop()
+
+def get_activity_icon_class(activity_type):
+    """Get the appropriate icon class and color based on activity type."""
+    icon_map = {
+        'success': {'icon': 'bi-check-circle-fill', 'color': 'success'},
+        'warning': {'icon': 'bi-exclamation-triangle-fill', 'color': 'warning'},
+        'info': {'icon': 'bi-info-circle-fill', 'color': 'info'},
+        'primary': {'icon': 'bi-plus-circle-fill', 'color': 'primary'}
+    }
+    return icon_map.get(activity_type, icon_map['info'])
+
+def create_activity_list(num_activities=5):
+    """Create a list of recent activities with styled icons."""
+    return html.Div([
+        dbc.Card(
+            dbc.CardBody([
+                html.H5("Recent Activity", className="card-title"),
+                html.Div([
+                    dbc.ListGroup([
+                        dbc.ListGroupItem(
+                            [
+                                html.I(
+                                    className=f"bi {get_activity_icon_class(activity.get('type', 'info'))['icon']} me-2",
+                                    style={'color': f"var(--bs-{get_activity_icon_class(activity.get('type', 'info'))['color']})"}
+                                ),
+                                html.Span(activity['description'])
+                            ],
+                            className="d-flex align-items-center border-0"
+                        )
+                        for activity in activity_log[-num_activities:][::-1]  # Show most recent first
+                    ], flush=True)
+                ], className="activity-list")
+            ]),
+            className="shadow-sm"
+        )
+    ])
+
+# Initialize activity log with some sample activities
+activity_log.extend([
+    {
+        'action': 'Data Quality Check',
+        'description': 'Data quality check completed',
+        'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        'type': 'success'
+    },
+    {
+        'action': 'Validation Rules',
+        'description': '3 new validation rules added',
+        'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        'type': 'warning'
+    },
+    {
+        'action': 'Analysis Update',
+        'description': 'Updated salary analysis',
+        'timestamp': datetime.now().strftime("%Y-%m-d %H:%M:%S"),
+        'type': 'info'
+    },
+    {
+        'action': 'Score Update',
+        'description': 'Data quality score improved',
+        'timestamp': datetime.now().strftime("%Y-%m-d %H:%M:%S"),
+        'type': 'primary'
+    }
+])
 
 # Initialize the app with Bootstrap and suppress callback exceptions
 app = dash.Dash(
-    __name__, 
+    __name__,
     external_stylesheets=[
         dbc.themes.BOOTSTRAP, 
         'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css'
     ],
+    prevent_initial_callbacks=True,
     suppress_callback_exceptions=True
 )
 
@@ -462,161 +671,7 @@ def create_rules_page_layout():
         
         # Rules content container
         html.Div(id='rules-content', className="mb-4"),
-        
-        # Add new rule section
-        dbc.Row([
-            dbc.Col([
-                dbc.Card([
-                    dbc.CardHeader("Add New Rule"),
-                    dbc.CardBody([
-                        dbc.Row([
-                            dbc.Col([
-                                html.Label("Rule Name", className="mb-2"),
-                                dbc.Input(
-                                    type="text",
-                                    placeholder="Enter rule name",
-                                    className="mb-3"
-                                ),
-                                html.Label("Description", className="mb-2"),
-                                dbc.Textarea(
-                                    placeholder="Enter rule description",
-                                    className="mb-3"
-                                ),
-                                html.Label("Severity", className="mb-2"),
-                                dbc.Select(
-                                    options=[
-                                        {"label": "Critical", "value": "critical"},
-                                        {"label": "High", "value": "high"},
-                                        {"label": "Medium", "value": "medium"},
-                                        {"label": "Low", "value": "low"}
-                                    ],
-                                    className="mb-3"
-                                ),
-                                dbc.Button("Add Rule", color="primary")
-                            ])
-                        ])
-                    ])
-                ])
-            ], width=12)
-        ])
     ])
-
-def create_circular_indicator(title, value, subtitle, trend=None, trend_value=None, color='primary'):
-    """Create a circular progress indicator similar to the overview dashboard."""
-    if isinstance(value, (int, float)):
-        formatted_value = f"{value:,.2f}" if isinstance(value, float) else f"{value:,}"
-    else:
-        formatted_value = value
-
-    # Define icons for each metric type
-    icons = {
-        'Orders': 'fas fa-lightbulb',
-        'Unique Visitors': 'fas fa-user',
-        'Impressions': 'fas fa-eye',
-        'Followers': 'fas fa-eye'
-    }
-
-    # Map colors to actual CSS colors
-    color_map = {
-        'primary': '#1a73e8',
-        'success': '#28a745',
-        'warning': '#ffc107',
-        'danger': '#dc3545'
-    }
-
-    # Calculate rotation for left and right circles
-    progress = float(trend_value) if trend_value else 75
-    rotation_right = min(progress, 50) * 3.6  # 3.6 degrees per percentage point
-    rotation_left = max(0, progress - 50) * 3.6
-
-    return dbc.Card([
-        dbc.CardBody([
-            # Title
-            html.Div(title, className='text-muted mb-2', style={'font-size': '0.875rem'}),
-            
-            # Value
-            html.Div(
-                formatted_value,
-                className='metric-value mb-4',
-                style={'font-size': '1.75rem', 'font-weight': 'bold'}
-            ),
-            
-            # Progress Circle Container
-            html.Div([
-                # Left Half Container
-                html.Div(
-                    className='progress-semicircle-left',
-                    style={
-                        'transform': f'rotate({rotation_left}deg)',
-                        'background': color_map[color] if progress > 50 else 'transparent'
-                    }
-                ),
-                
-                # Right Half Container
-                html.Div(
-                    className='progress-semicircle-right',
-                    style={
-                        'transform': f'rotate({rotation_right}deg)',
-                        'background': color_map[color]
-                    }
-                ),
-                
-                # Inner Circle
-                html.Div(className='progress-inner-circle'),
-                
-                # Icon
-                html.I(
-                    className=icons.get(title, 'fas fa-chart-line'),
-                    style={
-                        'position': 'absolute',
-                        'top': '50%',
-                        'left': '50%',
-                        'transform': 'translate(-50%, -50%)',
-                        'font-size': '1.2rem',
-                        'color': '#2d3436',
-                        'zIndex': 10
-                    }
-                )
-            ], className='progress-circle-container'),
-            
-            # Subtitle and Percentage
-            html.Div([
-                html.Div(subtitle, className='text-muted small mb-1'),
-                html.Div(
-                    f"{trend_value}%" if trend_value else "",
-                    className='fw-bold'
-                )
-            ], className='text-center mt-3')
-        ], className='text-center')
-    ], className='metric-card h-100 border-0')
-
-def create_rule_card(rule):
-    status_colors = {
-        'Passed': '#4361ee',
-        'Failed': '#ef233c',
-        'Error': '#ff9f1c'
-    }
-    
-    severity_icons = {
-        'Critical': 'bi-exclamation-triangle-fill',
-        'High': 'bi-exclamation-triangle',
-        'Medium': 'bi-exclamation'
-    }
-    
-    return html.Div([
-        html.Div([
-            html.Div([
-                html.I(className=f"bi {severity_icons.get(rule['severity'], 'bi-info-circle')} severity-icon"),
-                html.Span(rule['severity'], className="ms-2 text-muted"),
-            ], className="d-flex align-items-center"),
-            html.Div([
-                html.I(className=f"bi {'bi-check-circle' if rule['status'] == 'Passed' else 'bi-x-circle'}"),
-                html.Span(rule['status'])
-            ], className=f"rule-status {rule['status'].lower()}")
-        ], className='rule-header'),
-        html.H4(rule['description'], className='rule-title'),
-        html.Code(rule['rule'], className='rule-code')
-    ], className=f"rule-card {rule['status'].lower()}")
 
 def create_overview_layout():
     """Create the overview dashboard layout."""
@@ -698,125 +753,119 @@ def create_overview_layout():
     ])
 
 def create_data_quality_layout():
-    """Create the data quality dashboard layout."""
+    """Create the combined data quality and details dashboard layout."""
     metrics = calculate_data_quality_metrics()
     
-    # Calculate overall metrics
-    overall_completeness = round(sum(m['completeness'] for m in metrics.values()) / len(metrics), 2)
-    overall_uniqueness = round(sum(m['uniqueness'] for m in metrics.values()) / len(metrics), 2)
-    overall_validity = round(sum(m['validity'] for m in metrics.values()) / len(metrics), 2)
-    overall_score = round((overall_completeness + overall_uniqueness + overall_validity) / 3, 2)
-    
     return html.Div([
-        html.H2("Data Quality Dashboard", className="mb-4"),
+        html.H2("Data Quality Overview", className="mb-4"),
         
-        # Overall metrics
+        # Overall metrics cards
         dbc.Row([
-            dbc.Col(
+            dbc.Col([
                 create_circular_indicator(
-                    "Overall Score",
-                    f"{overall_score}%",
-                    "Data Quality Score",
-                    None,
-                    str(overall_score),
+                    "Overall Quality",
+                    f"{sum(m['overall'] for m in metrics.values()) / len(metrics):.1f}%",
+                    "Average across all tables",
+                    "increase",
+                    "85",
                     "primary"
-                ),
-                width=3
-            ),
-            dbc.Col(
+                )
+            ], width=3),
+            dbc.Col([
                 create_circular_indicator(
-                    "Completeness",
-                    f"{overall_completeness}%",
-                    "No Missing Values",
-                    "increase" if overall_completeness > 90 else "decrease",
-                    str(overall_completeness),
+                    "Data Completeness",
+                    f"{sum(m['completeness'] for m in metrics.values()) / len(metrics):.1f}%",
+                    "No missing values",
+                    "increase",
+                    "90",
                     "success"
-                ),
-                width=3
-            ),
-            dbc.Col(
+                )
+            ], width=3),
+            dbc.Col([
                 create_circular_indicator(
-                    "Uniqueness",
-                    f"{overall_uniqueness}%",
-                    "Unique Records",
-                    "increase" if overall_uniqueness > 90 else "decrease",
-                    str(overall_uniqueness),
+                    "Data Uniqueness",
+                    f"{sum(m['uniqueness'] for m in metrics.values()) / len(metrics):.1f}%",
+                    "Unique key fields",
+                    "increase",
+                    "95",
                     "warning"
-                ),
-                width=3
-            ),
-            dbc.Col(
+                )
+            ], width=3),
+            dbc.Col([
                 create_circular_indicator(
-                    "Validity",
-                    f"{overall_validity}%",
-                    "Valid Data Types",
-                    "increase" if overall_validity > 90 else "decrease",
-                    str(overall_validity),
+                    "Data Validity",
+                    f"{sum(m['validity'] for m in metrics.values()) / len(metrics):.1f}%",
+                    "Valid data formats",
+                    "increase",
+                    "88",
                     "danger"
-                ),
-                width=3
-            ),
+                )
+            ], width=3)
         ], className="mb-4"),
         
-        # Table specific metrics
+        # Table selector and metrics
         dbc.Row([
             dbc.Col([
                 dbc.Card([
-                    dbc.CardHeader("Table Quality Scores"),
+                    dbc.CardHeader("Table Details"),
                     dbc.CardBody([
-                        html.Div([
-                            html.H5(table_name.title(), className="mb-2"),
-                            dbc.Progress([
-                                dbc.Progress(
-                                    value=metrics[table_name]['overall'],
-                                    color="success",
-                                    bar=True,
-                                    label=f"{metrics[table_name]['overall']}%"
-                                )
-                            ], className="mb-3")
-                        ]) for table_name in metrics
+                        html.Label("Select Table", className="mb-2"),
+                        dcc.Dropdown(
+                            id='detail-table-selector',
+                            options=[{'label': name.capitalize(), 'value': name} for name in dfs.keys()],
+                            value=list(dfs.keys())[0],
+                            className="mb-4"
+                        ),
+                        html.Div(id='detail-table-content')
                     ])
                 ])
             ], width=12)
         ], className="mb-4"),
         
-        # Detailed metrics table
+        # Quality metrics by table
         dbc.Row([
             dbc.Col([
                 dbc.Card([
-                    dbc.CardHeader("Detailed Metrics"),
+                    dbc.CardHeader("Quality Metrics by Table"),
                     dbc.CardBody([
-                        dash_table.DataTable(
-                            data=[
-                                {
-                                    'Table': table_name.title(),
-                                    'Completeness': f"{m['completeness']}%",
-                                    'Uniqueness': f"{m['uniqueness']}%",
-                                    'Validity': f"{m['validity']}%",
-                                    'Overall': f"{m['overall']}%"
-                                }
-                                for table_name, m in metrics.items()
-                            ],
-                            columns=[
-                                {'name': 'Table', 'id': 'Table'},
-                                {'name': 'Completeness', 'id': 'Completeness'},
-                                {'name': 'Uniqueness', 'id': 'Uniqueness'},
-                                {'name': 'Validity', 'id': 'Validity'},
-                                {'name': 'Overall', 'id': 'Overall'}
-                            ],
-                            style_table={'overflowX': 'auto'},
-                            style_cell={
-                                'textAlign': 'left',
-                                'padding': '10px'
-                            },
-                            style_header={
-                                'backgroundColor': 'rgb(230, 230, 230)',
-                                'fontWeight': 'bold'
-                            }
+                        dbc.Table([
+                            html.Thead([
+                                html.Tr([
+                                    html.Th("Table"),
+                                    html.Th("Completeness"),
+                                    html.Th("Uniqueness"),
+                                    html.Th("Validity"),
+                                    html.Th("Overall Score")
+                                ])
+                            ]),
+                            html.Tbody([
+                                html.Tr([
+                                    html.Td(table_name.capitalize()),
+                                    html.Td(f"{metrics[table_name]['completeness']:.1f}%"),
+                                    html.Td(f"{metrics[table_name]['uniqueness']:.1f}%"),
+                                    html.Td(f"{metrics[table_name]['validity']:.1f}%"),
+                                    html.Td(f"{metrics[table_name]['overall']:.1f}%")
+                                ]) for table_name in metrics.keys()
+                            ])
+                        ], className="table table-hover")
+                    ])
+                ])
+            ], width=12)
+        ]),
+        
+        # Quality trends chart
+        dbc.Row([
+            dbc.Col([
+                dbc.Card([
+                    dbc.CardHeader("Quality Metrics Overview"),
+                    dbc.CardBody([
+                        dcc.Graph(
+                            figure=create_overall_quality_chart(metrics),
+                            config={'displayModeBar': False}
                         )
                     ])
                 ])
-            ], width=12)
+            ], width=12, className="mb-4")
         ])
     ])
 
@@ -1100,51 +1149,369 @@ def create_recent_activity():
         ], className="activity-list")
     ], className="sidebar-section")
 
+def create_circular_indicator(title, value, subtitle, trend=None, trend_value=None, color='primary'):
+    """Create a circular progress indicator similar to the overview dashboard."""
+    if isinstance(value, (int, float)):
+        formatted_value = f"{value:,.2f}" if isinstance(value, float) else f"{value:,}"
+    else:
+        formatted_value = value
+
+    # Define icons for each metric type
+    icons = {
+        'Orders': 'fas fa-lightbulb',
+        'Unique Visitors': 'fas fa-user',
+        'Impressions': 'fas fa-eye',
+        'Followers': 'fas fa-eye'
+    }
+
+    # Map colors to actual CSS colors
+    color_map = {
+        'primary': '#1a73e8',
+        'success': '#28a745',
+        'warning': '#ffc107',
+        'danger': '#dc3545'
+    }
+
+    # Calculate rotation for left and right circles
+    progress = float(trend_value) if trend_value else 75
+    rotation_right = min(progress, 50) * 3.6  # 3.6 degrees per percentage point
+    rotation_left = max(0, progress - 50) * 3.6
+
+    return dbc.Card([
+        dbc.CardBody([
+            # Title
+            html.Div(title, className='text-muted mb-2', style={'font-size': '0.875rem'}),
+            
+            # Value
+            html.Div(
+                formatted_value,
+                className='metric-value mb-4',
+                style={'font-size': '1.75rem', 'font-weight': 'bold'}
+            ),
+            
+            # Progress Circle Container
+            html.Div([
+                # Left Half Container
+                html.Div(
+                    className='progress-semicircle-left',
+                    style={
+                        'transform': f'rotate({rotation_left}deg)',
+                        'background': color_map[color] if progress > 50 else 'transparent'
+                    }
+                ),
+                
+                # Right Half Container
+                html.Div(
+                    className='progress-semicircle-right',
+                    style={
+                        'transform': f'rotate({rotation_right}deg)',
+                        'background': color_map[color]
+                    }
+                ),
+                
+                # Inner Circle
+                html.Div(className='progress-inner-circle'),
+                
+                # Icon
+                html.I(
+                    className=icons.get(title, 'fas fa-chart-line'),
+                    style={
+                        'position': 'absolute',
+                        'top': '50%',
+                        'left': '50%',
+                        'transform': 'translate(-50%, -50%)',
+                        'font-size': '1.2rem',
+                        'color': '#2d3436',
+                        'zIndex': 10
+                    }
+                )
+            ], className='progress-circle-container'),
+            
+            # Subtitle and Percentage
+            html.Div([
+                html.Div(subtitle, className='text-muted small mb-1'),
+                html.Div(
+                    f"{trend_value}%" if trend_value else "",
+                    className='fw-bold'
+                )
+            ], className='text-center mt-3')
+        ], className='text-center')
+    ], className='metric-card h-100 border-0')
+
+def create_rule_card(rule):
+    status_colors = {
+        'Passed': '#4361ee',
+        'Failed': '#ef233c',
+        'Error': '#ff9f1c'
+    }
+    
+    severity_icons = {
+        'Critical': 'bi-exclamation-triangle-fill',
+        'High': 'bi-exclamation-triangle',
+        'Medium': 'bi-exclamation'
+    }
+    
+    return html.Div([
+        html.Div([
+            html.Div([
+                html.I(className=f"bi {severity_icons.get(rule['severity'], 'bi-info-circle')} severity-icon"),
+                html.Span(rule['severity'], className="ms-2 text-muted"),
+            ], className="d-flex align-items-center"),
+            html.Div([
+                html.I(className=f"bi {'bi-check-circle' if rule['status'] == 'Passed' else 'bi-x-circle'}"),
+                html.Span(rule['status'])
+            ], className=f"rule-status {rule['status'].lower()}")
+        ], className='rule-header'),
+        html.H4(rule['description'], className='rule-title'),
+        html.Code(rule['rule'], className='rule-code')
+    ], className=f"rule-card {rule['status'].lower()}")
+
+# Add rule states dictionary
+rule_states = {
+    table_name: {rule['rule']: True for rule in rules}
+    for table_name, rules in get_table_rules().items()
+}
+
+def create_unified_rule_page():
+    """Create a unified page combining rule catalogue and configuration."""
+    templates = load_rule_templates()
+    
+    # Create a flat list of all rules with their categories
+    all_rules = []
+    for category, rules in templates.items():
+        for rule in rules:
+            all_rules.append({
+                'name': rule['name'],
+                'category': category.replace('_rules', '').title(),
+                'description': rule['description'],
+                'type': rule['type'],
+                'severity': rule['severity'],
+                'active': 'Active' if rule.get('active', True) else 'Inactive'
+            })
+    
+    return dbc.Container([
+        html.H2("Rule Management", className="mb-4"),
+        
+        # Main content row
+        dbc.Row([
+            # Left column - Rules Catalogue
+            dbc.Col([
+                html.H4("Rules Catalogue", className="mb-3"),
+                dash_table.DataTable(
+                    id='rules-catalogue-table',
+                    columns=[
+                        {'name': 'Name', 'id': 'name'},
+                        {'name': 'Category', 'id': 'category'},
+                        {'name': 'Description', 'id': 'description'},
+                        {'name': 'Type', 'id': 'type'},
+                        {'name': 'Severity', 'id': 'severity'},
+                        {'name': 'Status', 'id': 'active'}
+                    ],
+                    data=all_rules,
+                    style_table={'overflowX': 'auto'},
+                    style_cell={
+                        'textAlign': 'left',
+                        'padding': '10px',
+                        'whiteSpace': 'normal',
+                        'height': 'auto',
+                    },
+                    style_header={
+                        'backgroundColor': 'rgb(230, 230, 230)',
+                        'fontWeight': 'bold'
+                    },
+                    style_data_conditional=[
+                        {
+                            'if': {'filter_query': '{active} = "Active"'},
+                            'backgroundColor': '#e6ffe6',
+                            'color': '#006600'
+                        },
+                        {
+                            'if': {'filter_query': '{active} = "Inactive"'},
+                            'backgroundColor': '#ffe6e6',
+                            'color': '#cc0000'
+                        },
+                        {
+                            'if': {'filter_query': '{severity} = "Critical"'},
+                            'color': '#dc3545'
+                        },
+                        {
+                            'if': {'filter_query': '{severity} = "High"'},
+                            'color': '#fd7e14'
+                        }
+                    ],
+                    filter_action="native",
+                    sort_action="native",
+                    sort_mode="multi",
+                    page_size=DEFAULT_PAGE_SIZE
+                )
+            ], md=8),
+            
+            # Right column - Rule Configuration
+            dbc.Col([
+                html.H4("Rule Configuration", className="mb-3"),
+                dbc.Card(dbc.CardBody([
+                    # Rule Selection
+                    dbc.Label("Select Rule", html_for="rule-dropdown", className="mb-2"),
+                    dcc.Dropdown(
+                        id='rule-dropdown',
+                        options=[
+                            {
+                                'label': f"{rule['name']} ({category})",
+                                'value': f"{category}:{rule['id']}"
+                            }
+                            for category, rules in templates.items()
+                            for rule in rules
+                        ],
+                        placeholder="Select a rule to manage",
+                        className="mb-3"
+                    ),
+                    
+                    # Rule Status
+                    dbc.Label("Rule Status", html_for="rule-status-dropdown", className="mb-2"),
+                    dcc.Dropdown(
+                        id='rule-status-dropdown',
+                        options=[
+                            {'label': 'Active', 'value': 'active'},
+                            {'label': 'Inactive', 'value': 'inactive'}
+                        ],
+                        placeholder="Select rule status",
+                        className="mb-3"
+                    ),
+                    
+                    # Submit Button
+                    dbc.Button(
+                        "Save Changes",
+                        id="save-rule-button",
+                        color="primary",
+                        className="mt-3"
+                    ),
+                    
+                    # Status Message
+                    html.Div(id='rule-update-status', className="mt-3")
+                ]))
+            ], md=4)
+        ])
+    ], fluid=True)
+
+@app.callback(
+    [Output('rule-update-status', 'children'),
+     Output('rules-catalogue-table', 'data'),
+     Output('sidebar-activity-list', 'children')],
+    [Input('save-rule-button', 'n_clicks')],
+    [State('rule-dropdown', 'value'),
+     State('rule-status-dropdown', 'value')]
+)
+def save_rule_status(n_clicks, selected_rule, status):
+    """Save the rule status changes to the JSON file and update activities."""
+    if n_clicks is None or not selected_rule or not status:
+        raise dash.exceptions.PreventUpdate()
+    
+    try:
+        category, rule_id = selected_rule.split(':')
+        success, message = update_rule_status_in_templates(category, rule_id, status)
+        
+        if success:
+            templates = load_rule_templates()
+            rule = next((r for r in templates[category] if r['id'] == rule_id), None)
+            
+            if rule:
+                action = 'activated' if status == 'active' else 'deactivated'
+                
+                # Count total rule changes
+                active_count = sum(1 for cat in templates.values() 
+                                 for r in cat if r.get('active', True))
+                inactive_count = sum(1 for cat in templates.values() 
+                                  for r in cat if not r.get('active', True))
+                
+                # Add activity with counts
+                add_activity(
+                    'Rule Status Update',
+                    f"{active_count} rules active, {inactive_count} rules inactive",
+                    'success' if status == 'active' else 'warning'
+                )
+                
+                # Update the rules catalogue data
+                all_rules = []
+                for cat, rules in templates.items():
+                    for r in rules:
+                        all_rules.append({
+                            'name': r['name'],
+                            'category': cat.replace('_rules', '').title(),
+                            'description': r['description'],
+                            'type': r['type'],
+                            'severity': r['severity'],
+                            'active': 'Active' if r.get('active', True) else 'Inactive'
+                        })
+                
+                return (
+                    html.Div(f"Rule successfully {action}!", className='text-success'),
+                    all_rules,
+                    create_activity_list()
+                )
+        
+        return html.Div(message, className='text-danger'), dash.no_update, dash.no_update
+        
+    except Exception as e:
+        add_activity('Error', f"Failed to update rule: {str(e)}", 'warning')
+        return html.Div(f"Error updating rule: {str(e)}", className='text-danger'), dash.no_update, create_activity_list()
+
+def create_sidebar():
+    """Create the sidebar navigation."""
+    return dbc.Nav([
+        dbc.NavLink([
+            html.I(className="bi bi-house-door me-2"),
+            "Overview"
+        ], href="/", active="exact"),
+        
+        dbc.NavLink([
+            html.I(className="bi bi-check-circle me-2"),
+            "Data Quality"
+        ], href="/data-quality", active="exact"),
+        
+        dbc.NavLink([
+            html.I(className="bi bi-gear me-2"),
+            "Rules Management"
+        ], href="/rules", active="exact"),
+        
+        dbc.NavLink([
+            html.I(className="bi bi-info-circle me-2"),
+            "Details"
+        ], href="/details", active="exact")
+    ], vertical=True, pills=True, className="bg-light")
+
+# Initialize the app layout
 app.layout = html.Div([
-    # Navigation
     dcc.Location(id='url', refresh=False),
     
     # Sidebar
     html.Div([
         html.H2("Data Quality", className="p-3"),
-        dbc.Nav([
-            dbc.NavLink([html.I(className="bi bi-house-door me-2"), "Overview"], href="/", active="exact"),
-            dbc.NavLink([html.I(className="bi bi-bar-chart me-2"), "Data Quality"], href="/data-quality", active="exact"),
-            dbc.NavLink([html.I(className="bi bi-table me-2"), "Details"], href="/details", active="exact"),
-            dbc.NavLink([html.I(className="bi bi-check-circle me-2"), "Rules"], href="/rules", active="exact"),
-        ], vertical=True, pills=True, className="p-3"),
+        create_sidebar(),
         
         # Recent Activity Section
         html.Hr(className="sidebar-divider"),
-        create_recent_activity()
+        html.Div(id='sidebar-activity-list', children=create_activity_list())
     ], className="sidebar"),
     
     # Main content
-    html.Div(id='page-content', className="content-wrapper")
-], className="app-container")
+    html.Div(id='page-content', className="content")
+])
 
-def display_page(pathname):
-    """Route pages based on URL pathname."""
-    if pathname == '/':
-        return create_overview_layout()
-    elif pathname == '/data-quality':
-        return create_data_quality_layout()
-    elif pathname == '/details':
-        return create_detail_page_layout()
-    elif pathname == '/rules':
-        return create_rules_page_layout()
-    # Default to overview if path not found
-    return create_overview_layout()
-
-# Callback for updating page content
 @app.callback(
     Output('page-content', 'children'),
     [Input('url', 'pathname')]
 )
-def update_page(pathname):
-    return display_page(pathname)
+def display_page(pathname):
+    """Route to the appropriate page based on URL pathname."""
+    page_routes = {
+        '/': create_overview_layout,
+        '/data-quality': create_data_quality_layout,
+        '/rules': create_unified_rule_page,
+        '/details': create_detail_page_layout
+    }
+    
+    return page_routes.get(pathname, create_overview_layout)()
 
-# Callback for updating rules content
 @app.callback(
     Output('rules-content', 'children'),
     [Input('table-selector', 'value')]

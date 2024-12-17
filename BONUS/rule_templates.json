@@ -1,0 +1,175 @@
+{
+    "gdpr_rules": [
+        {
+            "id": "gdpr_001",
+            "name": "PII Data Detection",
+            "description": "Detect personally identifiable information in columns",
+            "category": "gdpr",
+            "type": "pattern_match",
+            "severity": "Critical",
+            "validation_code": "df[column_name].str.match(r'\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b')",
+            "message": "Column may contain email addresses (PII data)",
+            "active": true
+        },
+        {
+            "id": "gdpr_002",
+            "name": "Phone Number Detection",
+            "description": "Identify columns containing phone numbers",
+            "category": "gdpr",
+            "type": "pattern_match",
+            "severity": "High",
+            "validation_code": "df[column_name].str.match(r'\\b\\d{3}[-.]?\\d{3}[-.]?\\d{4}\\b')",
+            "message": "Column may contain phone numbers (PII data)",
+            "active": true
+        },
+        {
+            "id": "gdpr_003",
+            "name": "SSN Detection",
+            "description": "Check for Social Security Numbers",
+            "category": "gdpr",
+            "type": "pattern_match",
+            "severity": "Critical",
+            "validation_code": "df[column_name].str.match(r'\\b\\d{3}-\\d{2}-\\d{4}\\b')",
+            "message": "Column may contain SSNs (PII data)",
+            "active": true
+        }
+    ],
+    "data_quality_rules": [
+        {
+            "id": "dq_001",
+            "name": "Not Null Check",
+            "description": "Validates that a column contains no null values",
+            "category": "data_quality",
+            "type": "Column Level",
+            "severity": "High",
+            "validation_code": "not df[column].isnull().any()",
+            "message": "Column contains null values",
+            "active": true
+        },
+        {
+            "id": "dq_002",
+            "name": "Unique Value Check",
+            "description": "Validates that a column contains only unique values",
+            "category": "data_quality",
+            "type": "Column Level",
+            "severity": "High",
+            "validation_code": "not df[column].duplicated().any()",
+            "message": "Column contains duplicate values",
+            "active": true
+        },
+        {
+            "id": "dq_003",
+            "name": "Value Range Check",
+            "description": "Validates that numeric values fall within a specified range",
+            "category": "data_quality",
+            "type": "Column Level",
+            "severity": "Medium",
+            "validation_code": "df[column].between(min_value, max_value).all()",
+            "message": "Values outside acceptable range",
+            "active": true
+        },
+        {
+            "id": "dq_004",
+            "name": "Date Format",
+            "description": "Validate date format",
+            "category": "data_quality",
+            "type": "format",
+            "severity": "Medium",
+            "validation_code": "pd.to_datetime(df[column_name], errors='coerce').notnull().all()",
+            "message": "Column contains invalid date formats",
+            "active": true
+        }
+    ],
+    "business_rules": [
+        {
+            "id": "br_001",
+            "name": "Date Sequence Check",
+            "description": "Ensures end date is after start date",
+            "category": "business_rules",
+            "type": "Multi-Column",
+            "severity": "Critical",
+            "validation_code": "df[end_date] > df[start_date]",
+            "message": "End date must be after start date",
+            "active": true
+        },
+        {
+            "id": "br_002",
+            "name": "Foreign Key Check",
+            "description": "Validates foreign key relationships between tables",
+            "category": "business_rules",
+            "type": "Multi-Table",
+            "severity": "Critical",
+            "validation_code": "df[column].isin(reference_df[ref_column]).all()",
+            "message": "Foreign key constraint violation",
+            "active": true
+        },
+        {
+            "id": "br_003",
+            "name": "Salary Hierarchy Check",
+            "description": "Ensures manager salary is higher than employee salary",
+            "category": "business_rules",
+            "type": "Business Logic",
+            "severity": "High",
+            "validation_code": "df.merge(manager_df, on='manager_id')['salary_x'] < df.merge(manager_df, on='manager_id')['salary_y']",
+            "message": "Manager salary must be higher than employee salary",
+            "active": false
+        },
+        {
+            "id": "br_004",
+            "name": "Category Values",
+            "description": "Validate categorical values",
+            "category": "business_rules",
+            "type": "categorical",
+            "severity": "Medium",
+            "validation_code": "df[column_name].isin(valid_categories).all()",
+            "message": "Invalid category values found",
+            "active": true
+        }
+    ],
+    "table_level_rules": [
+        {
+            "id": "tl_001",
+            "name": "Minimum Row Count",
+            "description": "Ensures table has a minimum number of rows",
+            "category": "table_level",
+            "type": "Table Level",
+            "severity": "Medium",
+            "validation_code": "len(df) >= min_rows",
+            "message": "Table has insufficient rows",
+            "active": true
+        },
+        {
+            "id": "tl_002",
+            "name": "No Duplicate Rows",
+            "description": "Checks for duplicate rows across all columns",
+            "category": "table_level",
+            "type": "Table Level",
+            "severity": "High",
+            "validation_code": "not df.duplicated().any()",
+            "message": "Duplicate rows found",
+            "active": false
+        },
+        {
+            "id": "tl_003",
+            "name": "Column Presence",
+            "description": "Check required columns exist",
+            "category": "table_level",
+            "type": "structure",
+            "severity": "Critical",
+            "validation_code": "all(col in df.columns for col in required_columns)",
+            "message": "Missing required columns",
+            "active": true
+        },
+        {
+            "id": "tl_004",
+            "name": "Primary Key Check",
+            "description": "Validate primary key uniqueness",
+            "category": "table_level",
+            "type": "integrity",
+            "severity": "Critical",
+            "validation_code": "df[primary_key_columns].duplicated().sum() == 0",
+            "message": "Duplicate primary key values found",
+            "active": true
+        }
+    ]
+}
