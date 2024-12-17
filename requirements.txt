@@ -35,6 +35,10 @@ pytz==2024.2
 pydantic==2.10.3
 networkx==2.8.4
 
+# Data Quality Tools
+great-expectations==0.17.15
+ydata-profiling==4.6.3
+
 # Documentation
 mkdocs>=1.5.0
 mkdocs-material==9.1.21
