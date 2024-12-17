@@ -8,13 +8,13 @@ If you're new to programming or data engineering, follow these step-by-step inst
 
 ### Step 1: Set Up Your Computer
 1. **Install Required Software**:
-   - Download and install [Python 3.8](https://www.python.org/downloads/release/python-388/) (Click "Windows installer (64-bit)")
+   - Download and install [Python 3.8+](https://www.python.org/downloads/) (Click "Windows installer (64-bit)")
    - Download and install [Visual Studio Code](https://code.visualstudio.com/download)
    - Download and install [Git](https://git-scm.com/downloads)
 
 2. **Verify Installation**:
    - Open Command Prompt (search for "cmd" in Windows start menu)
-   - Type `python --version` (should show Python 3.8.x)
+   - Type `python --version` (should show Python 3.8.x or higher)
    - Type `git --version` (should show the Git version)
 
 ### Step 2: Get the Project Files
@@ -26,8 +26,8 @@ If you're new to programming or data engineering, follow these step-by-step inst
 
 2. **Download the Project**:
    ```bash
-   git clone https://github.com/yourusername/ymo_DE_python_sql-1.git
-   cd ymo_DE_python_sql-1
+   git clone https://github.com/yourusername/ymo_DE_python_sql.git
+   cd ymo_DE_python_sql
    ```
 
 ### Step 3: Set Up Your Development Environment
@@ -39,10 +39,33 @@ If you're new to programming or data engineering, follow these step-by-step inst
    Note: Your command prompt should now show `(.venv)` at the beginning
 
 2. **Install Required Packages**:
+   The project includes a flexible package installation script that allows you to install either all dependencies or specific categories:
+
+   View available categories:
    ```bash
-   pip install -r requirements.txt
+   python install_requirements.py --list-categories
    ```
-   This may take a few minutes to complete.
+
+   Install all packages:
+   ```bash
+   python install_requirements.py
+   ```
+
+   Install specific category (e.g., data processing):
+   ```bash
+   python install_requirements.py --category data_processing_and_analysis
+   ```
+
+   Available categories include:
+   - data_processing_and_analysis
+   - data_visualization
+   - database_connections
+   - data_generation
+   - development_environment
+   - excel_support
+   - date_and_time
+   - data_validation_and_quality
+   - documentation
 
 ### Step 4: Start Learning
 1. **Open Visual Studio Code**:
@@ -56,32 +79,9 @@ If you're new to programming or data engineering, follow these step-by-step inst
 
 3. **Begin the Course**:
    - Open the `notebooks` folder
-   - Start with `Week_1` materials
-   - Open the first notebook (files ending in `.ipynb`)
-   - Follow the instructions in each notebook
-
-### Step 5: Weekly Progress
-Follow this recommended weekly schedule:
-
-#### Week 1: Basics (2-3 hours per day)
-- Day 1-2: Python installation and basics
-- Day 3-4: SQL fundamentals
-- Day 5-7: Basic data operations
-
-#### Week 2: Data Handling (2-3 hours per day)
-- Day 1-2: Database connections
-- Day 3-4: Data loading
-- Day 5-7: Basic transformations
-
-#### Week 3: Analysis (2-3 hours per day)
-- Day 1-2: Data cleaning
-- Day 3-4: Analysis techniques
-- Day 5-7: Creating visualizations
-
-#### Week 4: Advanced Topics (2-3 hours per day)
-- Day 1-2: ETL processes
-- Day 3-4: Automation
-- Day 5-7: Final project
+   - Start with the `HR_Data_Quality_Guide.ipynb` for an introduction to data quality concepts
+   - Follow the `Continuous_Improvement.ipynb` for best practices in data engineering
+   - Progress through other notebooks as needed
 
 ### Common Issues and Solutions
 
@@ -92,10 +92,11 @@ Follow this recommended weekly schedule:
 2. **Package Installation Errors**
    - Make sure you're in the virtual environment (see `.venv\Scripts\activate`)
    - Try running: `pip install --upgrade pip`
+   - Use the category-based installation to isolate issues: `python install_requirements.py --category <category_name>`
 
 3. **Jupyter Notebook Won't Open**
    - In VS Code, make sure you've selected the correct Python interpreter
-   - Try running: `pip install jupyter notebook`
+   - Try running: `python install_requirements.py --category development_environment`
 
 ### Getting Help
 
@@ -105,112 +106,45 @@ If you encounter issues:
 3. Visit [Stack Overflow](https://stackoverflow.com) for similar issues
 4. Join Python communities on Discord or Reddit for help
 
-## Learning Outcomes
+## Project Features
 
-### Technical Skills
-- **Python Programming**: Advanced data processing using pandas, numpy, and polars
-- **Database Management**: Working with multiple databases (SQLite, PostgreSQL, MySQL, DuckDB)
-- **Data Quality**: Implementing tests and validation using great-expectations
-- **API Development**: Building REST APIs with FastAPI
-- **Documentation**: Creating technical documentation with MkDocs
-- **Version Control**: Git-based workflow and best practices
-- **Testing**: Unit testing with pytest and code coverage analysis
+### Core Components
+- **HR Data Quality Guide**: Comprehensive notebook for data quality assessment and improvement
+- **Continuous Improvement Framework**: Tools and methods for ongoing data quality enhancement
+- **Flexible Package Management**: Category-based dependency installation
+- **Data Validation Suite**: Tools for validating HR data including NINO, dates, and emails
+- **Anomaly Detection**: Graph-based approach for detecting potential fraudulent patterns
 
-### Professional Skills
-- Data pipeline design and implementation
-- ETL process development
-- Code organization and best practices
-- Performance optimization techniques
-- Problem-solving and debugging strategies
-- Documentation writing
-- Project organization
+### Technical Stack
+- **Python 3.8+**
+- **Key Libraries**:
+  - Data Processing: pandas (2.1.4), numpy (1.24.4), polars (1.17.1)
+  - Data Visualization: matplotlib (3.9.4), seaborn (0.13.2), plotly (5.24.1)
+  - Database: SQLAlchemy (2.0.36), psycopg2-binary (2.9.10)
+  - Development: jupyter (1.1.1), jupyterlab (3.6.3)
+  - Documentation: mkdocs (1.5.0+)
 
 ## Project Structure
 
 ```
 .
-├── data/                   # Data files and databases
-├── notebooks/             # Jupyter notebooks for learning
-│   ├── Week_1/           # Environment Setup and Basics
-│   ├── Week_2/           # Data Loading and Database Operations
-│   ├── Week_3/           # Data Analysis and Engineering
-│   └── Week_4/           # Integration and Advanced Features
-├── scripts/               # Utility and setup scripts
-├── src/                   # Source code
-├── tests/                 # Test files
-├── visualizations/        # Generated visualizations
-├── archive/              # Archived files and notebooks
-└── docs/                 # Project documentation
+├── notebooks/                 # Jupyter notebooks
+│   ├── data quality/         # Data quality assessment notebooks
+│   │   ├── HR_Data_Quality_Guide.ipynb
+│   │   └── Continuous_Improvement.ipynb
+├── data/                     # Data files and sample datasets
+├── scripts/                  # Utility scripts
+│   └── install_requirements.py  # Package installation script
+├── requirements.txt          # Project dependencies
+└── docs/                     # Project documentation
 ```
-
-## Weekly Learning Path
-
-### Week 1: Foundation and Setup
-- Development environment setup
-- Python basics and virtual environments
-- Version control with Git
-- Package management and requirements
-- Basic SQL operations
-
-### Week 2: Data Processing and Storage
-- Database connections (SQLite, PostgreSQL, MySQL)
-- SQLAlchemy ORM
-- Data loading and transformation
-- Error handling and validation
-- Query optimization
-
-### Week 3: Advanced Data Engineering
-- ETL pipeline development
-- Data quality checks with great-expectations
-- Performance optimization
-- Parallel processing
-- API development with FastAPI
-
-### Week 4: Integration and Best Practices
-- Testing and code coverage
-- Documentation with MkDocs
-- Logging and monitoring
-- Deployment strategies
-- Code quality and linting
-- Project integration
-
-## Setup and Installation
-
-1. Clone the repository
-2. Create a virtual environment:
-   ```bash
-   python -m venv .venv
-   .venv\Scripts\activate  # Windows
-   ```
-
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-## Tools and Technologies
-
-### Core Technologies
-- Python 3.8+
-- SQL (SQLite, PostgreSQL, MySQL)
-- Git
-
-### Key Libraries
-- **Data Processing**: pandas, numpy, polars
-- **Databases**: SQLAlchemy, pyodbc, psycopg2
-- **API Development**: FastAPI, uvicorn
-- **Testing**: pytest, pytest-cov
-- **Documentation**: MkDocs, mkdocs-material
-- **Code Quality**: black, flake8, isort
 
 ## Best Practices Implemented
 
 - Modular code organization
-- Comprehensive documentation
+- Comprehensive data quality checks
+- Flexible dependency management
 - Test-driven development
-- Code quality checks
-- Version control workflow
-- Project structure standards
 - Error handling and logging
 - Performance optimization
 
