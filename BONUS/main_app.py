@@ -5,11 +5,23 @@ import plotly.express as px
 import plotly.graph_objects as go
 from dash.exceptions import PreventUpdate
 import json
+import polars as pl
+import numpy as np
+import pandas as pd
 from datetime import datetime
 import re
 import os
-import pandas as pd
 from data_loader import DataLoader
+import logging
+import traceback
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    filename='app_log.log',
+    filemode='a'
+)
 
 # Initialize DataLoader
 data_loader = DataLoader()
@@ -176,13 +188,23 @@ def create_overview_content(table_name=None):
     
     # Data preview
     preview_df = data_loader.get_table_preview(table_name)
-    preview_table = dbc.Table.from_dataframe(
-        preview_df.head(10).to_pandas(),
-        striped=True,
-        bordered=True,
-        hover=True,
-        responsive=True,
-        className="mt-4"
+    if isinstance(preview_df, pl.DataFrame):
+        preview_df = preview_df.to_pandas()
+    
+    sample_card = dbc.Card(
+        dbc.CardBody([
+            html.H4("Data Sample", className="card-title"),
+            html.Hr(),
+            dbc.Table.from_dataframe(
+                preview_df.head(10),
+                striped=True,
+                bordered=True,
+                hover=True,
+                responsive=True,
+                className="mt-2"
+            )
+        ]),
+        className="mb-4"
     )
     
     return html.Div([
@@ -191,7 +213,7 @@ def create_overview_content(table_name=None):
             dbc.Col(gauge, width=4) for gauge in quality_gauges
         ]),
         html.H4("Data Preview", className="mt-4"),
-        preview_table
+        sample_card
     ])
 
 def create_quality_content(table_name=None):
@@ -477,7 +499,7 @@ def create_catalogue_content(table_name=None):
         
         # Create data sample card
         preview_df = data_loader.get_table_preview(table_name, limit=5)
-        if not isinstance(preview_df, pd.DataFrame):
+        if isinstance(preview_df, pl.DataFrame):
             preview_df = preview_df.to_pandas()
         sample_card = dbc.Card(
             dbc.CardBody([
@@ -551,16 +573,6 @@ def create_rule_catalogue_content():
         dbc.Col(
             dbc.Card(
                 dbc.CardBody([
-                    html.H4("Inactive Rules", className="card-title text-center"),
-                    html.H2(f"{total_rules - active_rules}", className="text-center text-danger")
-                ])
-            ),
-            width=3,
-            className="mb-4"
-        ),
-        dbc.Col(
-            dbc.Card(
-                dbc.CardBody([
                     html.H4("Categories", className="card-title text-center"),
                     html.H2(f"{len(rules_by_category)}", className="text-center text-info mb-3"),
                     html.Div(
@@ -571,9 +583,27 @@ def create_rule_catalogue_content():
             ),
             width=3,
             className="mb-4"
+        ),
+        dbc.Col(
+            dbc.Card(
+                dbc.CardBody([
+                    html.H4("By Severity", className="card-title text-center"),
+                    html.Div([
+                        html.Div(
+                            [
+                                html.Span(f"{sev}: ", className="fw-bold"),
+                                html.Span(f"{count}")
+                            ],
+                            className="mb-2"
+                        ) for sev, count in rules_by_severity.items()
+                    ], className="px-2")
+                ])
+            ),
+            width=3,
+            className="mb-4"
         )
     ])
-    
+
     # Create category breakdown
     category_breakdown = dbc.Row([
         dbc.Col([
@@ -591,7 +621,7 @@ def create_rule_catalogue_content():
             ])
         ])
     ])
-    
+
     # Create rule sections by category
     rule_sections = []
     for category, category_rules in rules_by_category.items():
@@ -711,7 +741,7 @@ def create_rules_table(rules, category_filter=None, severity_filter=None, status
 
 def create_rule_management_layout():
     """Creates the layout for the Rule Management page with statistics and filters."""
-    # Load rules using the instance
+    # Load rules using the same source as rule management
     rules = data_loader.load_all_rules()
     
     if isinstance(rules, dict) and 'error' in rules:
@@ -898,35 +928,33 @@ def create_rule_management_content():
 
 def create_run_management_content(table_name=None):
     """Creates the layout for the Run Management page with execution history and insights."""
-    if not table_name:
-        return html.Div("Please select a table to view execution history.")
-    
     try:
-        # Get execution history
-        history = data_loader.get_execution_history()
-        table_history = [run for run in history if run['table_name'] == table_name]
-        
-        # Create Execute Rules button
+        # Create execute button
         execute_button = dbc.Button(
-            [html.I(className="bi bi-play-fill me-2"), "Execute Active Rules"],
-            id='execute-rules-button',
+            [html.I(className="bi bi-play-circle me-2"), "Execute Rules"],
+            id="execute-rules-button",
             color="primary",
             className="mb-4"
         )
         
-        if not table_history:
-            return html.Div([
-                html.Div(id="run-management-content", children=[
-                    html.H2("Run Management", className="mb-4"),
-                    html.P("No execution history available for this table.", className="mb-4"),
-                    html.P("Click the button below to run the active rules for the first time:", className="mb-3"),
-                    execute_button,
-                    html.Div(id='execution-status')
-                ])
-            ])
+        # Get execution history
+        history = data_loader.get_execution_history()
+        table_history = [run for run in history if run['table_name'] == table_name] if table_name else []
         
-        # Get latest execution
-        latest_run = table_history[-1]
+        # Get latest run for accurate rule count
+        latest_run = table_history[-1] if table_history else None
+        total_rules = latest_run['rules_executed'] if latest_run else 0
+        
+        # Calculate summary statistics
+        total_executions = len(table_history)
+        if total_executions > 0:
+            total_passed = sum(run['passed_rules'] for run in table_history)
+            total_rules_executed = sum(run['rules_executed'] for run in table_history)
+            avg_pass_rate = (total_passed / total_rules_executed * 100) if total_rules_executed > 0 else 0
+            total_failed = sum(run['failed_rules'] for run in table_history)
+        else:
+            avg_pass_rate = 0
+            total_failed = 0
         
         # Create summary cards
         summary_cards = dbc.Row([
@@ -935,7 +963,7 @@ def create_run_management_content(table_name=None):
                     dbc.CardBody([
                         html.I(className="bi bi-play-circle fs-1 text-primary"),
                         html.H4("Total Rules", className="mt-3"),
-                        html.H2(f"{latest_run['rules_executed']}", className="text-primary")
+                        html.H2(f"{total_rules}", className="text-primary")
                     ], className="text-center"),
                 ),
                 width=3,
@@ -945,8 +973,19 @@ def create_run_management_content(table_name=None):
                 dbc.Card(
                     dbc.CardBody([
                         html.I(className="bi bi-check-circle fs-1 text-success"),
-                        html.H4("Passed Rules", className="mt-3"),
-                        html.H2(f"{latest_run['passed_rules']}", className="text-success")
+                        html.H4("Total Executions", className="mt-3"),
+                        html.H2(f"{total_executions}", className="text-success")
+                    ], className="text-center"),
+                ),
+                width=3,
+                className="mb-4"
+            ),
+            dbc.Col(
+                dbc.Card(
+                    dbc.CardBody([
+                        html.I(className="bi bi-percent fs-1 text-info"),
+                        html.H4("Average Pass Rate", className="mt-3"),
+                        html.H2(f"{avg_pass_rate:.1f}%", className="text-info")
                     ], className="text-center"),
                 ),
                 width=3,
@@ -957,18 +996,10 @@ def create_run_management_content(table_name=None):
                     dbc.CardBody([
                         html.I(className="bi bi-x-circle fs-1 text-danger"),
                         html.H4("Failed Rules", className="mt-3"),
-                        html.H2(f"{latest_run['failed_rules']}", className="text-danger")
-                    ], className="text-center"),
-                ),
-                width=3,
-                className="mb-4"
-            ),
-            dbc.Col(
-                dbc.Card(
-                    dbc.CardBody([
-                        html.I(className="bi bi-clock-history fs-1 text-info"),
-                        html.H4("Last Run", className="mt-3"),
-                        html.H2(latest_run['timestamp'], className="text-info")
+                        html.H2(
+                            str(total_failed) if table_history else "0",
+                            className="text-danger"
+                        )
                     ], className="text-center"),
                 ),
                 width=3,
@@ -976,78 +1007,65 @@ def create_run_management_content(table_name=None):
             )
         ])
         
-        # Create execution history table with details button
-        history_table = dbc.Table([
-            html.Thead([
-                html.Tr([
-                    html.Th("Timestamp"),
-                    html.Th("Rules Executed"),
-                    html.Th("Pass Rate"),
-                    html.Th("Status"),
-                    html.Th("Actions")
+        # Create execution history table
+        if table_history:
+            history_table = dbc.Table([
+                html.Thead([
+                    html.Tr([
+                        html.Th("Timestamp"),
+                        html.Th("Rules Executed"),
+                        html.Th("Pass Rate"),
+                        html.Th("Status"),
+                        html.Th("Actions")
+                    ])
+                ]),
+                html.Tbody([
+                    html.Tr([
+                        html.Td(run['timestamp']),
+                        html.Td(run['rules_executed']),
+                        html.Td(f"{(run['passed_rules'] / run['rules_executed'] * 100):.1f}%"),
+                        html.Td(
+                            html.Span(
+                                "All Passed" if run['failed_rules'] == 0 else f"{run['failed_rules']} Failed",
+                                className=f"badge {'bg-success' if run['failed_rules'] == 0 else 'bg-danger'}"
+                            )
+                        ),
+                        html.Td([
+                            dbc.Button(
+                                [html.I(className="bi bi-info-circle me-2"), "View Details"],
+                                id={'type': 'view-details-btn', 'index': i},
+                                color="info",
+                                size="sm",
+                                className="me-2"
+                            ),
+                            dbc.Button(
+                                [html.I(className="bi bi-exclamation-circle me-2"), "View Failed Data"],
+                                id={'type': 'view-failed-data-btn', 'index': i},
+                                color="danger",
+                                size="sm",
+                                disabled=run['failed_rules'] == 0
+                            )
+                        ])
+                    ]) for i, run in enumerate(reversed(table_history))
                 ])
-            ]),
-            html.Tbody([
-                html.Tr([
-                    html.Td(run['timestamp']),
-                    html.Td(run['rules_executed']),
-                    html.Td(f"{(run['passed_rules'] / run['rules_executed'] * 100):.1f}%"),
-                    html.Td(
-                        html.Span(
-                            "All Passed" if run['failed_rules'] == 0 else f"{run['failed_rules']} Failed",
-                            className=f"badge {'bg-success' if run['failed_rules'] == 0 else 'bg-danger'}"
-                        )
-                    ),
-                    html.Td(
-                        dbc.Button(
-                            [html.I(className="bi bi-info-circle me-2"), "View Details"],
-                            id={'type': 'view-details-btn', 'index': i},
-                            color="info",
-                            size="sm",
-                            className="me-2",
-                            disabled=run['failed_rules'] == 0 or 'results' not in run
-                        ) if 'results' in run else None
-                    )
-                ]) for i, run in enumerate(reversed(table_history[-10:]))  # Show last 10 runs
-            ])
-        ], bordered=True, hover=True, className="mb-4")
-
-        # Create modal for showing run details
+            ], bordered=True, hover=True, className="mb-4")
+        else:
+            history_table = html.Div("No execution history available.", className="text-muted")
+        
+        # Create failed rules section
+        failed_rules_section = html.Div(id="failed-rules-section")
+        
+        # Create details modal
         details_modal = dbc.Modal([
             dbc.ModalHeader(dbc.ModalTitle("Run Details")),
             dbc.ModalBody(id="run-details-modal-body"),
             dbc.ModalFooter(
-                dbc.Button(
-                    "Close",
-                    id="close-run-details-modal",
-                    className="ms-auto",
-                    n_clicks=0
-                )
+                dbc.Button("Close", id="close-run-details-modal", className="ms-auto")
             )
-        ], id="run-details-modal", is_open=False, size="lg")
+        ], id="run-details-modal", size="xl")
 
-        # Create Failed Rules Details section
-        failed_rules_section = html.Div(id="failed-rules-section", children=[
-            html.H4("Failed Rules Details", className="mb-3"),
-            html.Div([
-                dbc.Alert(
-                    [
-                        html.I(className="bi bi-exclamation-circle-fill me-2"),
-                        f"There are {latest_run['failed_rules']} failed rules in the latest run. Click 'View Details' to see more information."
-                    ],
-                    color="warning",
-                    className="mb-3"
-                ) if latest_run['failed_rules'] > 0 else
-                dbc.Alert(
-                    [
-                        html.I(className="bi bi-check-circle-fill me-2"),
-                        "All rules passed in the latest run!"
-                    ],
-                    color="success",
-                    className="mb-3"
-                )
-            ])
-        ]) if latest_run else None
+        # Create failed data modal
+        failed_data_modal = create_failed_data_modal(table_name)
 
         return html.Div([
             html.Div(id="run-management-content", children=[
@@ -1058,7 +1076,8 @@ def create_run_management_content(table_name=None):
                 html.H4("Execution History", className="mb-3"),
                 history_table,
                 failed_rules_section,
-                details_modal
+                details_modal,
+                failed_data_modal
             ])
         ])
         
@@ -1076,119 +1095,336 @@ def create_run_management_content(table_name=None):
 )
 def execute_rules(n_clicks, table_name, pathname):
     """Execute active rules and update run history."""
-    if n_clicks is None or not table_name:
+    # Enhanced input validation
+    if n_clicks is None:
+        logging.info("Rule execution prevented: No button click")
         raise dash.exceptions.PreventUpdate
-        
+    
+    if not table_name:
+        logging.warning("Rule execution prevented: No table selected")
+        return html.Div([
+            html.Div([
+                html.I(className="bi bi-exclamation-triangle-fill text-warning me-2"),
+                "No Table Selected"
+            ], className="alert alert-warning"),
+            html.P("Please select a table before executing rules.", className="text-muted")
+        ]), dash.no_update, dash.no_update
+    
     try:
-        # Show execution in progress
-        status = html.Div([
-            dbc.Spinner(size="sm", color="primary", spinner_class_name="me-2"),
-            "Executing rules..."
-        ], className="text-primary")
+        # Extensive logging
+        logging.info(f"Starting rule execution for table: {table_name}")
         
-        # Get table data
-        table_data = data_loader.load_table_data(table_name)
-        if 'error' in table_data:
-            return html.Div(f"Error loading table: {table_data['error']}"), dash.no_update, dash.no_update
-            
-        # Load rules using the same source as rule management
-        rules = data_loader.load_all_rules()
-        if isinstance(rules, dict) and 'error' in rules:
-            return html.Div(f"Error loading rules: {rules['error']}"), dash.no_update, dash.no_update
-            
-        # Get all active rules
-        active_rules = [rule for rule in rules if rule.get('active', True)]
-                
-        # Initialize results
-        execution_results = {
-            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            'table_name': table_name,
-            'rules_executed': len(active_rules),
-            'passed_rules': 0,
-            'failed_rules': 0,
-            'results': []
-        }
+        # Robust rule loading
+        try:
+            rules = data_loader.load_all_rules()
+            if isinstance(rules, dict) and 'error' in rules:
+                logging.error(f"Rule loading error: {rules['error']}")
+                return html.Div([
+                    html.Div([
+                        html.I(className="bi bi-exclamation-triangle-fill text-danger me-2"),
+                        "Rule Loading Error"
+                    ], className="alert alert-danger"),
+                    html.P(rules['error'], className="text-muted")
+                ]), dash.no_update, dash.no_update
+        except Exception as rule_load_error:
+            logging.error(f"Unexpected error loading rules: {rule_load_error}")
+            return html.Div([
+                html.Div([
+                    html.I(className="bi bi-exclamation-triangle-fill text-danger me-2"),
+                    "Rule Loading Failure"
+                ], className="alert alert-danger"),
+                html.P(f"Unable to load rules: {rule_load_error}", className="text-muted")
+            ]), dash.no_update, dash.no_update
+        
+        # Filter active rules with detailed logging
+        active_rules = [rule for rule in rules if rule.get('active', False)]
+        if not active_rules:
+            logging.warning("No active rules found to execute")
+            return html.Div([
+                html.Div([
+                    html.I(className="bi bi-info-circle-fill text-info me-2"),
+                    "No Active Rules"
+                ], className="alert alert-info"),
+                html.P("Please activate at least one rule before execution.", className="text-muted")
+            ]), dash.no_update, dash.no_update
+        
+        # Robust data loading with enhanced error handling
+        try:
+            table_data_result = data_loader.load_table_data(table_name)
+        except Exception as load_error:
+            logging.error(f"Error loading table data: {load_error}")
+            return html.Div([
+                html.Div([
+                    html.I(className="bi bi-exclamation-triangle-fill text-danger me-2"),
+                    "Data Loading Error"
+                ], className="alert alert-danger"),
+                html.P(f"Failed to load table data: {load_error}", className="text-muted")
+            ]), dash.no_update, dash.no_update
+        
+        # Ensure we have a pandas DataFrame with comprehensive type checking
+        if isinstance(table_data_result, dict) and 'data' in table_data_result:
+            if isinstance(table_data_result['data'], pl.DataFrame):
+                table_data = table_data_result['data'].to_pandas()
+            elif isinstance(table_data_result['data'], pd.DataFrame):
+                table_data = table_data_result['data']
+            else:
+                logging.error("Unable to convert table data to DataFrame")
+                return html.Div([
+                    html.Div([
+                        html.I(className="bi bi-exclamation-triangle-fill text-danger me-2"),
+                        "Data Conversion Error"
+                    ], className="alert alert-danger"),
+                    html.P("Unsupported data format detected.", className="text-muted")
+                ]), dash.no_update, dash.no_update
+        elif isinstance(table_data_result, pl.DataFrame):
+            table_data = table_data_result.to_pandas()
+        elif isinstance(table_data_result, pd.DataFrame):
+            table_data = table_data_result
+        else:
+            logging.error("Unable to convert table data to DataFrame")
+            return html.Div([
+                html.Div([
+                    html.I(className="bi bi-exclamation-triangle-fill text-danger me-2"),
+                    "Data Conversion Error"
+                ], className="alert alert-danger"),
+                html.P("Unsupported data format detected.", className="text-muted")
+            ]), dash.no_update, dash.no_update
         
         # Execute rules
+        results = []
+        passed_rules = 0
+        failed_rules = 0
+        total_failed_rows = 0
+        
         for rule in active_rules:
-            result = {
-                'rule_id': rule['id'],
-                'rule_name': rule['name'],
-                'category': rule.get('category', 'unknown'),
-                'severity': rule.get('severity', 'Medium'),
-                'status': 'Passed',
-                'details': []
-            }
+            rule_result = execute_rule(rule, table_data)
+            results.append(rule_result)
             
-            try:
-                # Execute rule based on type
-                if rule['type'] == 'pattern_match':
-                    # Pattern matching rules
-                    pattern = rule.get('validation_code', '')
-                    for col in table_data['schema']:
-                        col_name = col['name'].lower()
-                        if re.search(pattern, col_name):
-                            result['status'] = 'Failed'
-                            result['details'].append(f"Column '{col['name']}' matches pattern: {rule['message']}")
-                            
-                elif rule['type'] == 'value_check':
-                    # Value-based rules
-                    for col in table_data['schema']:
-                        col_profile = data_loader.get_column_profile(table_name, col['name'])
-                        if 'error' not in col_profile:
-                            # Check null percentage
-                            null_pct = (table_data['stats']['row_count'] - col_profile['non_null_count']) / table_data['stats']['row_count'] * 100
-                            if null_pct > rule.get('threshold', 5):
-                                result['status'] = 'Failed'
-                                result['details'].append(f"Column '{col['name']}' has {null_pct:.1f}% null values")
-                                
-                elif rule['type'] == 'uniqueness':
-                    # Uniqueness rules
-                    for col in table_data['schema']:
-                        col_profile = data_loader.get_column_profile(table_name, col['name'])
-                        if 'error' not in col_profile:
-                            unique_pct = col_profile['unique_count'] / table_data['stats']['row_count'] * 100
-                            if unique_pct < rule.get('threshold', 95):
-                                result['status'] = 'Failed'
-                                result['details'].append(f"Column '{col['name']}' has only {unique_pct:.1f}% unique values")
-                
-            except Exception as e:
-                result['status'] = 'Error'
-                result['details'].append(f"Error executing rule: {str(e)}")
-            
-            execution_results['results'].append(result)
-            if result['status'] == 'Passed':
-                execution_results['passed_rules'] += 1
+            # Update pass/fail counters
+            if rule_result['passed']:
+                passed_rules += 1
             else:
-                execution_results['failed_rules'] += 1
+                failed_rules += 1
+                total_failed_rows += rule_result['failed_rows_count']
         
-        # Save execution results to history
-        data_loader.save_execution_results(execution_results)
+        # Calculate pass rate
+        total_rules = len(active_rules)
+        pass_rate = passed_rules / total_rules if total_rules > 0 else 0
         
-        # Show success message
+        # Save execution results
+        execution_results = {
+            "timestamp": datetime.now().isoformat(),
+            "rules_executed": total_rules,
+            "passed_rules": passed_rules,
+            "failed_rules": failed_rules,
+            "pass_rate": pass_rate,
+            "total_failed_rows": total_failed_rows,
+            "results": results
+        }
+        data_loader.save_execution_results(table_name, execution_results)
+        
+        # Prepare success message
         success_message = html.Div([
             html.I(className="bi bi-check-circle-fill text-success me-2"),
-            f"Successfully executed {execution_results['rules_executed']} rules: ",
-            html.Span(f"{execution_results['passed_rules']} passed", className="text-success"),
+            f"Executed {total_rules} rules: ",
+            html.Span(f"{passed_rules} passed", className="text-success"),
             " / ",
-            html.Span(f"{execution_results['failed_rules']} failed", className="text-danger")
+            html.Span(f"{failed_rules} failed", className="text-danger"),
+            html.Div(f"Pass Rate: {pass_rate:.2%}", className="text-muted mt-2"),
+            html.Div(f"Total Failed Rows: {total_failed_rows}", className="text-muted")
         ])
         
         # Update page content based on current page
-        if pathname == '/report':
-            page_content = create_report_content(table_name)
-        else:
-            page_content = dash.no_update
+        page_content = create_report_content(table_name) if pathname == '/report' else dash.no_update
         
         # Return updated content
         return success_message, create_run_management_content(table_name), page_content
-        
+    
     except Exception as e:
-        error_message = html.Div([
-            html.I(className="bi bi-exclamation-circle-fill text-danger me-2"),
-            f"Error executing rules: {str(e)}"
-        ], className="text-danger")
-        return error_message, dash.no_update, dash.no_update
+        logging.error(f"Unexpected error in rule execution: {str(e)}")
+        logging.error(traceback.format_exc())
+        return html.Div([
+            html.Div([
+                html.I(className="bi bi-exclamation-triangle-fill text-danger me-2"),
+                "Unexpected Rule Execution Error"
+            ], className="alert alert-danger"),
+            html.P(str(e), className="text-muted mt-2")
+        ]), dash.no_update, dash.no_update
+
+def execute_rule(rule, table_data):
+    """
+    Execute a single rule with comprehensive error handling and detailed reporting
+    
+    Args:
+        rule (dict): Rule configuration
+        table_data (pd.DataFrame): DataFrame to apply rule against
+    
+    Returns:
+        dict: Detailed rule execution result
+    """
+    rule_result = {
+        "rule_name": rule["name"],
+        "rule_type": rule["type"],
+        "description": rule.get("description", "No description provided"),
+        "passed": True,
+        "failed_indices": [],
+        "error": None,
+        "failed_rows_count": 0
+    }
+    
+    try:
+        # Rule type-specific execution
+        if rule["type"] == "null_check":
+            column = rule["parameters"]["column"]
+            
+            # Validate column existence
+            if column not in table_data.columns:
+                rule_result.update({
+                    "passed": False,
+                    "error": f"Column '{column}' not found in table"
+                })
+                return rule_result
+            
+            # Find null values
+            failed_rows = table_data[table_data[column].isna()]
+            if not failed_rows.empty:
+                rule_result.update({
+                    "passed": False,
+                    "failed_indices": failed_rows.index.tolist(),
+                    "failed_rows_count": len(failed_rows)
+                })
+        
+        elif rule["type"] == "unique_check":
+            column = rule["parameters"]["column"]
+            
+            # Validate column existence
+            if column not in table_data.columns:
+                rule_result.update({
+                    "passed": False,
+                    "error": f"Column '{column}' not found in table"
+                })
+                return rule_result
+            
+            # Find duplicate values
+            duplicates = table_data[table_data.duplicated(subset=[column], keep=False)]
+            if not duplicates.empty:
+                rule_result.update({
+                    "passed": False,
+                    "failed_indices": duplicates.index.tolist(),
+                    "failed_rows_count": len(duplicates)
+                })
+        
+        elif rule["type"] == "type":
+            column = rule["parameters"]["column"]
+            expected_type = rule["parameters"]["expected_type"].lower()
+            
+            # Validate column existence
+            if column not in table_data.columns:
+                rule_result.update({
+                    "passed": False,
+                    "error": f"Column '{column}' not found in table"
+                })
+                return rule_result
+            
+            # Type-specific validation
+            try:
+                if expected_type == "integer":
+                    converted = pd.to_numeric(table_data[column], errors='coerce')
+                    failed_rows = table_data[converted.isna() & table_data[column].notna()]
+                
+                elif expected_type == "float":
+                    converted = pd.to_numeric(table_data[column], errors='coerce')
+                    failed_rows = table_data[converted.isna() & table_data[column].notna()]
+                
+                elif expected_type == "string":
+                    failed_rows = table_data[~table_data[column].apply(lambda x: isinstance(x, str))]
+                
+                elif expected_type == "boolean":
+                    failed_rows = table_data[~table_data[column].apply(lambda x: isinstance(x, bool))]
+                
+                elif expected_type == "datetime":
+                    converted = pd.to_datetime(table_data[column], errors='coerce')
+                    failed_rows = table_data[converted.isna() & table_data[column].notna()]
+                
+                else:
+                    rule_result.update({
+                        "passed": False,
+                        "error": f"Unsupported type: {expected_type}"
+                    })
+                    return rule_result
+                
+                # Update result if failed rows exist
+                if not failed_rows.empty:
+                    rule_result.update({
+                        "passed": False,
+                        "failed_indices": failed_rows.index.tolist(),
+                        "failed_rows_count": len(failed_rows)
+                    })
+            
+            except Exception as type_err:
+                rule_result.update({
+                    "passed": False,
+                    "error": f"Type validation error: {str(type_err)}"
+                })
+        
+        elif rule["type"] == "value_range":
+            column = rule["parameters"]["column"]
+            min_val = rule["parameters"].get("min")
+            max_val = rule["parameters"].get("max")
+            
+            # Validate column existence
+            if column not in table_data.columns:
+                rule_result.update({
+                    "passed": False,
+                    "error": f"Column '{column}' not found in table"
+                })
+                return rule_result
+            
+            # Convert to numeric and check range
+            try:
+                numeric_data = pd.to_numeric(table_data[column], errors='coerce')
+                
+                # Create mask for out-of-range values
+                mask = pd.Series(False, index=table_data.index)
+                if min_val is not None:
+                    mask |= numeric_data < min_val
+                if max_val is not None:
+                    mask |= numeric_data > max_val
+                
+                # Find failed rows
+                failed_rows = table_data[mask]
+                if not failed_rows.empty:
+                    rule_result.update({
+                        "passed": False,
+                        "failed_indices": failed_rows.index.tolist(),
+                        "failed_rows_count": len(failed_rows)
+                    })
+            
+            except Exception as range_err:
+                rule_result.update({
+                    "passed": False,
+                    "error": f"Range validation error: {str(range_err)}"
+                })
+        
+        else:
+            rule_result.update({
+                "passed": False,
+                "error": f"Unsupported rule type: {rule['type']}"
+            })
+        
+        return rule_result
+    
+    except Exception as e:
+        logging.error(f"Unexpected error executing rule {rule['name']}: {e}")
+        return {
+            "rule_name": rule["name"],
+            "rule_type": rule["type"],
+            "description": rule.get("description", "No description provided"),
+            "passed": False,
+            "failed_indices": [],
+            "error": f"Unexpected error: {str(e)}",
+            "failed_rows_count": 0
+        }
 
 def create_report_content(table_name=None):
     """Creates a report page with high-level cards for each column."""
@@ -1396,7 +1632,7 @@ def create_report_content(table_name=None):
                     )
                 )
             except Exception as e:
-                print(f"Error processing column {col['name']}: {str(e)}")
+                logging.error(f"Error processing column {col['name']}: {str(e)}")
                 continue
 
         # Create rows of column cards (2 cards per row)
@@ -1418,6 +1654,7 @@ def create_report_content(table_name=None):
         ])
 
     except Exception as e:
+        logging.error(f"Error creating report: {str(e)}")
         return html.Div(f"Error creating report: {str(e)}")
 
 # App layout
@@ -1580,14 +1817,12 @@ def toggle_run_details_modal(view_clicks, close_clicks, is_open, table_name):
         
     # Get execution history
     history = data_loader.get_execution_history()
-    table_history = [run for run in history if run['table_name'] == table_name]
-    if not table_history:
-        return False, dbc.Alert("No execution history found for this table.", color="warning")
-        
+    table_history = [run for run in history if run['table_name'] == table_name] if table_name else []
+    
     # Get the run details (reverse order to match display)
     runs = list(reversed(table_history))
-    if button_index >= len(runs):
-        return False, dbc.Alert("Invalid run index.", color="warning")
+    if not table_history:
+        return False, dbc.Alert("No execution history found for this table.", color="warning")
         
     run = runs[button_index]
         
@@ -1723,6 +1958,147 @@ def toggle_run_details_modal(view_clicks, close_clicks, is_open, table_name):
         )
     
     return True, html.Div(content)
+
+@app.callback(
+    [
+        Output("failed-data-modal", "is_open"),
+        Output("failed-data-modal-body", "children")
+    ],
+    [
+        Input({"type": "view-failed-data-btn", "index": ALL}, "n_clicks"),
+        Input("close-failed-data-modal", "n_clicks")
+    ],
+    [State("table-dropdown", "value")],
+    prevent_initial_call=True
+)
+def toggle_failed_data_modal(view_clicks, close_clicks, table_name):
+    """
+    Handle showing failed data in modal.
+    Reads from execution history JSON to retrieve detailed failed data.
+    
+    Args:
+        view_clicks (int): Number of times view failed data button was clicked
+        close_clicks (int): Number of times close button was clicked
+        table_name (str): Name of the table
+    
+    Returns:
+        tuple: Modal open state and modal content
+    """
+    # Prevent update if no clicks or no table selected
+    if not table_name or view_clicks is None:
+        raise dash.exceptions.PreventUpdate
+    
+    # Determine if modal should be open
+    ctx = dash.callback_context
+    trigger_id = ctx.triggered[0]['prop_id'].split('.')[0]
+    
+    # Read execution history
+    try:
+        with open('execution_history.json', 'r') as f:
+            execution_history = json.load(f)
+    except Exception as e:
+        logging.error(f"Error reading execution history: {e}")
+        return False, html.Div("Error loading execution history")
+    
+    # Find the most recent execution for the table
+    table_executions = [
+        exec_data for exec_data in execution_history 
+        if exec_data.get('table_name') == table_name
+    ]
+    
+    if not table_executions:
+        return False, html.Div("No execution history found for this table")
+    
+    # Sort to get the most recent execution
+    latest_execution = max(table_executions, key=lambda x: x.get('timestamp', ''))
+    
+    # Prepare failed data display
+    failed_data_content = []
+    for rule_result in latest_execution.get('results', []):
+        if not rule_result['passed']:
+            # Create a card for each failed rule
+            failed_data_card = dbc.Card(
+                dbc.CardBody([
+                    html.H5(rule_result['rule_name'], className="card-title"),
+                    html.P(rule_result['description'], className="card-text text-muted"),
+                    html.Div([
+                        html.Strong("Failed Rows Indices: "),
+                        ", ".join(map(str, rule_result['failed_indices']))
+                    ], className="mb-2"),
+                    html.Div([
+                        html.Strong("Failed Rows Count: "),
+                        str(rule_result['failed_rows_count'])
+                    ], className="mb-2"),
+                    dbc.Button(
+                        "Fix Error", 
+                        color="primary", 
+                        className="mt-2",
+                        id={'type': 'fix-error-btn', 'rule': rule_result['rule_name']}
+                    )
+                ])
+            )
+            failed_data_content.append(failed_data_card)
+    
+    # If no failed rules, show a message
+    if not failed_data_content:
+        failed_data_content = [
+            html.Div("No failed rules found in the latest execution.", className="alert alert-success")
+        ]
+    
+    # Create modal content
+    modal_content = dbc.ModalBody([
+        html.H3(f"Failed Rules for {table_name}", className="mb-4"),
+        dbc.Container(failed_data_content, fluid=True)
+    ])
+    
+    # Determine modal state
+    is_open = trigger_id == 'view-failed-data-btn' and view_clicks is not None
+    
+    return is_open, modal_content
+
+def create_failed_data_modal(table_name):
+    """
+    Create a modal to display failed data from rule execution
+    
+    Args:
+        table_name (str): Name of the table for which failed data is being displayed
+    
+    Returns:
+        dbc.Modal: A modal component with failed data table
+    """
+    return dbc.Modal(
+        [
+            dbc.ModalHeader(f"Failed Data for {table_name}"),
+            dbc.ModalBody(
+                html.Div(id="failed-data-modal-body", children=[
+                    html.P("No failed data to display.")
+                ])
+            ),
+            dbc.ModalFooter(
+                dbc.Button("Close", id="close-failed-data-modal", className="ms-auto")
+            )
+        ],
+        id="failed-data-modal",
+        size="xl",
+        scrollable=True,
+        is_open=False
+    )
+
+def safe_execute(func):
+    """
+    Decorator to provide safe execution with logging and error handling
+    """
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            logging.error(f"Error in {func.__name__}: {str(e)}")
+            logging.error(traceback.format_exc())
+            return html.Div([
+                html.H3("An error occurred", className="text-danger"),
+                html.P(str(e), className="text-muted")
+            ])
+    return wrapper
 
 if __name__ == '__main__':
     app.run_server(debug=True, port=8050)

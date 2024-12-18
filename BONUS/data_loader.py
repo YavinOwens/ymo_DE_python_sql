@@ -427,40 +427,67 @@ class DataLoader:
         with open(self.execution_history_file, 'w') as f:
             json.dump(history, f, indent=2)
     
-    def save_execution_results(self, execution_results):
-        """Save rule execution results to history."""
+    def load_execution_history(self) -> List[Dict]:
+        """Load execution history from JSON file."""
         try:
-            # Load existing history
-            if os.path.exists(self.execution_history_file):
-                with open(self.execution_history_file, 'r') as f:
-                    history = json.load(f)
-            else:
-                history = []
-            
-            # Add new results
-            history.append(execution_results)
-            
-            # Keep only last 100 executions
-            if len(history) > 100:
-                history = history[-100:]
-            
-            # Save updated history
-            with open(self.execution_history_file, 'w') as f:
-                json.dump(history, f, indent=2)
-                
-        except Exception as e:
-            print(f"Error saving execution results: {str(e)}")
-            
-    def get_execution_history(self):
-        """Get rule execution history."""
-        try:
-            if os.path.exists(self.execution_history_file):
-                with open(self.execution_history_file, 'r') as f:
-                    return json.load(f)
-            return []
+            with open(self.execution_history_file, 'r') as f:
+                return json.load(f)
         except Exception as e:
             print(f"Error loading execution history: {str(e)}")
             return []
+
+    def get_execution_history(self, table_name: Optional[str] = None) -> List[Dict]:
+        """
+        Get execution history, optionally filtered by table name.
+        
+        Args:
+            table_name (Optional[str]): Filter results for a specific table
+        
+        Returns:
+            List[Dict]: Filtered or full execution history
+        """
+        try:
+            with open(self.execution_history_file, 'r') as f:
+                history = json.load(f)
+            
+            # If table_name is provided, filter the history
+            if table_name:
+                return [run for run in history if run.get('table_name') == table_name]
+            
+            return history
+        except Exception as e:
+            print(f"Error getting execution history: {str(e)}")
+            return []
+
+    def save_execution_results(self, table_name: str, results: Dict):
+        """
+        Save execution results to the execution history file.
+        
+        Args:
+            table_name (str): Name of the table being processed
+            results (Dict): Execution results dictionary
+        """
+        try:
+            # Load existing history
+            with open(self.execution_history_file, 'r') as f:
+                history = json.load(f)
+            
+            # Add timestamp to the results
+            results['table_name'] = table_name
+            results['timestamp'] = datetime.now().isoformat()
+            
+            # Append new results
+            history.append(results)
+            
+            # Limit history to last 50 entries to prevent file from growing too large
+            history = history[-50:]
+            
+            # Save updated history
+            with open(self.execution_history_file, 'w') as f:
+                json.dump(history, f, indent=4)
+        
+        except Exception as e:
+            print(f"Error saving execution results: {str(e)}")
     
     def get_gdpr_rules(self):
         """Get GDPR rules."""
