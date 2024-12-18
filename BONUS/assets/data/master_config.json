@@ -224,15 +224,2089 @@
                 "success_rate": 100.0,
                 "active_rules": 0
             }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 3,
+                "categories": [
+                    "Data Quality",
+                    "GDPR",
+                    "Validation"
+                ]
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Activities page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "activities_count": 17,
+                "success_rate": 100.0,
+                "active_rules": 0
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Activities page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "activities_count": 18,
+                "success_rate": 100.0,
+                "active_rules": 0
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Activities page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "activities_count": 19,
+                "success_rate": 100.0,
+                "active_rules": 0
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 3,
+                "categories": [
+                    "Data Quality",
+                    "GDPR",
+                    "Validation"
+                ]
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": "sqlite_sequence"
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": "sqlite_sequence"
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 3,
+                "categories": [
+                    "Data Quality",
+                    "GDPR",
+                    "Validation"
+                ]
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 3,
+                "categories": [
+                    "Data Quality",
+                    "GDPR",
+                    "Validation"
+                ]
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 3,
+                "categories": [
+                    "Data Quality",
+                    "GDPR",
+                    "Validation"
+                ]
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 3,
+                "categories": [
+                    "Data Quality",
+                    "GDPR",
+                    "Validation"
+                ]
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 3,
+                "categories": [
+                    "Data Quality",
+                    "GDPR",
+                    "Validation"
+                ]
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 3,
+                "categories": [
+                    "Data Quality",
+                    "GDPR",
+                    "Validation"
+                ]
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": "sqlite_sequence"
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T16:17:41.339348",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T16:17:44.414011",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T16:18:45.292874",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T16:18:47.938930",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T16:18:50.525843",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T16:19:00.452280",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T16:19:10.386421",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T16:19:16.137304",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 3,
+                "categories": [
+                    "Data Quality",
+                    "GDPR",
+                    "Validation"
+                ]
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T16:26:47.171846",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Activities page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "activities_count": 53,
+                "success_rate": 100.0,
+                "active_rules": 0
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 3,
+                "categories": [
+                    "Data Quality",
+                    "GDPR",
+                    "Validation"
+                ]
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 3,
+                "categories": [
+                    "Data Quality",
+                    "GDPR",
+                    "Validation"
+                ]
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Activities page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "activities_count": 56,
+                "success_rate": 100.0,
+                "active_rules": 0
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Activities page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "activities_count": 57,
+                "success_rate": 100.0,
+                "active_rules": 0
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 3,
+                "categories": [
+                    "Data Quality",
+                    "GDPR",
+                    "Validation"
+                ]
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": "per"
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 3,
+                "categories": [
+                    "Data Quality",
+                    "GDPR",
+                    "Validation"
+                ]
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 3,
+                "categories": [
+                    "Data Quality",
+                    "GDPR",
+                    "Validation"
+                ]
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 3,
+                "categories": [
+                    "Data Quality",
+                    "GDPR",
+                    "Validation"
+                ]
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T16:59:47.201229",
+            "status": "success",
+            "metadata": {
+                "rules_count": 111,
+                "categories": [
+                    "Gdpr",
+                    "Uncategorized",
+                    "Data_Quality",
+                    "Table_Level"
+                ]
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T16:59:49.590677",
+            "status": "success",
+            "metadata": {
+                "rules_count": 111,
+                "categories": [
+                    "Gdpr",
+                    "Uncategorized",
+                    "Data_Quality",
+                    "Table_Level"
+                ]
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Activities page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "activities_count": 67,
+                "success_rate": 100.0,
+                "active_rules": 0
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Activities page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "activities_count": 68,
+                "success_rate": 100.0,
+                "active_rules": 0
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T17:06:01Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 111,
+                "categories": [
+                    "Gdpr",
+                    "Uncategorized",
+                    "Data_Quality",
+                    "Table_Level"
+                ],
+                "category_stats": {
+                    "Gdpr": {
+                        "total_rules": 45,
+                        "active_rules": 37,
+                        "severity_distribution": {
+                            "Critical": 17,
+                            "High": 11,
+                            "Medium": 12,
+                            "Low": 5
+                        }
+                    },
+                    "Uncategorized": {
+                        "total_rules": 41,
+                        "active_rules": 36,
+                        "severity_distribution": {
+                            "Critical": 5,
+                            "High": 10,
+                            "Medium": 23,
+                            "Low": 3
+                        }
+                    },
+                    "Data_Quality": {
+                        "total_rules": 15,
+                        "active_rules": 15,
+                        "severity_distribution": {
+                            "Critical": 0,
+                            "High": 1,
+                            "Medium": 8,
+                            "Low": 6
+                        }
+                    },
+                    "Table_Level": {
+                        "total_rules": 10,
+                        "active_rules": 10,
+                        "severity_distribution": {
+                            "Critical": 3,
+                            "High": 1,
+                            "Medium": 6,
+                            "Low": 0
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T17:06:01Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 111,
+                "categories": [
+                    "Gdpr",
+                    "Uncategorized",
+                    "Data_Quality",
+                    "Table_Level"
+                ],
+                "category_stats": {
+                    "Gdpr": {
+                        "total_rules": 45,
+                        "active_rules": 37,
+                        "severity_distribution": {
+                            "Critical": 17,
+                            "High": 11,
+                            "Medium": 12,
+                            "Low": 5
+                        }
+                    },
+                    "Uncategorized": {
+                        "total_rules": 41,
+                        "active_rules": 36,
+                        "severity_distribution": {
+                            "Critical": 5,
+                            "High": 10,
+                            "Medium": 23,
+                            "Low": 3
+                        }
+                    },
+                    "Data_Quality": {
+                        "total_rules": 15,
+                        "active_rules": 15,
+                        "severity_distribution": {
+                            "Critical": 0,
+                            "High": 1,
+                            "Medium": 8,
+                            "Low": 6
+                        }
+                    },
+                    "Table_Level": {
+                        "total_rules": 10,
+                        "active_rules": 10,
+                        "severity_distribution": {
+                            "Critical": 3,
+                            "High": 1,
+                            "Medium": 6,
+                            "Low": 0
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T17:06:01Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 111,
+                "categories": [
+                    "Gdpr",
+                    "Uncategorized",
+                    "Data_Quality",
+                    "Table_Level"
+                ],
+                "category_stats": {
+                    "Gdpr": {
+                        "total_rules": 45,
+                        "active_rules": 37,
+                        "severity_distribution": {
+                            "Critical": 17,
+                            "High": 11,
+                            "Medium": 12,
+                            "Low": 5
+                        }
+                    },
+                    "Uncategorized": {
+                        "total_rules": 41,
+                        "active_rules": 36,
+                        "severity_distribution": {
+                            "Critical": 5,
+                            "High": 10,
+                            "Medium": 23,
+                            "Low": 3
+                        }
+                    },
+                    "Data_Quality": {
+                        "total_rules": 15,
+                        "active_rules": 15,
+                        "severity_distribution": {
+                            "Critical": 0,
+                            "High": 1,
+                            "Medium": 8,
+                            "Low": 6
+                        }
+                    },
+                    "Table_Level": {
+                        "total_rules": 10,
+                        "active_rules": 10,
+                        "severity_distribution": {
+                            "Critical": 3,
+                            "High": 1,
+                            "Medium": 6,
+                            "Low": 0
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T17:06:01Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 111,
+                "categories": [
+                    "Gdpr",
+                    "Uncategorized",
+                    "Data_Quality",
+                    "Table_Level"
+                ],
+                "category_stats": {
+                    "Gdpr": {
+                        "total_rules": 45,
+                        "active_rules": 37,
+                        "severity_distribution": {
+                            "Critical": 17,
+                            "High": 11,
+                            "Medium": 12,
+                            "Low": 5
+                        }
+                    },
+                    "Uncategorized": {
+                        "total_rules": 41,
+                        "active_rules": 36,
+                        "severity_distribution": {
+                            "Critical": 5,
+                            "High": 10,
+                            "Medium": 23,
+                            "Low": 3
+                        }
+                    },
+                    "Data_Quality": {
+                        "total_rules": 15,
+                        "active_rules": 15,
+                        "severity_distribution": {
+                            "Critical": 0,
+                            "High": 1,
+                            "Medium": 8,
+                            "Low": 6
+                        }
+                    },
+                    "Table_Level": {
+                        "total_rules": 10,
+                        "active_rules": 10,
+                        "severity_distribution": {
+                            "Critical": 3,
+                            "High": 1,
+                            "Medium": 6,
+                            "Low": 0
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T17:06:01Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 111,
+                "categories": [
+                    "Gdpr",
+                    "Uncategorized",
+                    "Data_Quality",
+                    "Table_Level"
+                ],
+                "category_stats": {
+                    "Gdpr": {
+                        "total_rules": 45,
+                        "active_rules": 37,
+                        "severity_distribution": {
+                            "Critical": 17,
+                            "High": 11,
+                            "Medium": 12,
+                            "Low": 5
+                        }
+                    },
+                    "Uncategorized": {
+                        "total_rules": 41,
+                        "active_rules": 36,
+                        "severity_distribution": {
+                            "Critical": 5,
+                            "High": 10,
+                            "Medium": 23,
+                            "Low": 3
+                        }
+                    },
+                    "Data_Quality": {
+                        "total_rules": 15,
+                        "active_rules": 15,
+                        "severity_distribution": {
+                            "Critical": 0,
+                            "High": 1,
+                            "Medium": 8,
+                            "Low": 6
+                        }
+                    },
+                    "Table_Level": {
+                        "total_rules": 10,
+                        "active_rules": 10,
+                        "severity_distribution": {
+                            "Critical": 3,
+                            "High": 1,
+                            "Medium": 6,
+                            "Low": 0
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T17:06:01Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 111,
+                "categories": [
+                    "Gdpr",
+                    "Uncategorized",
+                    "Data_Quality",
+                    "Table_Level"
+                ],
+                "category_stats": {
+                    "Gdpr": {
+                        "total_rules": 45,
+                        "active_rules": 37,
+                        "severity_distribution": {
+                            "Critical": 17,
+                            "High": 11,
+                            "Medium": 12,
+                            "Low": 5
+                        }
+                    },
+                    "Uncategorized": {
+                        "total_rules": 41,
+                        "active_rules": 36,
+                        "severity_distribution": {
+                            "Critical": 5,
+                            "High": 10,
+                            "Medium": 23,
+                            "Low": 3
+                        }
+                    },
+                    "Data_Quality": {
+                        "total_rules": 15,
+                        "active_rules": 15,
+                        "severity_distribution": {
+                            "Critical": 0,
+                            "High": 1,
+                            "Medium": 8,
+                            "Low": 6
+                        }
+                    },
+                    "Table_Level": {
+                        "total_rules": 10,
+                        "active_rules": 10,
+                        "severity_distribution": {
+                            "Critical": 3,
+                            "High": 1,
+                            "Medium": 6,
+                            "Low": 0
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T17:06:01Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 111,
+                "categories": [
+                    "Gdpr",
+                    "Uncategorized",
+                    "Data_Quality",
+                    "Table_Level"
+                ],
+                "category_stats": {
+                    "Gdpr": {
+                        "total_rules": 45,
+                        "active_rules": 37,
+                        "severity_distribution": {
+                            "Critical": 17,
+                            "High": 11,
+                            "Medium": 12,
+                            "Low": 5
+                        }
+                    },
+                    "Uncategorized": {
+                        "total_rules": 41,
+                        "active_rules": 36,
+                        "severity_distribution": {
+                            "Critical": 5,
+                            "High": 10,
+                            "Medium": 23,
+                            "Low": 3
+                        }
+                    },
+                    "Data_Quality": {
+                        "total_rules": 15,
+                        "active_rules": 15,
+                        "severity_distribution": {
+                            "Critical": 0,
+                            "High": 1,
+                            "Medium": 8,
+                            "Low": 6
+                        }
+                    },
+                    "Table_Level": {
+                        "total_rules": 10,
+                        "active_rules": 10,
+                        "severity_distribution": {
+                            "Critical": 3,
+                            "High": 1,
+                            "Medium": 6,
+                            "Low": 0
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T17:06:01Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 111,
+                "categories": [
+                    "Gdpr",
+                    "Uncategorized",
+                    "Data_Quality",
+                    "Table_Level"
+                ],
+                "category_stats": {
+                    "Gdpr": {
+                        "total_rules": 45,
+                        "active_rules": 37,
+                        "severity_distribution": {
+                            "Critical": 17,
+                            "High": 11,
+                            "Medium": 12,
+                            "Low": 5
+                        }
+                    },
+                    "Uncategorized": {
+                        "total_rules": 41,
+                        "active_rules": 36,
+                        "severity_distribution": {
+                            "Critical": 5,
+                            "High": 10,
+                            "Medium": 23,
+                            "Low": 3
+                        }
+                    },
+                    "Data_Quality": {
+                        "total_rules": 15,
+                        "active_rules": 15,
+                        "severity_distribution": {
+                            "Critical": 0,
+                            "High": 1,
+                            "Medium": 8,
+                            "Low": 6
+                        }
+                    },
+                    "Table_Level": {
+                        "total_rules": 10,
+                        "active_rules": 10,
+                        "severity_distribution": {
+                            "Critical": 3,
+                            "High": 1,
+                            "Medium": 6,
+                            "Low": 0
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T17:06:01Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 111,
+                "categories": [
+                    "Gdpr",
+                    "Uncategorized",
+                    "Data_Quality",
+                    "Table_Level"
+                ],
+                "category_stats": {
+                    "Gdpr": {
+                        "total_rules": 45,
+                        "active_rules": 37,
+                        "severity_distribution": {
+                            "Critical": 17,
+                            "High": 11,
+                            "Medium": 12,
+                            "Low": 5
+                        }
+                    },
+                    "Uncategorized": {
+                        "total_rules": 41,
+                        "active_rules": 36,
+                        "severity_distribution": {
+                            "Critical": 5,
+                            "High": 10,
+                            "Medium": 23,
+                            "Low": 3
+                        }
+                    },
+                    "Data_Quality": {
+                        "total_rules": 15,
+                        "active_rules": 15,
+                        "severity_distribution": {
+                            "Critical": 0,
+                            "High": 1,
+                            "Medium": 8,
+                            "Low": 6
+                        }
+                    },
+                    "Table_Level": {
+                        "total_rules": 10,
+                        "active_rules": 10,
+                        "severity_distribution": {
+                            "Critical": 3,
+                            "High": 1,
+                            "Medium": 6,
+                            "Low": 0
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": "person_addresses"
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Activities page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "activities_count": 87,
+                "success_rate": 100.0,
+                "active_rules": 0
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T17:06:01Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 111,
+                "categories": [
+                    "Gdpr",
+                    "Uncategorized",
+                    "Data_Quality",
+                    "Table_Level"
+                ],
+                "category_stats": {
+                    "Gdpr": {
+                        "total_rules": 45,
+                        "active_rules": 37,
+                        "severity_distribution": {
+                            "Critical": 17,
+                            "High": 11,
+                            "Medium": 12,
+                            "Low": 5
+                        }
+                    },
+                    "Uncategorized": {
+                        "total_rules": 41,
+                        "active_rules": 36,
+                        "severity_distribution": {
+                            "Critical": 5,
+                            "High": 10,
+                            "Medium": 23,
+                            "Low": 3
+                        }
+                    },
+                    "Data_Quality": {
+                        "total_rules": 15,
+                        "active_rules": 15,
+                        "severity_distribution": {
+                            "Critical": 0,
+                            "High": 1,
+                            "Medium": 8,
+                            "Low": 6
+                        }
+                    },
+                    "Table_Level": {
+                        "total_rules": 10,
+                        "active_rules": 10,
+                        "severity_distribution": {
+                            "Critical": 3,
+                            "High": 1,
+                            "Medium": 6,
+                            "Low": 0
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T17:06:01Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 111,
+                "categories": [
+                    "Gdpr",
+                    "Uncategorized",
+                    "Data_Quality",
+                    "Table_Level"
+                ],
+                "category_stats": {
+                    "Gdpr": {
+                        "total_rules": 45,
+                        "active_rules": 37,
+                        "severity_distribution": {
+                            "Critical": 17,
+                            "High": 11,
+                            "Medium": 12,
+                            "Low": 5
+                        }
+                    },
+                    "Uncategorized": {
+                        "total_rules": 41,
+                        "active_rules": 36,
+                        "severity_distribution": {
+                            "Critical": 5,
+                            "High": 10,
+                            "Medium": 23,
+                            "Low": 3
+                        }
+                    },
+                    "Data_Quality": {
+                        "total_rules": 15,
+                        "active_rules": 15,
+                        "severity_distribution": {
+                            "Critical": 0,
+                            "High": 1,
+                            "Medium": 8,
+                            "Low": 6
+                        }
+                    },
+                    "Table_Level": {
+                        "total_rules": 10,
+                        "active_rules": 10,
+                        "severity_distribution": {
+                            "Critical": 3,
+                            "High": 1,
+                            "Medium": 6,
+                            "Low": 0
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T17:06:01Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 111,
+                "categories": [
+                    "Gdpr",
+                    "Uncategorized",
+                    "Data_Quality",
+                    "Table_Level"
+                ],
+                "category_stats": {
+                    "Gdpr": {
+                        "total_rules": 45,
+                        "active_rules": 37,
+                        "severity_distribution": {
+                            "Critical": 17,
+                            "High": 11,
+                            "Medium": 12,
+                            "Low": 5
+                        }
+                    },
+                    "Uncategorized": {
+                        "total_rules": 41,
+                        "active_rules": 36,
+                        "severity_distribution": {
+                            "Critical": 5,
+                            "High": 10,
+                            "Medium": 23,
+                            "Low": 3
+                        }
+                    },
+                    "Data_Quality": {
+                        "total_rules": 15,
+                        "active_rules": 15,
+                        "severity_distribution": {
+                            "Critical": 0,
+                            "High": 1,
+                            "Medium": 8,
+                            "Low": 6
+                        }
+                    },
+                    "Table_Level": {
+                        "total_rules": 10,
+                        "active_rules": 10,
+                        "severity_distribution": {
+                            "Critical": 3,
+                            "High": 1,
+                            "Medium": 6,
+                            "Low": 0
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": "person_addresses"
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": "person_addresses"
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T17:06:01Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 111,
+                "categories": [
+                    "Gdpr",
+                    "Uncategorized",
+                    "Data_Quality",
+                    "Table_Level"
+                ],
+                "category_stats": {
+                    "Gdpr": {
+                        "total_rules": 45,
+                        "active_rules": 37,
+                        "severity_distribution": {
+                            "Critical": 17,
+                            "High": 11,
+                            "Medium": 12,
+                            "Low": 5
+                        }
+                    },
+                    "Uncategorized": {
+                        "total_rules": 41,
+                        "active_rules": 36,
+                        "severity_distribution": {
+                            "Critical": 5,
+                            "High": 10,
+                            "Medium": 23,
+                            "Low": 3
+                        }
+                    },
+                    "Data_Quality": {
+                        "total_rules": 15,
+                        "active_rules": 15,
+                        "severity_distribution": {
+                            "Critical": 0,
+                            "High": 1,
+                            "Medium": 8,
+                            "Low": 6
+                        }
+                    },
+                    "Table_Level": {
+                        "total_rules": 10,
+                        "active_rules": 10,
+                        "severity_distribution": {
+                            "Critical": 3,
+                            "High": 1,
+                            "Medium": 6,
+                            "Low": 0
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T17:06:01Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 111,
+                "categories": [
+                    "Gdpr",
+                    "Uncategorized",
+                    "Data_Quality",
+                    "Table_Level"
+                ],
+                "category_stats": {
+                    "Gdpr": {
+                        "total_rules": 45,
+                        "active_rules": 37,
+                        "severity_distribution": {
+                            "Critical": 17,
+                            "High": 11,
+                            "Medium": 12,
+                            "Low": 5
+                        }
+                    },
+                    "Uncategorized": {
+                        "total_rules": 41,
+                        "active_rules": 36,
+                        "severity_distribution": {
+                            "Critical": 5,
+                            "High": 10,
+                            "Medium": 23,
+                            "Low": 3
+                        }
+                    },
+                    "Data_Quality": {
+                        "total_rules": 15,
+                        "active_rules": 15,
+                        "severity_distribution": {
+                            "Critical": 0,
+                            "High": 1,
+                            "Medium": 8,
+                            "Low": 6
+                        }
+                    },
+                    "Table_Level": {
+                        "total_rules": 10,
+                        "active_rules": 10,
+                        "severity_distribution": {
+                            "Critical": 3,
+                            "High": 1,
+                            "Medium": 6,
+                            "Low": 0
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T17:06:01Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 111,
+                "categories": [
+                    "Gdpr",
+                    "Uncategorized",
+                    "Data_Quality",
+                    "Table_Level"
+                ],
+                "category_stats": {
+                    "Gdpr": {
+                        "total_rules": 45,
+                        "active_rules": 37,
+                        "severity_distribution": {
+                            "Critical": 17,
+                            "High": 11,
+                            "Medium": 12,
+                            "Low": 5
+                        }
+                    },
+                    "Uncategorized": {
+                        "total_rules": 41,
+                        "active_rules": 36,
+                        "severity_distribution": {
+                            "Critical": 5,
+                            "High": 10,
+                            "Medium": 23,
+                            "Low": 3
+                        }
+                    },
+                    "Data_Quality": {
+                        "total_rules": 15,
+                        "active_rules": 15,
+                        "severity_distribution": {
+                            "Critical": 0,
+                            "High": 1,
+                            "Medium": 8,
+                            "Low": 6
+                        }
+                    },
+                    "Table_Level": {
+                        "total_rules": 10,
+                        "active_rules": 10,
+                        "severity_distribution": {
+                            "Critical": 3,
+                            "High": 1,
+                            "Medium": 6,
+                            "Low": 0
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T17:06:01Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 111,
+                "categories": [
+                    "Gdpr",
+                    "Uncategorized",
+                    "Data_Quality",
+                    "Table_Level"
+                ],
+                "category_stats": {
+                    "Gdpr": {
+                        "total_rules": 45,
+                        "active_rules": 37,
+                        "severity_distribution": {
+                            "Critical": 17,
+                            "High": 11,
+                            "Medium": 12,
+                            "Low": 5
+                        }
+                    },
+                    "Uncategorized": {
+                        "total_rules": 41,
+                        "active_rules": 36,
+                        "severity_distribution": {
+                            "Critical": 5,
+                            "High": 10,
+                            "Medium": 23,
+                            "Low": 3
+                        }
+                    },
+                    "Data_Quality": {
+                        "total_rules": 15,
+                        "active_rules": 15,
+                        "severity_distribution": {
+                            "Critical": 0,
+                            "High": 1,
+                            "Medium": 8,
+                            "Low": 6
+                        }
+                    },
+                    "Table_Level": {
+                        "total_rules": 10,
+                        "active_rules": 10,
+                        "severity_distribution": {
+                            "Critical": 3,
+                            "High": 1,
+                            "Medium": 6,
+                            "Low": 0
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Quality Check page",
+            "timestamp": "2024-12-18T17:11:07Z",
+            "status": "success",
+            "metadata": {
+                "table_name": "assignments",
+                "column_count": 7,
+                "overall_quality_score": 0.8064571428571429
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Quality Check page",
+            "timestamp": "2024-12-18T17:11:07Z",
+            "status": "success",
+            "metadata": {
+                "table_name": "per",
+                "column_count": 7,
+                "overall_quality_score": 0.8064571428571429
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Quality Check page",
+            "timestamp": "2024-12-18T17:11:07Z",
+            "status": "success",
+            "metadata": {
+                "table_name": "assignments",
+                "column_count": 7,
+                "overall_quality_score": 0.8064571428571429
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": "assignments"
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Activities page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "activities_count": 106,
+                "success_rate": 100.0,
+                "active_rules": 0
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Activities page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "activities_count": 107,
+                "success_rate": 100.0,
+                "active_rules": 0
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Activities page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "activities_count": 108,
+                "success_rate": 100.0,
+                "active_rules": 0
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Activities page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "activities_count": 109,
+                "success_rate": 100.0,
+                "active_rules": 0
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": "person_assignments"
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": "sqlite_sequence"
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": "sqlite_sequence"
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Activities page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "activities_count": 113,
+                "success_rate": 100.0,
+                "active_rules": 0
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Activities page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "activities_count": 114,
+                "success_rate": 100.0,
+                "active_rules": 0
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": "sqlite_sequence"
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Quality Check page",
+            "timestamp": "2024-12-18T17:11:07Z",
+            "status": "success",
+            "metadata": {
+                "table_name": "per",
+                "column_count": 7,
+                "overall_quality_score": 0.8064571428571429
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T18:28:11.687376",
+            "status": "success",
+            "metadata": {
+                "rules_count": 111,
+                "categories": [
+                    "Gdpr",
+                    "Uncategorized",
+                    "Data_Quality",
+                    "Table_Level"
+                ],
+                "category_stats": {
+                    "Gdpr": {
+                        "total_rules": 45,
+                        "active_rules": 37,
+                        "severity_distribution": {
+                            "Critical": 17,
+                            "High": 11,
+                            "Medium": 12,
+                            "Low": 5
+                        }
+                    },
+                    "Uncategorized": {
+                        "total_rules": 41,
+                        "active_rules": 36,
+                        "severity_distribution": {
+                            "Critical": 5,
+                            "High": 10,
+                            "Medium": 23,
+                            "Low": 3
+                        }
+                    },
+                    "Data_Quality": {
+                        "total_rules": 15,
+                        "active_rules": 15,
+                        "severity_distribution": {
+                            "Critical": 0,
+                            "High": 1,
+                            "Medium": 8,
+                            "Low": 6
+                        }
+                    },
+                    "Table_Level": {
+                        "total_rules": 10,
+                        "active_rules": 10,
+                        "severity_distribution": {
+                            "Critical": 3,
+                            "High": 1,
+                            "Medium": 6,
+                            "Low": 0
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T18:28:11.771469",
+            "status": "success",
+            "metadata": {
+                "rules_count": 111,
+                "categories": [
+                    "Gdpr",
+                    "Uncategorized",
+                    "Data_Quality",
+                    "Table_Level"
+                ],
+                "category_stats": {
+                    "Gdpr": {
+                        "total_rules": 45,
+                        "active_rules": 37,
+                        "severity_distribution": {
+                            "Critical": 17,
+                            "High": 11,
+                            "Medium": 12,
+                            "Low": 5
+                        }
+                    },
+                    "Uncategorized": {
+                        "total_rules": 41,
+                        "active_rules": 36,
+                        "severity_distribution": {
+                            "Critical": 5,
+                            "High": 10,
+                            "Medium": 23,
+                            "Low": 3
+                        }
+                    },
+                    "Data_Quality": {
+                        "total_rules": 15,
+                        "active_rules": 15,
+                        "severity_distribution": {
+                            "Critical": 0,
+                            "High": 1,
+                            "Medium": 8,
+                            "Low": 6
+                        }
+                    },
+                    "Table_Level": {
+                        "total_rules": 10,
+                        "active_rules": 10,
+                        "severity_distribution": {
+                            "Critical": 3,
+                            "High": 1,
+                            "Medium": 6,
+                            "Low": 0
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T18:28:16.208029",
+            "status": "success",
+            "metadata": {
+                "rules_count": 111,
+                "categories": [
+                    "Gdpr",
+                    "Uncategorized",
+                    "Data_Quality",
+                    "Table_Level"
+                ],
+                "category_stats": {
+                    "Gdpr": {
+                        "total_rules": 45,
+                        "active_rules": 37,
+                        "severity_distribution": {
+                            "Critical": 17,
+                            "High": 11,
+                            "Medium": 12,
+                            "Low": 5
+                        }
+                    },
+                    "Uncategorized": {
+                        "total_rules": 41,
+                        "active_rules": 36,
+                        "severity_distribution": {
+                            "Critical": 5,
+                            "High": 10,
+                            "Medium": 23,
+                            "Low": 3
+                        }
+                    },
+                    "Data_Quality": {
+                        "total_rules": 15,
+                        "active_rules": 15,
+                        "severity_distribution": {
+                            "Critical": 0,
+                            "High": 1,
+                            "Medium": 8,
+                            "Low": 6
+                        }
+                    },
+                    "Table_Level": {
+                        "total_rules": 10,
+                        "active_rules": 10,
+                        "severity_distribution": {
+                            "Critical": 3,
+                            "High": 1,
+                            "Medium": 6,
+                            "Low": 0
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Quality Check page",
+            "timestamp": "2024-12-18T17:11:07Z",
+            "status": "success",
+            "metadata": {
+                "table_name": "sqlite_sequence",
+                "column_count": 2,
+                "overall_quality_score": 0.0
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T18:28:37.819246",
+            "status": "success",
+            "metadata": {
+                "rules_count": 111,
+                "categories": [
+                    "Gdpr",
+                    "Uncategorized",
+                    "Data_Quality",
+                    "Table_Level"
+                ],
+                "category_stats": {
+                    "Gdpr": {
+                        "total_rules": 45,
+                        "active_rules": 37,
+                        "severity_distribution": {
+                            "Critical": 17,
+                            "High": 11,
+                            "Medium": 12,
+                            "Low": 5
+                        }
+                    },
+                    "Uncategorized": {
+                        "total_rules": 41,
+                        "active_rules": 36,
+                        "severity_distribution": {
+                            "Critical": 5,
+                            "High": 10,
+                            "Medium": 23,
+                            "Low": 3
+                        }
+                    },
+                    "Data_Quality": {
+                        "total_rules": 15,
+                        "active_rules": 15,
+                        "severity_distribution": {
+                            "Critical": 0,
+                            "High": 1,
+                            "Medium": 8,
+                            "Low": 6
+                        }
+                    },
+                    "Table_Level": {
+                        "total_rules": 10,
+                        "active_rules": 10,
+                        "severity_distribution": {
+                            "Critical": 3,
+                            "High": 1,
+                            "Medium": 6,
+                            "Low": 0
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Activities page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "activities_count": 122,
+                "success_rate": 100.0,
+                "active_rules": 0
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Activities page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "activities_count": 123,
+                "success_rate": 100.0,
+                "active_rules": 0
+            }
         }
     ],
-    "execution_history": [],
-    "rule_execution_history": [],
-    "last_updated": "2024-12-18T15:48:15.084794",
-    "version": "1.0.0",
-    "metadata": {
-        "description": "Master configuration file for the data quality management system",
-        "created_at": "2024-12-18T15:36:09Z",
-        "updated_at": "2024-12-18T15:36:09Z"
+    {
+        "activities": [],
+        "execution_history": [],
+        "last_updated": "2024-12-18T18:29:16Z",
+        "version": "1.0.0",
+        "metadata": {
+            "description": "Master configuration file for the data quality management system",
+            "project_name": "Data Quality Dashboard",
+            "last_modified_by": "Cascade AI"
+        },
+        "rule_templates": []
     }
-}

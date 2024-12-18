@@ -56,25 +56,97 @@ body {
     font-size: 1.25rem;
 }
 
-/* Modern Navigation */
-.nav-link {
-    color: var(--text-secondary);
-    padding: var(--spacing-md) var(--spacing-lg);
-    margin: var(--spacing-xs) 0;
-    border-radius: 8px;
-    transition: all 0.2s ease;
-    font-weight: 500;
+/* Navigation Styling */
+.sidebar {
+    background-color: var(--secondary);
+    border-right: 1px solid var(--border);
+    transition: width 0.3s ease;
 }
 
-.nav-link:hover {
+.nav-item-custom {
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    margin: var(--spacing-xs) 0;
+    padding: var(--spacing-sm) var(--spacing-md);
+    color: var(--text-secondary);
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-item-custom:hover {
     background-color: var(--primary-light);
+    color: var(--primary);
+    transform: translateX(4px);
+}
+
+.nav-item-custom.active {
+    background-color: var(--primary);
+    color: white !important;
+    font-weight: 600;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nav-item-custom i {
+    margin-right: var(--spacing-sm);
+    color: var(--text-secondary);
+    transition: transform 0.2s ease, color 0.3s ease;
+}
+
+.nav-item-custom:hover i {
+    transform: scale(1.2);
     color: var(--primary);
 }
 
-.nav-link.active {
-    background-color: var(--primary);
+.nav-item-custom.active i {
     color: white;
-    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+}
+
+/* Responsive Navigation */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        position: static;
+        height: auto;
+        overflow-x: auto;
+    }
+    
+    .sidebar .nav {
+        flex-direction: row;
+        overflow-x: scroll;
+        white-space: nowrap;
+        scrollbar-width: thin;
+        scrollbar-color: var(--text-secondary) var(--background);
+    }
+    
+    .nav-item-custom {
+        margin: 0 var(--spacing-sm);
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-size: 0.9rem;
+        min-width: max-content;
+    }
+}
+
+/* Custom Scrollbar for Mobile Navigation */
+.sidebar .nav::-webkit-scrollbar {
+    height: 6px;
+}
+
+.sidebar .nav::-webkit-scrollbar-track {
+    background: var(--background);
+}
+
+.sidebar .nav::-webkit-scrollbar-thumb {
+    background: var(--text-secondary);
+    border-radius: 3px;
+}
+
+/* Accessibility Improvements */
+.nav-item-custom:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
 }
 
 /* Enhanced Tables */

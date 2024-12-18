@@ -14,6 +14,18 @@ import os
 from data_loader import DataLoader
 import logging
 import traceback
+from functools import lru_cache, wraps
+import hashlib
+import time
+from apscheduler.schedulers.background import BackgroundScheduler
+
+# Additional Imports for File Management
+import os
+import json
+import logging
+import shutil
+import glob
+from datetime import datetime
 
 # Configure logging
 os.makedirs('BONUS/assets/logs', exist_ok=True)
@@ -27,19 +39,32 @@ logging.basicConfig(
 data_loader = DataLoader()
 
 # Initialize the Dash app with a modern theme
-app = dash.Dash(
-    __name__, 
+app = dash.Dash(__name__, 
     external_stylesheets=[
-        dbc.themes.FLATLY,
+        dbc.themes.BOOTSTRAP, 
         dbc.icons.BOOTSTRAP,
-        "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+        '/assets/css/custom.css'
     ],
-    suppress_callback_exceptions=True
-)
+    assets_folder='assets',
+    suppress_callback_exceptions=True,  # Add this line
+    meta_tags=[
+        {"name": "viewport", "content": "width=device-width, initial-scale=1"}
+    ])
 app.title = "Data Quality Dashboard"
 
 # Layout
 app.layout = dbc.Container([
+    dcc.Store(
+        id='local', 
+        storage_type='local',
+        data=None,  # Explicitly set initial data to None
+        clear_data=True  # Ensure data is cleared between sessions
+    ),
+    dcc.Store(
+        id='store-initialization-trigger', 
+        storage_type='memory',
+        data=0
+    ),
     dcc.Store(id='table_name', storage_type='memory'),
     dcc.Store(id='selected-columns-store', storage_type='memory', data=[]),
     dcc.Location(id='url', refresh=False),
@@ -65,45 +90,37 @@ app.layout = dbc.Container([
                 # Navigation Links
                 dbc.Nav([
                     dbc.NavLink([
-                        html.I(className="bi bi-house-door me-2"),
+                        html.I(className="bi bi-house-fill me-2"),
                         "Overview"
-                    ], href="/overview", id="overview-link", active="exact"),
+                    ], href="/", id="overview-link", active="exact", className="nav-item-custom"),
                     dbc.NavLink([
-                        html.I(className="bi bi-check-circle me-2"),
-                        "Quality Check"
-                    ], href="/quality", id="quality-link", active="exact"),
+                        html.I(className="bi bi-shield-check me-2"),
+                        "Quality"
+                    ], href="/quality", id="quality-link", active="exact", className="nav-item-custom"),
                     dbc.NavLink([
-                        html.I(className="bi bi-columns-gap me-2"),
+                        html.I(className="bi bi-columns me-2"),
                         "Column Analysis"
-                    ], href="/columns", id="columns-link", active="exact"),
+                    ], href="/column-analysis", id="column-analysis-link", active="exact", className="nav-item-custom"),
                     dbc.NavLink([
-                        html.I(className="bi bi-database me-2"),
-                        "Data Catalogue"
-                    ], href="/catalogue", id="catalogue-link", active="exact"),
+                        html.I(className="bi bi-book me-2"),
+                        "Catalogue"
+                    ], href="/catalogue", id="catalogue-link", active="exact", className="nav-item-custom"),
                     dbc.NavLink([
-                        html.I(className="bi bi-list-check me-2"),
-                        "Rules"
-                    ], href="/rules", id="rules-link", active="exact"),
-                    dbc.NavLink([
-                        html.I(className="bi bi-gear me-2"),
+                        html.I(className="bi bi-clipboard-check me-2"),
                         "Rule Management"
-                    ], href="/manage-rules", id="manage-rules-link", active="exact"),
+                    ], href="/rule-management", id="rule-management-link", active="exact", className="nav-item-custom"),
                     dbc.NavLink([
                         html.I(className="bi bi-play-circle me-2"),
                         "Run Management"
-                    ], href="/run-management", id="run-management-link", active="exact"),
+                    ], href="/run-management", id="run-management-link", active="exact", className="nav-item-custom"),
                     dbc.NavLink([
                         html.I(className="bi bi-file-earmark-text me-2"),
                         "Report"
-                    ], href="/report", id="report-link", active="exact"),
+                    ], href="/report", id="report-link", active="exact", className="nav-item-custom"),
                     dbc.NavLink([
                         html.I(className="bi bi-exclamation-triangle me-2"),
                         "Failed Data"
-                    ], href="/failed-data", id="failed-data-link", active="exact"),
-                    dbc.NavLink([
-                        html.I(className="bi bi-activity me-2"),
-                        "Activities"
-                    ], href="/activities", id="activities-link", active="exact")
+                    ], href="/failed-data", id="failed-data-link", active="exact", className="nav-item-custom")
                 ], vertical=True, pills=True, className="mb-3")
             ], className="sidebar")
         ], width=3, className="bg-light sidebar-col"),
@@ -114,6 +131,22 @@ app.layout = dbc.Container([
         ], width=9)
     ], className="h-100")
 ], fluid=True, className="h-100")
+
+# Add placeholder components for missing IDs
+html.Div(id='rule-management-content', style={'display': 'none'}),
+html.Div(id='rule-management-error', style={'display': 'none'}),
+html.Div(id='update-rules-btn', style={'display': 'none'}),
+dbc.Modal(
+    [
+        dbc.ModalHeader("Failed Data"),
+        dbc.ModalBody(id='failed-data-modal-body'),
+        dbc.ModalFooter(
+            dbc.Button("Close", id='failed-data-modal-close', className="ml-auto")
+        )
+    ],
+    id='failed-data-modal',
+    is_open=False
+)
 
 # Remove inline styles from index_string and use our custom.css
 app.index_string = '''
@@ -138,129 +171,402 @@ app.index_string = '''
 
 # Layout components
 def create_overview_content(table_name=None):
+    """Creates an overview content with consistent layout and enhanced data presentation."""
     if not table_name:
-        return html.Div("Please select a table to view data quality metrics.")
+        return html.Div([
+            html.H2("Overview", className="mb-4"),
+            dbc.Alert("Please select a table to view data quality metrics.", color="info")
+        ])
     
-    table_data = data_loader.load_table_data(table_name)
-    if 'error' in table_data:
-        return html.Div(f"Error loading table: {table_data['error']}")
-    
-    stats = table_data['stats']
-    quality_metrics = table_data['quality_metrics']['overall']
-    
-    # Create metrics cards
-    metrics_cards = [
-        dbc.Card(
+    try:
+        # Consistent data loading with error handling
+        table_data = data_loader.load_table_data(table_name)
+        if 'error' in table_data:
+            return html.Div([
+                html.H2("Overview", className="mb-4"),
+                dbc.Alert(f"Error loading table: {table_data['error']}", color="danger")
+            ])
+        
+        stats = table_data['stats']
+        quality_metrics = table_data['quality_metrics']['overall']
+        
+        # Create category header with stats
+        table_header = dbc.Card(
             dbc.CardBody([
-                html.H4("Total Rows", className="card-title"),
-                html.H2(f"{stats['row_count']:,}", className="text-primary")
+                html.H4(f"{table_name} Overview", className="card-title"),
+                html.Div([
+                    html.Span(f"Total Rows: {stats['row_count']:,}", className="me-3"),
+                    html.Span(f"Total Columns: {stats['column_count']}", className="me-3"),
+                    html.Div([
+                        html.Strong("Data Quality Score: "),
+                        html.Span(f"{quality_metrics['total_score']:.2%}", className="text-primary")
+                    ])
+                ], className="text-muted")
             ]),
-            className="mb-4"
-        ),
-        dbc.Card(
-            dbc.CardBody([
-                html.H4("Total Columns", className="card-title"),
-                html.H2(f"{stats['column_count']}", className="text-primary")
-            ]),
-            className="mb-4"
-        ),
-        dbc.Card(
-            dbc.CardBody([
-                html.H4("Data Quality Score", className="card-title"),
-                html.H2(f"{quality_metrics['total_score']:.2%}", className="text-primary")
-            ]),
-            className="mb-4"
+            className="mb-3"
         )
-    ]
-    
-    # Create quality metrics gauge charts
-    quality_gauges = [
-        dcc.Graph(
-            figure=create_gauge_chart(
-                quality_metrics['completeness'],
-                "Completeness",
-                "Measures the presence of required data"
+        
+        # Metrics cards with consistent styling
+        metrics_cards = dbc.Row([
+            dbc.Col(
+                dbc.Card(
+                    dbc.CardBody([
+                        html.H5("Total Rows", className="card-title"),
+                        html.H2(f"{stats['row_count']:,}", className="text-primary")
+                    ]),
+                    className="mb-3 overview-card"
+                ), 
+                width=4
+            ),
+            dbc.Col(
+                dbc.Card(
+                    dbc.CardBody([
+                        html.H5("Total Columns", className="card-title"),
+                        html.H2(f"{stats['column_count']}", className="text-primary")
+                    ]),
+                    className="mb-3 overview-card"
+                ), 
+                width=4
+            ),
+            dbc.Col(
+                dbc.Card(
+                    dbc.CardBody([
+                        html.H5("Data Quality Score", className="card-title"),
+                        html.H2(f"{quality_metrics['total_score']:.2%}", className="text-primary")
+                    ]),
+                    className="mb-3 overview-card"
+                ), 
+                width=4
             )
-        ),
-        dcc.Graph(
-            figure=create_gauge_chart(
-                quality_metrics['uniqueness'],
-                "Uniqueness",
-                "Measures distinct values in data"
+        ], className="g-4")
+        
+        # Quality metrics with tooltips
+        quality_metrics_section = dbc.Row([
+            dbc.Col(
+                dbc.Card(
+                    dbc.CardBody([
+                        html.H5("Completeness", className="card-title"),
+                        dcc.Graph(
+                            figure=create_gauge_chart(
+                                quality_metrics['completeness'],
+                                "Completeness",
+                                "Measures the presence of required data"
+                            )
+                        ),
+                        dbc.Tooltip(
+                            "Percentage of non-null values in the dataset",
+                            target="completeness-tooltip",
+                            placement="right"
+                        ),
+                        html.I(
+                            className="bi bi-info-circle text-muted", 
+                            id="completeness-tooltip"
+                        )
+                    ]),
+                    className="mb-3"
+                ),
+                width=4
+            ),
+            dbc.Col(
+                dbc.Card(
+                    dbc.CardBody([
+                        html.H5("Uniqueness", className="card-title"),
+                        dcc.Graph(
+                            figure=create_gauge_chart(
+                                quality_metrics['uniqueness'],
+                                "Uniqueness",
+                                "Measures distinct values in data"
+                            )
+                        ),
+                        dbc.Tooltip(
+                            "Percentage of unique values in the dataset",
+                            target="uniqueness-tooltip",
+                            placement="right"
+                        ),
+                        html.I(
+                            className="bi bi-info-circle text-muted", 
+                            id="uniqueness-tooltip"
+                        )
+                    ]),
+                    className="mb-3"
+                ),
+                width=4
+            ),
+            dbc.Col(
+                dbc.Card(
+                    dbc.CardBody([
+                        html.H5("Validity", className="card-title"),
+                        dcc.Graph(
+                            figure=create_gauge_chart(
+                                quality_metrics['validity'],
+                                "Validity",
+                                "Measures data type conformance"
+                            )
+                        ),
+                        dbc.Tooltip(
+                            "Percentage of data conforming to expected data types",
+                            target="validity-tooltip",
+                            placement="right"
+                        ),
+                        html.I(
+                            className="bi bi-info-circle text-muted", 
+                            id="validity-tooltip"
+                        )
+                    ]),
+                    className="mb-3"
+                ),
+                width=4
             )
-        ),
-        dcc.Graph(
-            figure=create_gauge_chart(
-                quality_metrics['validity'],
-                "Validity",
-                "Measures data type conformance"
-            )
+        ], className="g-4")
+        
+        # Data preview with consistent styling
+        preview_df = data_loader.get_table_preview(table_name)
+        if isinstance(preview_df, pl.DataFrame):
+            preview_df = preview_df.to_pandas()
+        
+        preview_card = dbc.Card(
+            dbc.CardBody([
+                html.H4("Data Sample", className="card-title"),
+                html.Hr(),
+                dbc.Table.from_dataframe(
+                    preview_df.head(10),
+                    striped=True,
+                    bordered=True,
+                    hover=True,
+                    responsive=True,
+                    className="mt-2"
+                )
+            ]),
+            className="mb-3"
         )
-    ]
+        
+        # Log activity with consistent metadata
+        data_loader.save_activity({
+            'type': 'page_view',
+            'description': 'Viewed Overview page',
+            'timestamp': '2024-12-18T17:11:07Z',
+            'status': 'success',
+            'metadata': {
+                'table_name': table_name,
+                'row_count': stats['row_count'],
+                'column_count': stats['column_count'],
+                'quality_score': quality_metrics['total_score']
+            }
+        })
+        
+        return dbc.Container([
+            html.H2("Overview", className="mb-4"),
+            table_header,
+            metrics_cards,
+            html.H4("Quality Metrics", className="mt-4 mb-3"),
+            quality_metrics_section,
+            html.H4("Data Preview", className="mt-4 mb-3"),
+            preview_card
+        ], fluid=True)
     
-    # Data preview
-    preview_df = data_loader.get_table_preview(table_name)
-    if isinstance(preview_df, pl.DataFrame):
-        preview_df = preview_df.to_pandas()
-    
-    sample_card = dbc.Card(
-        dbc.CardBody([
-            html.H4("Data Sample", className="card-title"),
-            html.Hr(),
-            dbc.Table.from_dataframe(
-                preview_df.head(10),
-                striped=True,
-                bordered=True,
-                hover=True,
-                responsive=True,
-                className="mt-2"
-            )
-        ]),
-        className="mb-4"
-    )
-    
-    return html.Div([
-        dbc.Row([dbc.Col(card) for card in metrics_cards]),
-        dbc.Row([
-            dbc.Col(gauge, width=4) for gauge in quality_gauges
-        ]),
-        html.H4("Data Preview", className="mt-4"),
-        sample_card
-    ])
+    except Exception as e:
+        error_message = f"Error creating overview page: {str(e)}"
+        data_loader.save_activity({
+            'type': 'error',
+            'description': 'Failed to create Overview page',
+            'timestamp': '2024-12-18T17:11:07Z',
+            'status': 'error',
+            'details': error_message,
+            'metadata': {
+                'error_type': type(e).__name__,
+                'error_message': str(e)
+            }
+        })
+        return html.Div(error_message)
 
 def create_quality_content(table_name=None):
+    """Create detailed quality metrics content with consistent layout and enhanced presentation."""
     if not table_name:
-        return html.Div("Please select a table to view detailed quality metrics.")
+        return html.Div([
+            html.H2("Quality Check", className="mb-4"),
+            dbc.Alert("Please select a table to view detailed quality metrics.", color="info")
+        ])
     
-    table_data = data_loader.load_table_data(table_name)
-    if 'error' in table_data:
-        return html.Div(f"Error loading table: {table_data['error']}")
-    
-    quality_metrics = table_data['quality_metrics']
-    df = table_data['data']
-    
-    # Create column quality metrics table
-    columns_quality = []
-    for col in df.columns:
-        columns_quality.append({
-            'Column': col,
-            'Completeness': f"{quality_metrics['completeness'][col]:.2%}",
-            'Uniqueness': f"{quality_metrics['uniqueness'][col]:.2%}",
-            'Validity': f"{quality_metrics['validity'][col]:.2%}"
+    try:
+        # Consistent data loading with error handling
+        table_data = data_loader.load_table_data(table_name)
+        if 'error' in table_data:
+            return html.Div([
+                html.H2("Quality Check", className="mb-4"),
+                dbc.Alert(f"Error loading table: {table_data['error']}", color="danger")
+            ])
+        
+        quality_metrics = table_data['quality_metrics']
+        df = table_data['data']
+        
+        # Table header with overall quality metrics
+        table_header = dbc.Card(
+            dbc.CardBody([
+                html.H4(f"{table_name} Quality Metrics", className="card-title"),
+                html.Div([
+                    html.Span(f"Total Columns: {len(df.columns)}", className="me-3"),
+                    html.Div([
+                        html.Strong("Overall Quality Score: "),
+                        html.Span(f"{quality_metrics['overall']['total_score']:.2%}", className="text-primary")
+                    ])
+                ], className="text-muted")
+            ]),
+            className="mb-3"
+        )
+        
+        # Create column quality metrics table with enhanced presentation
+        columns_quality = []
+        for col in df.columns:
+            columns_quality.append({
+                'Column': col,
+                'Completeness': f"{quality_metrics['completeness'][col]:.2%}",
+                'Uniqueness': f"{quality_metrics['uniqueness'][col]:.2%}",
+                'Validity': f"{quality_metrics['validity'][col]:.2%}"
+            })
+        
+        # Convert to DataFrame and add color-coded progress bars
+        quality_df = pd.DataFrame(columns_quality)
+        
+        # Create table with progress bars
+        quality_table = dbc.Table([
+            html.Thead([
+                html.Tr([
+                    html.Th("Column"),
+                    html.Th("Completeness"),
+                    html.Th("Uniqueness"),
+                    html.Th("Validity")
+                ])
+            ]),
+            html.Tbody([
+                html.Tr([
+                    html.Td(row['Column']),
+                    html.Td([
+                        dbc.Progress(
+                            f"{row['Completeness']}", 
+                            value=float(row['Completeness'].strip('%')), 
+                            color="success" if float(row['Completeness'].strip('%')) > 90 else 
+                                   "warning" if float(row['Completeness'].strip('%')) > 70 else "danger",
+                            className="mt-2"
+                        )
+                    ]),
+                    html.Td([
+                        dbc.Progress(
+                            f"{row['Uniqueness']}", 
+                            value=float(row['Uniqueness'].strip('%')), 
+                            color="success" if float(row['Uniqueness'].strip('%')) > 90 else 
+                                   "warning" if float(row['Uniqueness'].strip('%')) > 70 else "danger",
+                            className="mt-2"
+                        )
+                    ]),
+                    html.Td([
+                        dbc.Progress(
+                            f"{row['Validity']}", 
+                            value=float(row['Validity'].strip('%')), 
+                            color="success" if float(row['Validity'].strip('%')) > 90 else 
+                                   "warning" if float(row['Validity'].strip('%')) > 70 else "danger",
+                            className="mt-2"
+                        )
+                    ])
+                ]) for _, row in quality_df.iterrows()
+            ])
+        ], bordered=True, hover=True, striped=True, className="mb-4")
+        
+        # Quality metrics summary cards
+        quality_metrics_summary = dbc.Row([
+            dbc.Col(
+                dbc.Card(
+                    dbc.CardBody([
+                        html.H5("Completeness", className="card-title"),
+                        html.H2(f"{quality_metrics['overall']['completeness']:.2%}", className="text-primary"),
+                        dbc.Tooltip(
+                            "Percentage of non-null values across all columns",
+                            target="completeness-tooltip",
+                            placement="right"
+                        ),
+                        html.I(
+                            className="bi bi-info-circle text-muted", 
+                            id="completeness-tooltip"
+                        )
+                    ]),
+                    className="mb-3"
+                ),
+                width=4
+            ),
+            dbc.Col(
+                dbc.Card(
+                    dbc.CardBody([
+                        html.H5("Uniqueness", className="card-title"),
+                        html.H2(f"{quality_metrics['overall']['uniqueness']:.2%}", className="text-primary"),
+                        dbc.Tooltip(
+                            "Percentage of unique values across all columns",
+                            target="uniqueness-tooltip",
+                            placement="right"
+                        ),
+                        html.I(
+                            className="bi bi-info-circle text-muted", 
+                            id="uniqueness-tooltip"
+                        )
+                    ]),
+                    className="mb-3"
+                ),
+                width=4
+            ),
+            dbc.Col(
+                dbc.Card(
+                    dbc.CardBody([
+                        html.H5("Validity", className="card-title"),
+                        html.H2(f"{quality_metrics['overall']['validity']:.2%}", className="text-primary"),
+                        dbc.Tooltip(
+                            "Percentage of data conforming to expected data types",
+                            target="validity-tooltip",
+                            placement="right"
+                        ),
+                        html.I(
+                            className="bi bi-info-circle text-muted", 
+                            id="validity-tooltip"
+                        )
+                    ]),
+                    className="mb-3"
+                ),
+                width=4
+            )
+        ], className="g-4")
+        
+        # Log activity with consistent metadata
+        data_loader.save_activity({
+            'type': 'page_view',
+            'description': 'Viewed Quality Check page',
+            'timestamp': '2024-12-18T17:11:07Z',
+            'status': 'success',
+            'metadata': {
+                'table_name': table_name,
+                'column_count': len(df.columns),
+                'overall_quality_score': quality_metrics['overall']['total_score']
+            }
         })
+        
+        return dbc.Container([
+            html.H2("Quality Check", className="mb-4"),
+            table_header,
+            quality_metrics_summary,
+            html.H4("Column-Level Quality Metrics", className="mt-4 mb-3"),
+            quality_table
+        ], fluid=True)
     
-    quality_table = dbc.Table.from_dataframe(
-        pd.DataFrame(columns_quality),
-        striped=True,
-        bordered=True,
-        hover=True,
-        responsive=True
-    )
-    
-    return html.Div([
-        html.H4("Column Quality Metrics"),
-        quality_table
-    ])
+    except Exception as e:
+        error_message = f"Error creating quality check page: {str(e)}"
+        data_loader.save_activity({
+            'type': 'error',
+            'description': 'Failed to create Quality Check page',
+            'timestamp': '2024-12-18T17:11:07Z',
+            'status': 'error',
+            'details': error_message,
+            'metadata': {
+                'error_type': type(e).__name__,
+                'error_message': str(e)
+            }
+        })
+        return html.Div(error_message)
 
 def create_column_analysis_content(table_name=None, selected_columns=None):
     if not table_name:
@@ -534,8 +840,7 @@ def create_rule_catalogue_content():
         'critical': 'danger',
         'high': 'warning',
         'medium': 'info',
-        'low': 'success',
-        'unknown': 'secondary'
+        'low': 'secondary'
     }
     
     # Create severity distribution card
@@ -653,37 +958,93 @@ def create_rules_table(rules, category_filter=None, severity_filter=None, status
     ], bordered=True, hover=True, striped=True, className="mb-4")
 
 def create_rule_management_content():
-    """Creates the main content for the Rule Management page."""
+    """Creates the main content for the Rule Management page with dynamic layout and tooltips."""
     try:
-        # Get rules from master config
-        rules = data_loader.get_rule_templates()
+        # Load rule templates from JSON file
+        with open('BONUS/assets/data/rule_templates.json', 'r') as f:
+            rule_templates = json.load(f)
         
-        if not rules:
-            data_loader.save_activity({
-                'type': 'page_view',
-                'description': 'Viewed empty Rule Management page',
-                'timestamp': '2024-12-18T15:40:19Z',
-                'status': 'success',
-                'metadata': {'rules_count': 0}
-            })
-            return html.Div("No rules defined yet.", className="text-muted p-4")
+        # Combine rules from different categories with additional metadata
+        all_rules = (
+            rule_templates.get('gdpr_rules', []) +
+            rule_templates.get('data_quality_rules', []) +
+            rule_templates.get('validation_rules', []) +
+            rule_templates.get('table_level_rules', [])
+        )
+        
+        # Handle potential error in rule loading
+        if not all_rules:
+            return html.Div("No rules found in templates.", className="text-muted p-4")
 
-        # Create category tabs
-        categories = sorted(set(rule.get('category', 'Uncategorized') for rule in rules))
-        
-        # Create tab content for each category
-        tab_content = []
-        for category in categories:
-            category_rules = [rule for rule in rules if rule.get('category', 'Uncategorized') == category]
+        # Advanced rule categorization with additional metadata
+        rules_by_category = {}
+        category_stats = {}
+        for rule in all_rules:
+            category = rule.get('category', 'Uncategorized').title()
             
+            # Initialize category stats if not exists
+            if category not in category_stats:
+                category_stats[category] = {
+                    'total_rules': 0,
+                    'active_rules': 0,
+                    'severity_distribution': {
+                        'Critical': 0,
+                        'High': 0,
+                        'Medium': 0,
+                        'Low': 0
+                    }
+                }
+            
+            # Update category stats
+            category_stats[category]['total_rules'] += 1
+            if rule.get('active', False):
+                category_stats[category]['active_rules'] += 1
+            
+            severity = rule.get('severity', 'Medium')
+            category_stats[category]['severity_distribution'][severity] += 1
+            
+            # Categorize rules
+            if category not in rules_by_category:
+                rules_by_category[category] = []
+            rules_by_category[category].append(rule)
+
+        # Create tab content for each category with dynamic layout
+        tab_content = []
+        for category, category_rules in rules_by_category.items():
             # Create cards for each rule in the category
             rule_cards = []
             for rule in category_rules:
+                # Create detailed tooltip for each rule
+                tooltip_content = html.Div([
+                    html.H6(rule['name'], className="mb-2"),
+                    html.P(rule.get('description', 'No description available'), className="text-muted mb-2"),
+                    html.Div([
+                        html.Strong("Type: "), 
+                        html.Span(rule.get('type', 'N/A'))
+                    ], className="mb-1"),
+                    html.Div([
+                        html.Strong("Validation Code: "), 
+                        html.Code(rule.get('validation_code', 'N/A'), className="text-info")
+                    ], className="mb-1")
+                ])
+                
                 rule_cards.append(
                     dbc.Card(
                         dbc.CardBody([
                             html.Div([
-                                html.H5(rule['name'], className="card-title"),
+                                html.H5(
+                                    rule['name'], 
+                                    className="card-title d-inline-block me-2"
+                                ),
+                                dbc.Tooltip(
+                                    tooltip_content,
+                                    target=f"rule-tooltip-{rule['id']}",
+                                    placement="right"
+                                ),
+                                html.I(
+                                    className="bi bi-info-circle text-muted", 
+                                    id=f"rule-tooltip-{rule['id']}"
+                                ),
                                 dbc.Switch(
                                     id={'type': 'rule-switch', 'index': rule['id']},
                                     value=rule.get('active', False),
@@ -694,7 +1055,12 @@ def create_rule_management_content():
                             html.Div([
                                 dbc.Badge(
                                     rule.get('severity', 'Medium'),
-                                    color={'High': 'danger', 'Medium': 'warning', 'Low': 'info'}.get(rule.get('severity', 'Medium'), 'secondary'),
+                                    color={
+                                        'Critical': 'danger', 
+                                        'High': 'warning', 
+                                        'Medium': 'info', 
+                                        'Low': 'secondary'
+                                    }.get(rule.get('severity', 'Medium'), 'secondary'),
                                     className="me-2"
                                 ),
                                 dbc.Badge(
@@ -704,56 +1070,104 @@ def create_rule_management_content():
                                 )
                             ])
                         ]),
-                        className="mb-3"
+                        className="mb-3 rule-card"
                     )
                 )
-            
-            # Add the category's rules to tab content
-            tab_content.append(
-                dbc.Tab(
+        
+        # Create category header with stats
+        category_header = dbc.Card(
+            dbc.CardBody([
+                html.H4(category, className="card-title"),
+                html.Div([
+                    html.Span(f"Total Rules: {category_stats[category]['total_rules']}", className="me-3"),
+                    html.Span(f"Active Rules: {category_stats[category]['active_rules']}", className="me-3"),
+                    html.Div([
+                        html.Strong("Severity Distribution: "),
+                        " | ".join([
+                            f"{sev}: {count}" 
+                            for sev, count in category_stats[category]['severity_distribution'].items() 
+                            if count > 0
+                        ])
+                    ])
+                ], className="text-muted")
+            ]),
+            className="mb-3"
+        )
+        
+        # Add the category's rules to tab content
+        tab_content.append(
+            dbc.Tab(
+                dbc.Container([
+                    category_header,
                     dbc.Row([
                         dbc.Col(card, width=6) for card in rule_cards
-                    ], className="g-4"),
-                    label=category,
-                    tab_id=f"tab-{category.lower()}"
-                )
+                    ], className="g-4")
+                ], fluid=True),
+                label=f"{category} ({category_stats[category]['active_rules']}/{category_stats[category]['total_rules']})",
+                tab_id=f"tab-{category.lower().replace(' ', '-')}"
             )
+        )
 
-        # Log activity
-        data_loader.save_activity({
-            'type': 'page_view',
-            'description': 'Viewed Rule Management page',
-            'timestamp': '2024-12-18T15:40:19Z',
-            'status': 'success',
-            'metadata': {
-                'rules_count': len(rules),
-                'categories': list(categories)
-            }
-        })
+    # Log activity with more detailed metadata
+    data_loader.save_activity({
+        'type': 'page_view',
+        'description': 'Viewed Rule Management page',
+        'timestamp': datetime.now().isoformat(),
+        'status': 'success',
+        'metadata': {
+            'rules_count': len(all_rules),
+            'categories': list(rules_by_category.keys()),
+            'category_stats': category_stats
+        }
+    })
 
-        return html.Div([
-            html.H2("Rule Management", className="mb-4"),
-            dbc.Tabs(
-                tab_content,
-                id="rule-category-tabs",
-                active_tab=f"tab-{categories[0].lower()}" if categories else None
+    # Create search and filter components
+    search_filter = dbc.Row([
+        dbc.Col([
+            dbc.Input(
+                id="rule-search-input",
+                placeholder="Search rules...",
+                type="text",
+                className="mb-3"
             )
-        ])
+        ], width=6),
+        dbc.Col([
+            dbc.Select(
+                id="severity-filter",
+                options=[
+                    {"label": "All Severities", "value": "all"},
+                    {"label": "Critical", "value": "Critical"},
+                    {"label": "High", "value": "High"},
+                    {"label": "Medium", "value": "Medium"},
+                    {"label": "Low", "value": "Low"}
+                ],
+                value="all",
+                className="mb-3"
+            )
+        ], width=3),
+        dbc.Col([
+            dbc.Select(
+                id="status-filter",
+                options=[
+                    {"label": "All Rules", "value": "all"},
+                    {"label": "Active", "value": "active"},
+                    {"label": "Inactive", "value": "inactive"}
+                ],
+                value="all",
+                className="mb-3"
+            )
+        ], width=3)
+    ])
 
-    except Exception as e:
-        error_message = f"Error creating rule management page: {str(e)}"
-        data_loader.save_activity({
-            'type': 'error',
-            'description': 'Failed to create Rule Management page',
-            'timestamp': '2024-12-18T15:40:19Z',
-            'status': 'error',
-            'details': error_message,
-            'metadata': {
-                'error_type': type(e).__name__,
-                'error_message': str(e)
-            }
-        })
-        return html.Div(error_message)
+    return html.Div([
+        html.H2("Rule Management", className="mb-4"),
+        search_filter,
+        dbc.Tabs(
+            tab_content,
+            id="rule-category-tabs",
+            active_tab=f"tab-{list(rules_by_category.keys())[0].lower().replace(' ', '-')}" if rules_by_category else None
+        )
+    ])
 
 @app.callback(
     Output("filtered-rules-table", "children"),
@@ -1190,7 +1604,8 @@ def create_run_management_content(table_name=None):
                     dbc.CardBody([
                         html.H4("Total Rules", className="card-title text-center"),
                         html.H2(f"{total_rules}", className="text-center text-primary")
-                    ])
+                    ]),
+                    className="mb-4"
                 ),
                 width=3,
                 className="mb-4"
@@ -1200,7 +1615,8 @@ def create_run_management_content(table_name=None):
                     dbc.CardBody([
                         html.H4("Total Executions", className="card-title text-center"),
                         html.H2(f"{total_executions}", className="text-center text-success")
-                    ])
+                    ]),
+                    className="mb-4"
                 ),
                 width=3,
                 className="mb-4"
@@ -1210,7 +1626,8 @@ def create_run_management_content(table_name=None):
                     dbc.CardBody([
                         html.H4("Average Pass Rate", className="card-title text-center"),
                         html.H2(f"{avg_pass_rate:.1f}%", className="text-center text-info")
-                    ])
+                    ]),
+                    className="mb-4"
                 ),
                 width=3,
                 className="mb-4"
@@ -1321,8 +1738,7 @@ def create_run_management_content(table_name=None):
             'details': error_message,
             'metadata': {
                 'error_type': type(e).__name__,
-                'error_message': str(e),
-                'table_name': table_name
+                'error_message': str(e)
             }
         })
         return html.Div(error_message)
@@ -1397,7 +1813,7 @@ def create_report_content(table_name=None):
                 
                 if 'error' in col_profile:
                     continue
-
+                
                 # Determine appropriate icon based on data type
                 icon_class = {
                     'int64': 'bi-123',
@@ -1433,7 +1849,7 @@ def create_report_content(table_name=None):
 
                 # Create quality score based on execution results and metrics
                 execution_history = data_loader.get_execution_history()
-                table_history = [run for run in execution_history if run['table_name'] == table_name]
+                table_history = [run for run in execution_history if run['table_name'] == table_name] if table_name else []
                 
                 # Calculate quality score from execution results
                 rule_quality_score = 1.0
@@ -1756,29 +2172,58 @@ def render_page_content(pathname, table_name, selected_columns):
     ctx = dash.callback_context
     trigger = ctx.triggered[0]['prop_id'].split('.')[0] if ctx.triggered else None
     
+    # Default content for when no table is selected
+    def no_table_selected_content():
+        return html.Div([
+            dbc.Alert(
+                [
+                    html.I(className="bi bi-info-circle me-2"),
+                    "Please select a table to view content"
+                ], 
+                color="info", 
+                className="m-4 text-center"
+            )
+        ])
+    
+    # Check if table_name is None or empty
+    if not table_name:
+        if pathname in ["/overview", "/quality", "/column-analysis", "/run-management", "/report"]:
+            return no_table_selected_content()
+        # For pages that don't require a table
+        elif pathname == "/catalogue":
+            return create_catalogue_content(None)
+        elif pathname == "/rules":
+            return create_rule_catalogue_content()
+        elif pathname == "/failed-data":
+            return create_failed_data_selector()
+        else:
+            return html.Div([
+                html.H3("404 - Page not found", className="text-danger"),
+                html.P("The requested page does not exist.", className="text-muted")
+            ], className="p-4")
+    
+    # Existing routing logic
     if pathname == "/overview":
         return create_overview_content(table_name)
     elif pathname == "/quality":
         return create_quality_content(table_name)
-    elif pathname == "/columns":
-        return create_column_analysis_content(table_name, selected_columns)
+    elif pathname == "/column-analysis":
+        # Handle case where selected_columns might be None
+        safe_selected_columns = selected_columns if selected_columns else None
+        return create_column_analysis_content(table_name, safe_selected_columns)
     elif pathname == "/catalogue":
         return create_catalogue_content(table_name)
     elif pathname == "/rules":
         return create_rule_catalogue_content()
-    elif pathname == "/manage-rules":
+    elif pathname == "/rule-management":
         return create_rule_management_content()
     elif pathname == "/run-management":
         return create_run_management_content(table_name)
     elif pathname == "/report":
         return create_report_content(table_name)
-    elif pathname == "/failed-data":
-        return create_failed_data_selector()
     elif pathname.startswith('/failed-data/'):
         table_name = pathname.split('/')[-1]
         return create_failed_data_page(table_name)
-    elif pathname == "/activities":
-        return create_activities_content()
     else:
         return html.Div([
             html.H3("404 - Page not found", className="text-danger"),
@@ -1810,38 +2255,35 @@ def reset_selected_columns(table_name):
 @app.callback(
     [Output("overview-link", "active"),
      Output("quality-link", "active"),
-     Output("columns-link", "active"),
+     Output("column-analysis-link", "active"),
      Output("catalogue-link", "active"),
      Output("rules-link", "active"),
-     Output("manage-rules-link", "active"),
+     Output("rule-management-link", "active"),
      Output("run-management-link", "active"),
      Output("report-link", "active"),
-     Output("failed-data-link", "active"),
-     Output("activities-link", "active")],
+     Output("failed-data-link", "active")],
     [Input("url", "pathname")]
 )
 def toggle_active_links(pathname):
     if pathname == "/overview" or pathname == "/":
-        return True, False, False, False, False, False, False, False, False, False
+        return True, False, False, False, False, False, False, False, False
     elif pathname == "/quality":
-        return False, True, False, False, False, False, False, False, False, False
-    elif pathname == "/columns":
-        return False, False, True, False, False, False, False, False, False, False
+        return False, True, False, False, False, False, False, False, False
+    elif pathname == "/column-analysis":
+        return False, False, True, False, False, False, False, False, False
     elif pathname == "/catalogue":
-        return False, False, False, True, False, False, False, False, False, False
+        return False, False, False, True, False, False, False, False, False
     elif pathname == "/rules":
-        return False, False, False, False, True, False, False, False, False, False
-    elif pathname == "/manage-rules":
-        return False, False, False, False, False, True, False, False, False, False
+        return False, False, False, False, True, False, False, False, False
+    elif pathname == "/rule-management":
+        return False, False, False, False, False, True, False, False, False
     elif pathname == "/run-management":
-        return False, False, False, False, False, False, True, False, False, False
+        return False, False, False, False, False, False, True, False, False
     elif pathname == "/report":
-        return False, False, False, False, False, False, False, True, False, False
+        return False, False, False, False, False, False, False, True, False
     elif pathname.startswith('/failed-data/'):
-        return False, False, False, False, False, False, False, False, True, False
-    elif pathname == "/activities":
-        return False, False, False, False, False, False, False, False, False, True
-    return True, False, False, False, False, False, False, False, False, False
+        return False, False, False, False, False, False, False, False, True
+    return True, False, False, False, False, False, False, False, False
 
 @app.callback(
     [Output("column-multi-dropdown", "options"),
@@ -1894,6 +2336,404 @@ def create_gauge_chart(value, title, description):
             }
         )
     )
+
+# Performance Optimization Imports
+from functools import lru_cache, wraps
+import hashlib
+import os
+import json
+import logging
+import time
+
+# Memoization Utilities
+def memoize_to_disk(cache_file='function_cache.json', max_entries=100):
+    """
+    Memoization decorator that caches function results to disk
+    
+    Args:
+        cache_file (str): Path to cache file
+        max_entries (int): Maximum number of cached entries
+    
+    Returns:
+        Decorated function with disk-based caching
+    """
+    def decorator(func):
+        # Ensure cache directory exists
+        cache_dir = os.path.join('BONUS', 'assets', 'data')
+        os.makedirs(cache_dir, exist_ok=True)
+        
+        # Full path to cache file
+        full_cache_path = os.path.join(cache_dir, cache_file)
+        
+        # Create cache file if it doesn't exist
+        if not os.path.exists(full_cache_path):
+            with open(full_cache_path, 'w') as f:
+                json.dump({}, f)
+        
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            # Create a unique hash for the function call
+            key = hashlib.md5(
+                json.dumps({
+                    'func_name': func.__name__,
+                    'args': [str(arg) for arg in args], 
+                    'kwargs': {k: str(v) for k, v in kwargs.items()}
+                }, sort_keys=True).encode()
+            ).hexdigest()
+            
+            try:
+                # Read existing cache
+                with open(full_cache_path, 'r') as f:
+                    cache = json.load(f)
+                
+                # Check if result is cached
+                if key in cache:
+                    return cache[key]
+                
+                # Compute result
+                result = func(*args, **kwargs)
+                
+                # Update cache
+                cache[key] = result
+                
+                # Limit cache size
+                if len(cache) > max_entries:
+                    # Remove oldest entries
+                    cache = dict(list(cache.items())[-max_entries:])
+                
+                # Write updated cache
+                with open(full_cache_path, 'w') as f:
+                    json.dump(cache, f)
+                
+                return result
+            
+            except Exception as e:
+                logging.error(f"Memoization error for {func.__name__}: {e}")
+                return func(*args, **kwargs)
+        
+        return wrapper
+    return decorator
+
+def memoize_callback(func):
+    """
+    Memoize Dash callback results
+    
+    Prevents redundant computations within the same callback context
+    """
+    _cache = {}
+    
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        # Create a unique key for the current callback context
+        ctx = dash.callback_context
+        trigger = ctx.triggered[0]['prop_id'].split('.')[0] if ctx.triggered else 'initial'
+        
+        # Generate a cache key
+        cache_key = (trigger, hash(json.dumps(args, default=str)), 
+                     hash(json.dumps(kwargs, default=str)))
+        
+        # Check cache
+        if cache_key in _cache:
+            return _cache[cache_key]
+        
+        # Compute and cache result
+        result = func(*args, **kwargs)
+        _cache[cache_key] = result
+        
+        # Limit cache size
+        if len(_cache) > 50:
+            _cache.popitem()
+        
+        return result
+    
+    return wrapper
+
+# Performance-Critical Function Memoization
+@memoize_to_disk(cache_file='rules_processing_cache.json')
+def process_rule_data(rule_data):
+    """
+    Expensive rule processing with memoization
+    
+    Args:
+        rule_data (dict): Rule configuration
+    
+    Returns:
+        Processed rule data
+    """
+    if not rule_data:
+        return {}
+    
+    processed_data = {}
+    for key, value in rule_data.items():
+        # Simulate complex processing with some basic transformation
+        processed_data[key] = {
+            'processed_value': str(value).upper(),
+            'length': len(str(value)),
+            'type': type(value).__name__
+        }
+    
+    return processed_data
+
+@memoize_to_disk(cache_file='column_statistics_cache.json')
+def compute_column_statistics(column_data):
+    """
+    Compute and cache column statistics
+    
+    Args:
+        column_data (tuple): Immutable column data
+    
+    Returns:
+        Dict of column statistics
+    """
+    import numpy as np
+    
+    try:
+        data = np.array(column_data)
+        return {
+            'mean': float(np.mean(data)) if len(data) > 0 else None,
+            'median': float(np.median(data)) if len(data) > 0 else None,
+            'std': float(np.std(data)) if len(data) > 0 else None,
+            'min': float(np.min(data)) if len(data) > 0 else None,
+            'max': float(np.max(data)) if len(data) > 0 else None
+        }
+    except Exception as e:
+        logging.error(f"Column statistics computation error: {e}")
+        return {
+            'mean': None,
+            'median': None,
+            'std': None,
+            'min': None,
+            'max': None
+        }
+
+# Rule execution and processing caches
+@memoize_to_disk(cache_file='rule_execution_cache.json')
+def execute_rule(rule, table_data):
+    """
+    Execute a single rule with memoization
+    
+    Args:
+        rule (dict): Rule configuration
+        table_data (pd.DataFrame): Data to apply rule against
+    
+    Returns:
+        Rule execution result
+    """
+    # Existing implementation, now with disk-based memoization
+    {{ ... }}
+
+@memoize_to_disk(cache_file='rule_management_content_cache.json')
+def create_rule_management_content(table_name=None):
+    """
+    Create rule management content with memoization
+    
+    Returns:
+        Rendered rule management content
+    """
+    # Load rule templates from JSON file
+    with open('BONUS/assets/data/rule_templates.json', 'r') as f:
+        rule_templates = json.load(f)
+    
+    # Combine rules from different categories with additional metadata
+    all_rules = (
+        rule_templates.get('gdpr_rules', []) +
+        rule_templates.get('data_quality_rules', []) +
+        rule_templates.get('validation_rules', []) +
+        rule_templates.get('table_level_rules', [])
+    )
+    
+    # Handle potential error in rule loading
+    if not all_rules:
+        return html.Div("No rules found in templates.", className="text-muted p-4")
+
+    # Advanced rule categorization with additional metadata
+    rules_by_category = {}
+    category_stats = {}
+    for rule in all_rules:
+        category = rule.get('category', 'Uncategorized').title()
+        
+        # Initialize category stats if not exists
+        if category not in category_stats:
+            category_stats[category] = {
+                'total_rules': 0,
+                'active_rules': 0,
+                'severity_distribution': {
+                    'Critical': 0,
+                    'High': 0,
+                    'Medium': 0,
+                    'Low': 0
+                }
+            }
+        
+        # Update category stats
+        category_stats[category]['total_rules'] += 1
+        if rule.get('active', False):
+            category_stats[category]['active_rules'] += 1
+        
+        severity = rule.get('severity', 'Medium')
+        category_stats[category]['severity_distribution'][severity] += 1
+        
+        # Categorize rules
+        if category not in rules_by_category:
+            rules_by_category[category] = []
+        rules_by_category[category].append(rule)
+
+    # Create tab content for each category with dynamic layout
+    tab_content = []
+    for category, category_rules in rules_by_category.items():
+        # Create cards for each rule in the category
+        rule_cards = []
+        for rule in category_rules:
+            # Create detailed tooltip for each rule
+            tooltip_content = html.Div([
+                html.H6(rule['name'], className="mb-2"),
+                html.P(rule.get('description', 'No description available'), className="text-muted mb-2"),
+                html.Div([
+                    html.Strong("Type: "), 
+                    html.Span(rule.get('type', 'N/A'))
+                ], className="mb-1"),
+                html.Div([
+                    html.Strong("Validation Code: "), 
+                    html.Code(rule.get('validation_code', 'N/A'), className="text-info")
+                ], className="mb-1")
+            ])
+            
+            rule_cards.append(
+                dbc.Card(
+                    dbc.CardBody([
+                        html.Div([
+                            html.H5(
+                                rule['name'], 
+                                className="card-title d-inline-block me-2"
+                            ),
+                            dbc.Tooltip(
+                                tooltip_content,
+                                target=f"rule-tooltip-{rule['id']}",
+                                placement="right"
+                            ),
+                            html.I(
+                                className="bi bi-info-circle text-muted", 
+                                id=f"rule-tooltip-{rule['id']}"
+                            ),
+                            dbc.Switch(
+                                id={'type': 'rule-switch', 'index': rule['id']},
+                                value=rule.get('active', False),
+                                className="float-end"
+                            )
+                        ]),
+                        html.P(rule['description'], className="card-text text-muted"),
+                        html.Div([
+                            dbc.Badge(
+                                rule.get('severity', 'Medium'),
+                                color={
+                                    'Critical': 'danger', 
+                                    'High': 'warning', 
+                                    'Medium': 'info', 
+                                    'Low': 'secondary'
+                                }.get(rule.get('severity', 'Medium'), 'secondary'),
+                                className="me-2"
+                            ),
+                            dbc.Badge(
+                                rule.get('type', 'Custom'),
+                                color="secondary",
+                                className="me-2"
+                            )
+                        ])
+                    ]),
+                    className="mb-3 rule-card"
+                )
+            )
+        
+        # Create category header with stats
+        category_header = dbc.Card(
+            dbc.CardBody([
+                html.H4(category, className="card-title"),
+                html.Div([
+                    html.Span(f"Total Rules: {category_stats[category]['total_rules']}", className="me-3"),
+                    html.Span(f"Active Rules: {category_stats[category]['active_rules']}", className="me-3"),
+                    html.Div([
+                        html.Strong("Severity Distribution: "),
+                        " | ".join([
+                            f"{sev}: {count}" 
+                            for sev, count in category_stats[category]['severity_distribution'].items() 
+                            if count > 0
+                        ])
+                    ])
+                ], className="text-muted")
+            ]),
+            className="mb-3"
+        )
+        
+        # Add the category's rules to tab content
+        tab_content.append(
+            dbc.Tab(
+                dbc.Container([
+                    category_header,
+                    dbc.Row([
+                        dbc.Col(card, width=6) for card in rule_cards
+                    ], className="g-4")
+                ], fluid=True),
+                label=f"{category} ({category_stats[category]['active_rules']}/{category_stats[category]['total_rules']})",
+                tab_id=f"tab-{category.lower().replace(' ', '-')}"
+            )
+        )
+
+    # Log activity with more detailed metadata
+    data_loader.save_activity({
+        'type': 'page_view',
+        'description': 'Viewed Rule Management page',
+        'timestamp': datetime.now().isoformat(),
+        'status': 'success',
+        'metadata': {
+            'rules_count': len(all_rules),
+            'categories': list(rules_by_category.keys()),
+            'category_stats': category_stats
+        }
+    })
+
+    # Create search and filter components
+    search_filter = dbc.Row([
+        dbc.Col([
+            dbc.Input(
+                id="rule-search-input",
+                placeholder="Search rules...",
+                type="text",
+                className="mb-3"
+            )
+        ], width=6),
+        dbc.Col([
+            dbc.Select(
+                id="severity-filter",
+                options=[
+                    {"label": "All Severities", "value": "all"},
+                    {"label": "Critical", "value": "Critical"},
+                    {"label": "High", "value": "High"},
+                    {"label": "Medium", "value": "Medium"},
+                    {"label": "Low", "value": "Low"}
+                ],
+                value="all",
+                className="mb-3"
+            )
+        ], width=3),
+        dbc.Col([
+            dbc.Select(
+                id="status-filter",
+                options=[
+                    {"label": "All Rules", "value": "all"},
+                    {"label": "Active", "value": "active"},
+                    {"label": "Inactive", "value": "inactive"}
+                ],
+                value="all",
+                className="mb-3"
+            )
+        ], width=3)
+    ])
+
+    return html.Div([
+        html.H2("Rule Management", className="mb-4"),
+        search_filter,
+        dbc.Tabs(tab_content, id="rule-management-tabs")
+    ], fluid=True)
 
 # Callback to handle run details modal
 @app.callback(
@@ -2076,7 +2916,7 @@ def toggle_run_details_modal(view_clicks, close_clicks, is_open, table_name):
     ],
     [
         Input({"type": "view-failed-data-btn", "index": ALL}, "n_clicks"),
-        Input("close-failed-data-modal", "n_clicks")
+        Input("failed-data-modal-close", "n_clicks")  # Changed from 'close-failed-data-modal'
     ],
     [State("table-dropdown", "value")],
     prevent_initial_call=True
@@ -2100,7 +2940,7 @@ def toggle_failed_data_modal(view_clicks, close_clicks, table_name):
     
     # Determine if modal should be open
     ctx = dash.callback_context
-    trigger_id = ctx.triggered[0]['prop_id'].split('.')[0]
+    trigger = ctx.triggered[0]['prop_id'].split('.')[0]
     
     # Read execution history
     try:
@@ -2162,7 +3002,7 @@ def toggle_failed_data_modal(view_clicks, close_clicks, table_name):
     ])
     
     # Determine modal state
-    is_open = trigger_id == 'view-failed-data-btn' and view_clicks is not None
+    is_open = trigger == 'view-failed-data-btn' and view_clicks is not None
     
     return is_open, modal_content
 
@@ -2185,7 +3025,7 @@ def create_failed_data_modal(table_name):
                 ])
             ),
             dbc.ModalFooter(
-                dbc.Button("Close", id="close-failed-data-modal", className="ms-auto")
+                dbc.Button("Close", id="failed-data-modal-close", className="ms-auto")
             )
         ],
         id="failed-data-modal",
@@ -2196,159 +3036,11 @@ def create_failed_data_modal(table_name):
 
 def create_activities_content():
     """Creates the layout for the Activities page."""
-    try:
-        # Get activities directly as a list
-        activities = data_loader.get_activities()
-        
-        if not activities:
-            # Log empty activities view
-            data_loader.save_activity({
-                'type': 'page_view',
-                'description': 'Viewed empty Activities page',
-                'timestamp': '2024-12-18T15:40:19Z',
-                'status': 'success',
-                'metadata': {'activities_count': 0}
-            })
-            return html.Div("No activities recorded yet.", className="text-muted p-4")
-
-        # Calculate statistics
-        total_activities = len(activities)
-        success_count = sum(1 for activity in activities if activity.get('status') == 'success')
-        error_count = sum(1 for activity in activities if activity.get('status') == 'error')
-        success_rate = (success_count / total_activities * 100) if total_activities > 0 else 0
-        
-        # Get the timestamp of the last activity
-        last_activity = activities[-1]['timestamp'] if activities else 'No activities'
-        
-        # Count active rules
-        active_rules = sum(1 for activity in activities 
-                         if activity.get('type') == 'rule_status' 
-                         and activity.get('metadata', {}).get('new_status', False))
-
-        # Create statistics cards
-        stats_cards = dbc.Row([
-            dbc.Col(
-                dbc.Card(
-                    dbc.CardBody([
-                        html.H4("Total Activities", className="card-title text-center"),
-                        html.H2(str(total_activities), className="text-center text-primary")
-                    ])
-                ),
-                width=3,
-                className="mb-4"
-            ),
-            dbc.Col(
-                dbc.Card(
-                    dbc.CardBody([
-                        html.H4("Success Rate", className="card-title text-center"),
-                        html.H2(f"{success_rate:.1f}%", className="text-center text-success")
-                    ])
-                ),
-                width=3,
-                className="mb-4"
-            ),
-            dbc.Col(
-                dbc.Card(
-                    dbc.CardBody([
-                        html.H4("Last Activity", className="card-title text-center"),
-                        html.H2(last_activity, className="text-center text-info", style={'font-size': '1.25rem'})
-                    ])
-                ),
-                width=3,
-                className="mb-4"
-            ),
-            dbc.Col(
-                dbc.Card(
-                    dbc.CardBody([
-                        html.H4("Active Rules", className="card-title text-center"),
-                        html.H2(str(active_rules), className="text-center text-warning")
-                    ])
-                ),
-                width=3,
-                className="mb-4"
-            )
-        ])
-
-        # Create timeline items for each activity
-        timeline_items = []
-        for activity in reversed(activities):  # Show newest first
-            # Determine icon and color based on activity type and status
-            icon_class = "bi-check-circle" if activity.get('status') == 'success' else "bi-x-circle"
-            if activity.get('type') == 'rule_execution':
-                icon_class = "bi-play-circle"
-            elif activity.get('type') == 'rule_status':
-                icon_class = "bi-toggle-on"
-            elif activity.get('type') == 'page_view':
-                icon_class = "bi-eye"
-            
-            color_class = "text-success" if activity.get('status') == 'success' else "text-danger"
-            if activity.get('type') == 'page_view':
-                color_class = "text-info"
-
-            timeline_items.append(
-                dbc.Card(
-                    dbc.CardBody([
-                        html.Div([
-                            html.I(className=f"bi {icon_class} {color_class} me-2", style={'font-size': '1.5rem'}),
-                            html.H5(activity.get('description', 'Unknown Activity'), className="d-inline")
-                        ], className="mb-2"),
-                        html.P([
-                            html.Small(activity.get('timestamp', 'Unknown time'), className="text-muted"),
-                            html.Span(
-                                activity.get('status', 'unknown').title(),
-                                className=f"badge {'bg-success' if activity.get('status') == 'success' else 'bg-danger'} ms-2"
-                            )
-                        ]),
-                        html.P(activity.get('details', ''), className="text-muted small")
-                    ]),
-                    className="mb-3"
-                )
-            )
-
-        # Log activity view
-        data_loader.save_activity({
-            'type': 'page_view',
-            'description': 'Viewed Activities page',
-            'timestamp': '2024-12-18T15:40:19Z',
-            'status': 'success',
-            'metadata': {
-                'activities_count': total_activities,
-                'success_rate': success_rate,
-                'active_rules': active_rules
-            }
-        })
-
-        return html.Div([
-            html.H2("Activities", className="mb-4"),
-            stats_cards,
-            html.Div(timeline_items, className="timeline")
-        ])
-
-    except Exception as e:
-        error_message = f"Error creating activities page: {str(e)}"
-        data_loader.save_activity({
-            'type': 'error',
-            'description': 'Failed to create Activities page',
-            'timestamp': '2024-12-18T15:40:19Z',
-            'status': 'error',
-            'details': error_message,
-            'metadata': {
-                'error_type': type(e).__name__,
-                'error_message': str(e)
-            }
-        })
-        return html.Div(error_message)
+    return html.Div("Activities view has been removed.", className="text-muted p-4")
 
 def get_activity_icon(activity):
-    """Get the appropriate Bootstrap icon for an activity type."""
-    icon_map = {
-        'rule_execution': 'play-circle',
-        'rule_status': 'toggle-on',
-        'validation': 'check-circle',
-        'config': 'gear',
-        'error': 'exclamation-triangle'
-    }
-    return icon_map.get(activity.get('type'), 'circle')
+    """Placeholder for activity icon function."""
+    return 'circle'
 
 def get_activity_color(activity):
     """Get the appropriate color for an activity type."""
@@ -2426,6 +3118,344 @@ def safe_execute(func):
                 html.P(error_msg, className="text-muted")
             ])
     return wrapper
+
+def validate_store_data(data):
+    """
+    Validate and clean data before storing in dcc.Store
+    
+    Args:
+        data (dict/list): Data to validate
+    
+    Returns:
+        dict/list or None: Validated data or None if invalid
+    """
+    if data is None:
+        return None
+    
+    # Remove None or empty values for dictionaries
+    if isinstance(data, dict):
+        return {k: v for k, v in data.items() if v is not None}
+    
+    # Remove None values for lists
+    if isinstance(data, list):
+        return [item for item in data if item is not None]
+    
+    return data
+
+def load_rules():
+    """
+    Load rules from a persistent storage or source
+    
+    Returns:
+        list or dict of rules
+    """
+    try:
+        # Implement your rule loading logic
+        # Example: reading from a JSON file or database
+        with open('rules.json', 'r') as f:
+            rules = json.load(f)
+        return rules
+    except FileNotFoundError:
+        logging.warning("Rules file not found. Returning empty list.")
+        return []
+    except json.JSONDecodeError:
+        logging.error("Invalid JSON in rules file")
+        return []
+
+def update_rules(current_rules):
+    """
+    Update rules based on current state
+    
+    Args:
+        current_rules (list or dict): Existing rules
+    
+    Returns:
+        Updated rules
+    """
+    try:
+        # Implement your rule update logic
+        # This could involve fetching from an API, database, or applying transformations
+        if current_rules is None:
+            return load_rules()
+        
+        # Example: Add a timestamp or version to rules
+        for rule in current_rules:
+            rule['last_updated'] = datetime.now().isoformat()
+        
+        return current_rules
+    except Exception as e:
+        logging.error(f"Error updating rules: {e}")
+        return current_rules
+
+@app.callback(
+    [Output('local', 'data'),
+     Output('rule-management-error', 'children'),
+     Output('store-initialization-trigger', 'data')],
+    [Input('update-rules-btn', 'n_clicks'),
+     Input('rule-management-content', 'children'),
+     Input('store-initialization-trigger', 'data')],
+    [State('local', 'data')],
+    prevent_initial_call=True
+)
+def prioritized_store_update(update_clicks, page_content, init_trigger, current_data):
+    """
+    Prioritized store update with comprehensive error handling
+    
+    Priorities:
+    1. Manual update via button
+    2. Initial load when no data exists
+    3. Preserve existing data
+    
+    Args:
+        update_clicks (int): Number of update button clicks
+        page_content (html): Page content (used as trigger)
+        init_trigger (int): Initialization trigger
+        current_data (dict/list): Current stored data
+    
+    Returns:
+        Tuple of (updated_data, error_message, trigger_increment)
+    """
+    ctx = dash.callback_context
+    trigger = ctx.triggered[0]['prop_id'].split('.')[0]
+    
+    try:
+        # Priority 1: Manual Update
+        if trigger == 'update-rules-btn' and update_clicks:
+            updated_rules = update_rules(current_data)
+            validated_rules = validate_store_data(updated_rules)
+            
+            error_message = dbc.Alert(
+                "Rules successfully updated!", 
+                color='success', 
+                className='mt-3'
+            ) if validated_rules else None
+            
+            return validated_rules, error_message, init_trigger + 1
+        
+        # Priority 2: Initial Load
+        if (trigger in ['rule-management-content', 'store-initialization-trigger']) and current_data is None:
+            rules = load_rules()
+            validated_rules = validate_store_data(rules)
+            
+            error_message = dbc.Alert(
+                "Rules initialized successfully!", 
+                color='info', 
+                className='mt-3'
+            ) if validated_rules else None
+            
+            return validated_rules, error_message, init_trigger + 1
+        
+        # Priority 3: Preserve Existing Data
+        return current_data, None, init_trigger
+    
+    except Exception as e:
+        error_message = dbc.Alert(
+            f"Error in store management: {str(e)}",
+            color='danger',
+            className='mt-3'
+        )
+        logging.error(f"Store update error: {e}")
+        return current_data, error_message, init_trigger
+
+# File Management Utilities
+def ensure_directories():
+    """
+    Ensure required directories exist in the project structure
+    """
+    directories = [
+        os.path.join('BONUS', 'assets', 'data'),
+        os.path.join('BONUS', 'assets', 'data', 'archive'),
+        os.path.join('BONUS', 'assets', 'logs')
+    ]
+    for directory in directories:
+        os.makedirs(directory, exist_ok=True)
+
+def archive_old_files(directory, max_age_days=30, archive_dir=None):
+    """
+    Move old files to archive directory
+    
+    Args:
+        directory (str): Source directory to scan
+        max_age_days (int): Maximum age of files to keep
+        archive_dir (str, optional): Destination archive directory
+    
+    Returns:
+        List of archived files
+    """
+    if archive_dir is None:
+        archive_dir = os.path.join(directory, 'archive')
+    
+    # Ensure archive directory exists
+    os.makedirs(archive_dir, exist_ok=True)
+    
+    archived_files = []
+    current_time = datetime.now()
+    
+    # Specific files to potentially archive
+    archivable_patterns = [
+        'execution_history*.json', 
+        'rule_execution_history*.json', 
+        'activities*.json'
+    ]
+    
+    for pattern in archivable_patterns:
+        for filename in glob.glob(os.path.join(directory, pattern)):
+            # Get file modification time
+            file_mod_time = datetime.fromtimestamp(os.path.getmtime(filename))
+            
+            # Calculate file age
+            file_age = (current_time - file_mod_time).days
+            
+            # Move file if older than max_age_days
+            if file_age > max_age_days:
+                archive_path = os.path.join(archive_dir, os.path.basename(filename))
+                try:
+                    shutil.move(filename, archive_path)
+                    archived_files.append(filename)
+                    logging.info(f"Archived old file: {filename}")
+                except Exception as e:
+                    logging.error(f"Error archiving {filename}: {e}")
+    
+    return archived_files
+
+def consolidate_json_files(directory):
+    """
+    Consolidate multiple JSON files with similar content
+    
+    Args:
+        directory (str): Directory to scan for JSON files
+    
+    Returns:
+        dict: Consolidated data
+    """
+    consolidated_data = {}
+    
+    # Patterns to consolidate
+    consolidation_patterns = [
+        'execution_history*.json',
+        'rule_execution_history*.json',
+        'activities*.json'
+    ]
+    
+    for pattern in consolidation_patterns:
+        matching_files = glob.glob(os.path.join(directory, pattern))
+        
+        for filename in matching_files:
+            try:
+                with open(filename, 'r') as f:
+                    file_data = json.load(f)
+                
+                # Merge lists if possible
+                key = os.path.basename(filename).replace('.json', '')
+                if isinstance(file_data, list):
+                    consolidated_data[key] = file_data
+                elif isinstance(file_data, dict):
+                    # Merge dictionary keys
+                    consolidated_data.update(file_data)
+            except Exception as e:
+                logging.error(f"Error processing {filename}: {e}")
+    
+    return consolidated_data
+
+def perform_data_cleanup(data_dir='BONUS/assets/data'):
+    """
+    Perform comprehensive data cleanup
+    - Archive old files
+    - Consolidate JSON files
+    - Clean up cache files
+    
+    Args:
+        data_dir (str): Path to data directory
+    
+    Returns:
+        dict: Cleanup summary
+    """
+    # Ensure directories exist
+    ensure_directories()
+    
+    # Archive old files
+    archive_dir = os.path.join(data_dir, 'archive')
+    archived_files = archive_old_files(data_dir, archive_dir=archive_dir)
+    
+    # Consolidate JSON files
+    consolidated_data = consolidate_json_files(data_dir)
+    
+    # Save consolidated data
+    if consolidated_data:
+        consolidated_filename = os.path.join(data_dir, 'consolidated_data.json')
+        try:
+            with open(consolidated_filename, 'w') as f:
+                json.dump(consolidated_data, f, indent=4)
+            logging.info(f"Saved consolidated data to {consolidated_filename}")
+        except Exception as e:
+            logging.error(f"Error saving consolidated data: {e}")
+    
+    # Clean up memoization cache files
+    cache_files = [
+        'rules_processing_cache.json',
+        'column_statistics_cache.json',
+        'rule_execution_cache.json',
+        'rule_management_content_cache.json'
+    ]
+    
+    cleaned_cache_files = []
+    for cache_file in cache_files:
+        cache_path = os.path.join(data_dir, cache_file)
+        try:
+            # Remove cache files older than 7 days
+            if os.path.exists(cache_path):
+                file_mod_time = datetime.fromtimestamp(os.path.getmtime(cache_path))
+                if (datetime.now() - file_mod_time).days > 7:
+                    os.remove(cache_path)
+                    cleaned_cache_files.append(cache_file)
+                    logging.info(f"Removed old cache file: {cache_file}")
+        except Exception as e:
+            logging.error(f"Error cleaning cache file {cache_file}: {e}")
+    
+    return {
+        'archived_files': archived_files,
+        'consolidated_files': list(consolidated_data.keys()),
+        'cleaned_cache_files': cleaned_cache_files
+    }
+
+# Periodic Cleanup Scheduler
+def schedule_periodic_cleanup():
+    """
+    Schedule periodic data cleanup tasks
+    """
+    scheduler = BackgroundScheduler()
+    
+    # Run cleanup every 7 days
+    scheduler.add_job(
+        perform_data_cleanup, 
+        'interval', 
+        days=7,
+        id='periodic_data_cleanup',
+        max_instances=1,
+        replace_existing=True
+    )
+    
+    # Run a lightweight cleanup daily
+    scheduler.add_job(
+        ensure_directories,
+        'interval',
+        days=1,
+        id='ensure_directories',
+        max_instances=1,
+        replace_existing=True
+    )
+    
+    # Start the scheduler
+    try:
+        scheduler.start()
+        logging.info("Periodic cleanup scheduler started successfully")
+    except Exception as e:
+        logging.error(f"Error starting periodic cleanup scheduler: {e}")
+    
+    return scheduler
+
+# Initialize scheduler on app startup
+cleanup_scheduler = schedule_periodic_cleanup()
 
 if __name__ == '__main__':
     app.run_server(debug=True, port=8050)
