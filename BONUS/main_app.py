@@ -1091,21 +1091,13 @@ def execute_rules(n_clicks, table_name, pathname):
         if 'error' in table_data:
             return html.Div(f"Error loading table: {table_data['error']}"), dash.no_update, dash.no_update
             
-        # Load rules from JSON
-        rules_template_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'rule_templates.json')
-        with open(rules_template_path, 'r') as f:
-            rules_data = json.load(f)
+        # Load rules using the same source as rule management
+        rules = data_loader.load_all_rules()
+        if isinstance(rules, dict) and 'error' in rules:
+            return html.Div(f"Error loading rules: {rules['error']}"), dash.no_update, dash.no_update
             
         # Get all active rules
-        active_rules = []
-        for category_name in ['gdpr_rules', 'data_quality_rules', 'validation_rules']:
-            if category_name in rules_data:
-                category_rules = rules_data[category_name]
-                for rule in category_rules:
-                    if rule.get('active', True):
-                        # Set the category based on the category_name
-                        rule['category'] = category_name.replace('_rules', '')
-                        active_rules.append(rule)
+        active_rules = [rule for rule in rules if rule.get('active', True)]
                 
         # Initialize results
         execution_results = {

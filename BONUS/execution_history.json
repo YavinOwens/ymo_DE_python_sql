@@ -7201,5 +7201,2127 @@
         ]
       }
     ]
+  },
+  {
+    "timestamp": "2024-12-18 12:26:16",
+    "table_name": "per",
+    "rules_executed": 129,
+    "passed_rules": 119,
+    "failed_rules": 10,
+    "results": [
+      {
+        "rule_id": "gdpr_001",
+        "rule_name": "PII Data Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_003",
+        "rule_name": "SSN Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_004",
+        "rule_name": "Credit Card Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_005",
+        "rule_name": "Password Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_008",
+        "rule_name": "Phone Number Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_011",
+        "rule_name": "HTML Tag Check",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_012",
+        "rule_name": "SQL Injection Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_014",
+        "rule_name": "Unicode Control Chars",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "File Path Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "JWT Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "API Key Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Hash Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "XML Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "Binary Data Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "Script Tag Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "IBAN Format",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "Vehicle VIN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "OAuth Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "Geographic Coordinates",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "ISBN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_030",
+        "rule_name": "Domain Name Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "Credit Card Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "Passport Number Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "Date of Birth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_018",
+        "rule_name": "National ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_019",
+        "rule_name": "Bank Account Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Healthcare ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "Driver License Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "IP Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "GPS Coordinate Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "Password Hash Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "JWT Token Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "MAC Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "URL with Auth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_028",
+        "rule_name": "OAuth Token Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "API Key Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq1",
+        "rule_name": "No Missing Values",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq2",
+        "rule_name": "Date Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq3",
+        "rule_name": "Email Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq_016",
+        "rule_name": "Decimal Precision Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_017",
+        "rule_name": "Time Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_018",
+        "rule_name": "URL Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_019",
+        "rule_name": "Currency Format Check",
+        "category": "data_quality",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_020",
+        "rule_name": "Percentage Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_021",
+        "rule_name": "String Length Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_022",
+        "rule_name": "Alphanumeric Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_023",
+        "rule_name": "Date Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_024",
+        "rule_name": "Case Consistency Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_025",
+        "rule_name": "Whitespace Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_026",
+        "rule_name": "Special Character Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_027",
+        "rule_name": "Word Count Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_028",
+        "rule_name": "Duplicate Words Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Error",
+        "details": [
+          "Error executing rule: cannot refer to an open group at position 39"
+        ]
+      },
+      {
+        "rule_id": "dq_029",
+        "rule_name": "Number Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_030",
+        "rule_name": "JSON Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "v1",
+        "rule_name": "Salary Range Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v2",
+        "rule_name": "Department ID Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v3",
+        "rule_name": "Employee Age Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "b1",
+        "rule_name": "Manager Assignment",
+        "category": "business",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "b2",
+        "rule_name": "Budget Constraint",
+        "category": "business",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "b3",
+        "rule_name": "Location Requirement",
+        "category": "business",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "tl_001",
+        "rule_name": "Minimum Row Count",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_002",
+        "rule_name": "No Duplicate Rows",
+        "category": "table_level",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_003",
+        "rule_name": "Column Presence",
+        "category": "table_level",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_004",
+        "rule_name": "Primary Key Check",
+        "category": "table_level",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_005",
+        "rule_name": "Foreign Key Check",
+        "category": "table_level",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_006",
+        "rule_name": "Index Check",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_007",
+        "rule_name": "Column Data Type Check",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_008",
+        "rule_name": "Column Value Check",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_009",
+        "rule_name": "Table Size Check",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_010",
+        "rule_name": "Data Distribution Check",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_011",
+        "rule_name": "Schema Version Check",
+        "category": "table_level",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_012",
+        "rule_name": "Row Count Ratio",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_013",
+        "rule_name": "Column Dependency",
+        "category": "table_level",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_014",
+        "rule_name": "Update Frequency",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_016",
+        "rule_name": "Partition Balance",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_017",
+        "rule_name": "Index Coverage",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_018",
+        "rule_name": "Temporal Consistency",
+        "category": "table_level",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_019",
+        "rule_name": "Composite Key Uniqueness",
+        "category": "table_level",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_020",
+        "rule_name": "Reference Integrity",
+        "category": "table_level",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_021",
+        "rule_name": "Table Growth Rate",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_022",
+        "rule_name": "Column Value Distribution",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_023",
+        "rule_name": "Cross-Table Consistency",
+        "category": "table_level",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_024",
+        "rule_name": "Historical Data Retention",
+        "category": "table_level",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_025",
+        "rule_name": "Column Correlation Matrix",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_026",
+        "rule_name": "Data Freshness",
+        "category": "table_level",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_016",
+        "rule_name": "Row Count Growth Rate",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_017",
+        "rule_name": "Column Value Distribution",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_018",
+        "rule_name": "Update Frequency Check",
+        "category": "table_level",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_019",
+        "rule_name": "Schema Stability Check",
+        "category": "table_level",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_020",
+        "rule_name": "Data Freshness Check",
+        "category": "table_level",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_021",
+        "rule_name": "Column Dependency Check",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_022",
+        "rule_name": "Data Volatility Check",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_023",
+        "rule_name": "Column Cardinality Ratio",
+        "category": "table_level",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_024",
+        "rule_name": "Null Pattern Check",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_025",
+        "rule_name": "Value Range Stability",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_026",
+        "rule_name": "Cross-Column Correlation",
+        "category": "table_level",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_027",
+        "rule_name": "Temporal Pattern Check",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_028",
+        "rule_name": "Data Completeness Ratio",
+        "category": "table_level",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_029",
+        "rule_name": "Duplicate Row Pattern",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_030",
+        "rule_name": "Data Distribution Stability",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "ppl_001",
+        "rule_name": "Age Range Check",
+        "category": "table_specific/people_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "ppl_002",
+        "rule_name": "Name Format",
+        "category": "table_specific/people_table",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "ppl_003",
+        "rule_name": "Email Domain Check",
+        "category": "table_specific/people_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "ppl_004",
+        "rule_name": "Unique Person Check",
+        "category": "table_specific/people_table",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "ppl_005",
+        "rule_name": "Department Assignment",
+        "category": "table_specific/people_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "ppl_006",
+        "rule_name": "Phone Number Format",
+        "category": "table_specific/people_table",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "ppl_007",
+        "rule_name": "Employee ID Format",
+        "category": "table_specific/people_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "ppl_008",
+        "rule_name": "Hire Date Check",
+        "category": "table_specific/people_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "ppl_009",
+        "rule_name": "Manager Assignment",
+        "category": "table_specific/people_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "ppl_010",
+        "rule_name": "Salary Range",
+        "category": "table_specific/people_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "asg_001",
+        "rule_name": "Assignment Duration",
+        "category": "table_specific/assignments_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "asg_002",
+        "rule_name": "Project Code Format",
+        "category": "table_specific/assignments_table",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "asg_003",
+        "rule_name": "Assignment Overlap",
+        "category": "table_specific/assignments_table",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "asg_004",
+        "rule_name": "Role Level Check",
+        "category": "table_specific/assignments_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "asg_005",
+        "rule_name": "Assignment Status",
+        "category": "table_specific/assignments_table",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "asg_006",
+        "rule_name": "Billable Hours Range",
+        "category": "table_specific/assignments_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "asg_007",
+        "rule_name": "Client Reference",
+        "category": "table_specific/assignments_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "asg_008",
+        "rule_name": "Assignment Priority",
+        "category": "table_specific/assignments_table",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "asg_009",
+        "rule_name": "Budget Allocation",
+        "category": "table_specific/assignments_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "asg_010",
+        "rule_name": "Skill Match",
+        "category": "table_specific/assignments_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "addr_001",
+        "rule_name": "Postal Code Format",
+        "category": "table_specific/address_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "addr_002",
+        "rule_name": "Country Code",
+        "category": "table_specific/address_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "addr_003",
+        "rule_name": "State/Province Format",
+        "category": "table_specific/address_table",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "addr_005",
+        "rule_name": "City Name Format",
+        "category": "table_specific/address_table",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "addr_006",
+        "rule_name": "Primary Address Flag",
+        "category": "table_specific/address_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "addr_007",
+        "rule_name": "Address Type",
+        "category": "table_specific/address_table",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "addr_008",
+        "rule_name": "Geographic Coordinates",
+        "category": "table_specific/address_table",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "addr_009",
+        "rule_name": "Address Completeness",
+        "category": "table_specific/address_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "addr_010",
+        "rule_name": "Special Characters",
+        "category": "table_specific/address_table",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      }
+    ]
+  },
+  {
+    "timestamp": "2024-12-18 12:27:28",
+    "table_name": "per",
+    "rules_executed": 129,
+    "passed_rules": 119,
+    "failed_rules": 10,
+    "results": [
+      {
+        "rule_id": "gdpr_001",
+        "rule_name": "PII Data Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_003",
+        "rule_name": "SSN Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_004",
+        "rule_name": "Credit Card Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_005",
+        "rule_name": "Password Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_008",
+        "rule_name": "Phone Number Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_011",
+        "rule_name": "HTML Tag Check",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_012",
+        "rule_name": "SQL Injection Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_014",
+        "rule_name": "Unicode Control Chars",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "File Path Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "JWT Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "API Key Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Hash Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "XML Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "Binary Data Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "Script Tag Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "IBAN Format",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "Vehicle VIN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "OAuth Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "Geographic Coordinates",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "ISBN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_030",
+        "rule_name": "Domain Name Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "Credit Card Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "Passport Number Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "Date of Birth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_018",
+        "rule_name": "National ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_019",
+        "rule_name": "Bank Account Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Healthcare ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "Driver License Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "IP Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "GPS Coordinate Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "Password Hash Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "JWT Token Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "MAC Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "URL with Auth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_028",
+        "rule_name": "OAuth Token Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "API Key Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq1",
+        "rule_name": "No Missing Values",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq2",
+        "rule_name": "Date Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq3",
+        "rule_name": "Email Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq_016",
+        "rule_name": "Decimal Precision Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_017",
+        "rule_name": "Time Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_018",
+        "rule_name": "URL Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_019",
+        "rule_name": "Currency Format Check",
+        "category": "data_quality",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_020",
+        "rule_name": "Percentage Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_021",
+        "rule_name": "String Length Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_022",
+        "rule_name": "Alphanumeric Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_023",
+        "rule_name": "Date Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_024",
+        "rule_name": "Case Consistency Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_025",
+        "rule_name": "Whitespace Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_026",
+        "rule_name": "Special Character Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_027",
+        "rule_name": "Word Count Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_028",
+        "rule_name": "Duplicate Words Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Error",
+        "details": [
+          "Error executing rule: cannot refer to an open group at position 39"
+        ]
+      },
+      {
+        "rule_id": "dq_029",
+        "rule_name": "Number Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_030",
+        "rule_name": "JSON Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "v1",
+        "rule_name": "Salary Range Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v2",
+        "rule_name": "Department ID Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v3",
+        "rule_name": "Employee Age Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "b1",
+        "rule_name": "Manager Assignment",
+        "category": "business",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "b2",
+        "rule_name": "Budget Constraint",
+        "category": "business",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "b3",
+        "rule_name": "Location Requirement",
+        "category": "business",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "tl_001",
+        "rule_name": "Minimum Row Count",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_002",
+        "rule_name": "No Duplicate Rows",
+        "category": "table_level",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_003",
+        "rule_name": "Column Presence",
+        "category": "table_level",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_004",
+        "rule_name": "Primary Key Check",
+        "category": "table_level",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_005",
+        "rule_name": "Foreign Key Check",
+        "category": "table_level",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_006",
+        "rule_name": "Index Check",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_007",
+        "rule_name": "Column Data Type Check",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_008",
+        "rule_name": "Column Value Check",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_009",
+        "rule_name": "Table Size Check",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_010",
+        "rule_name": "Data Distribution Check",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_011",
+        "rule_name": "Schema Version Check",
+        "category": "table_level",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_012",
+        "rule_name": "Row Count Ratio",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_013",
+        "rule_name": "Column Dependency",
+        "category": "table_level",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_014",
+        "rule_name": "Update Frequency",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_016",
+        "rule_name": "Partition Balance",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_017",
+        "rule_name": "Index Coverage",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_018",
+        "rule_name": "Temporal Consistency",
+        "category": "table_level",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_019",
+        "rule_name": "Composite Key Uniqueness",
+        "category": "table_level",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_020",
+        "rule_name": "Reference Integrity",
+        "category": "table_level",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_021",
+        "rule_name": "Table Growth Rate",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_022",
+        "rule_name": "Column Value Distribution",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_023",
+        "rule_name": "Cross-Table Consistency",
+        "category": "table_level",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_024",
+        "rule_name": "Historical Data Retention",
+        "category": "table_level",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_025",
+        "rule_name": "Column Correlation Matrix",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_026",
+        "rule_name": "Data Freshness",
+        "category": "table_level",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_016",
+        "rule_name": "Row Count Growth Rate",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_017",
+        "rule_name": "Column Value Distribution",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_018",
+        "rule_name": "Update Frequency Check",
+        "category": "table_level",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_019",
+        "rule_name": "Schema Stability Check",
+        "category": "table_level",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_020",
+        "rule_name": "Data Freshness Check",
+        "category": "table_level",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_021",
+        "rule_name": "Column Dependency Check",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_022",
+        "rule_name": "Data Volatility Check",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_023",
+        "rule_name": "Column Cardinality Ratio",
+        "category": "table_level",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_024",
+        "rule_name": "Null Pattern Check",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_025",
+        "rule_name": "Value Range Stability",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_026",
+        "rule_name": "Cross-Column Correlation",
+        "category": "table_level",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_027",
+        "rule_name": "Temporal Pattern Check",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_028",
+        "rule_name": "Data Completeness Ratio",
+        "category": "table_level",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_029",
+        "rule_name": "Duplicate Row Pattern",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "tl_030",
+        "rule_name": "Data Distribution Stability",
+        "category": "table_level",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "ppl_001",
+        "rule_name": "Age Range Check",
+        "category": "table_specific/people_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "ppl_002",
+        "rule_name": "Name Format",
+        "category": "table_specific/people_table",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "ppl_003",
+        "rule_name": "Email Domain Check",
+        "category": "table_specific/people_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "ppl_004",
+        "rule_name": "Unique Person Check",
+        "category": "table_specific/people_table",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "ppl_005",
+        "rule_name": "Department Assignment",
+        "category": "table_specific/people_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "ppl_006",
+        "rule_name": "Phone Number Format",
+        "category": "table_specific/people_table",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "ppl_007",
+        "rule_name": "Employee ID Format",
+        "category": "table_specific/people_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "ppl_008",
+        "rule_name": "Hire Date Check",
+        "category": "table_specific/people_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "ppl_009",
+        "rule_name": "Manager Assignment",
+        "category": "table_specific/people_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "ppl_010",
+        "rule_name": "Salary Range",
+        "category": "table_specific/people_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "asg_001",
+        "rule_name": "Assignment Duration",
+        "category": "table_specific/assignments_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "asg_002",
+        "rule_name": "Project Code Format",
+        "category": "table_specific/assignments_table",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "asg_003",
+        "rule_name": "Assignment Overlap",
+        "category": "table_specific/assignments_table",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "asg_004",
+        "rule_name": "Role Level Check",
+        "category": "table_specific/assignments_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "asg_005",
+        "rule_name": "Assignment Status",
+        "category": "table_specific/assignments_table",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "asg_006",
+        "rule_name": "Billable Hours Range",
+        "category": "table_specific/assignments_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "asg_007",
+        "rule_name": "Client Reference",
+        "category": "table_specific/assignments_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "asg_008",
+        "rule_name": "Assignment Priority",
+        "category": "table_specific/assignments_table",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "asg_009",
+        "rule_name": "Budget Allocation",
+        "category": "table_specific/assignments_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "asg_010",
+        "rule_name": "Skill Match",
+        "category": "table_specific/assignments_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "addr_001",
+        "rule_name": "Postal Code Format",
+        "category": "table_specific/address_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "addr_002",
+        "rule_name": "Country Code",
+        "category": "table_specific/address_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "addr_003",
+        "rule_name": "State/Province Format",
+        "category": "table_specific/address_table",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "addr_005",
+        "rule_name": "City Name Format",
+        "category": "table_specific/address_table",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "addr_006",
+        "rule_name": "Primary Address Flag",
+        "category": "table_specific/address_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "addr_007",
+        "rule_name": "Address Type",
+        "category": "table_specific/address_table",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "addr_008",
+        "rule_name": "Geographic Coordinates",
+        "category": "table_specific/address_table",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "addr_009",
+        "rule_name": "Address Completeness",
+        "category": "table_specific/address_table",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "addr_010",
+        "rule_name": "Special Characters",
+        "category": "table_specific/address_table",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      }
+    ]
   }
 ]
