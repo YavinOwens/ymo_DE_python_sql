@@ -3,14 +3,22 @@ import sqlite3
 from typing import Dict, List, Optional
 import json
 from sqlalchemy import create_engine, inspect, text
-from config import DB_URI, DB_PATH
-import pandas as pd
 import contextlib
 import os
 from datetime import datetime
+from config import DB_PATH
 
 class DataLoader:
     def __init__(self):
+        """Initialize the DataLoader with data directory."""
+        self.data_dir = os.path.dirname(os.path.abspath(__file__))
+        self.execution_history_file = os.path.join(self.data_dir, 'execution_history.json')
+        
+        # Initialize execution history file if it doesn't exist
+        if not os.path.exists(self.execution_history_file):
+            with open(self.execution_history_file, 'w') as f:
+                json.dump([], f)
+        
         self.db_path = DB_PATH
     
     @contextlib.contextmanager
@@ -339,7 +347,7 @@ class DataLoader:
     def save_rule_status(self, rule_id: str, new_status: bool) -> dict:
         """Save the updated rule status to the rule templates file."""
         try:
-            rule_file_path = os.path.join(os.path.dirname(__file__), 'rule_templates.json')
+            rule_file_path = os.path.join(self.data_dir, 'rule_templates.json')
             with open(rule_file_path, 'r') as f:
                 rules_data = json.load(f)
             
@@ -409,24 +417,87 @@ class DataLoader:
     def _store_execution_history(self, execution_summary):
         """Store rule execution history in a JSON file."""
         try:
-            with open('rule_execution_history.json', 'r') as f:
+            with open(self.execution_history_file, 'r') as f:
                 history = json.load(f)
         except FileNotFoundError:
             history = []
         
         history.append(execution_summary)
         
-        with open('rule_execution_history.json', 'w') as f:
+        with open(self.execution_history_file, 'w') as f:
             json.dump(history, f, indent=2)
     
-    def get_execution_history(self):
-        """Retrieve rule execution history."""
+    def save_execution_results(self, execution_results):
+        """Save rule execution results to history."""
         try:
-            with open('rule_execution_history.json', 'r') as f:
-                history = json.load(f)
-            return history
-        except FileNotFoundError:
+            # Load existing history
+            if os.path.exists(self.execution_history_file):
+                with open(self.execution_history_file, 'r') as f:
+                    history = json.load(f)
+            else:
+                history = []
+            
+            # Add new results
+            history.append(execution_results)
+            
+            # Keep only last 100 executions
+            if len(history) > 100:
+                history = history[-100:]
+            
+            # Save updated history
+            with open(self.execution_history_file, 'w') as f:
+                json.dump(history, f, indent=2)
+                
+        except Exception as e:
+            print(f"Error saving execution results: {str(e)}")
+            
+    def get_execution_history(self):
+        """Get rule execution history."""
+        try:
+            if os.path.exists(self.execution_history_file):
+                with open(self.execution_history_file, 'r') as f:
+                    return json.load(f)
             return []
+        except Exception as e:
+            print(f"Error loading execution history: {str(e)}")
+            return []
+    
+    def get_gdpr_rules(self):
+        """Get GDPR rules."""
+        return [
+            {
+                'id': 'gdpr_001',
+                'name': 'PII Data Detection',
+                'description': 'Detect personally identifiable information in columns',
+                'category': 'gdpr',
+                'type': 'pattern_match',
+                'severity': 'Critical',
+                'active': True
+            },
+            {
+                'id': 'gdpr_002',
+                'name': 'Sensitive Data Detection',
+                'description': 'Detect sensitive information in columns',
+                'category': 'gdpr',
+                'type': 'pattern_match',
+                'severity': 'High',
+                'active': True
+            }
+        ]
+
+    def get_bespoke_gdpr_rules(self):
+        """Get bespoke GDPR rules."""
+        return [
+            {
+                'id': 'bespoke_001',
+                'name': 'Custom PII Detection',
+                'description': 'Custom rules for PII detection',
+                'category': 'bespoke_gdpr',
+                'type': 'pattern_match',
+                'severity': 'Critical',
+                'active': True
+            }
+        ]
 
 def load_rule_templates() -> Dict:
     """Load rule templates from JSON file."""
