@@ -1,1 +1,7205 @@
-[]
+[
+  {
+    "timestamp": "2024-12-18 11:40:11",
+    "table_name": "person_addresses",
+    "rules_executed": 57,
+    "passed_rules": 49,
+    "failed_rules": 8,
+    "results": [
+      {
+        "rule_id": "gdpr_001",
+        "rule_name": "PII Data Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_003",
+        "rule_name": "SSN Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_004",
+        "rule_name": "Credit Card Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_005",
+        "rule_name": "Password Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_008",
+        "rule_name": "Phone Number Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_011",
+        "rule_name": "HTML Tag Check",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_012",
+        "rule_name": "SQL Injection Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_014",
+        "rule_name": "Unicode Control Chars",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "File Path Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "JWT Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "API Key Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Hash Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "XML Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "Binary Data Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "Script Tag Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "IBAN Format",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "Vehicle VIN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "OAuth Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "Geographic Coordinates",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "ISBN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_030",
+        "rule_name": "Domain Name Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "Credit Card Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "Passport Number Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "Date of Birth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_018",
+        "rule_name": "National ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_019",
+        "rule_name": "Bank Account Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Healthcare ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "Driver License Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "IP Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "GPS Coordinate Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "Password Hash Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "JWT Token Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "MAC Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "URL with Auth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_028",
+        "rule_name": "OAuth Token Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "API Key Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq1",
+        "rule_name": "No Missing Values",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq2",
+        "rule_name": "Date Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq3",
+        "rule_name": "Email Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq_016",
+        "rule_name": "Decimal Precision Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: division by zero"
+        ]
+      },
+      {
+        "rule_id": "dq_017",
+        "rule_name": "Time Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_018",
+        "rule_name": "URL Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_019",
+        "rule_name": "Currency Format Check",
+        "category": "data_quality",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_020",
+        "rule_name": "Percentage Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_021",
+        "rule_name": "String Length Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_022",
+        "rule_name": "Alphanumeric Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_023",
+        "rule_name": "Date Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_024",
+        "rule_name": "Case Consistency Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_025",
+        "rule_name": "Whitespace Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_026",
+        "rule_name": "Special Character Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_027",
+        "rule_name": "Word Count Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_028",
+        "rule_name": "Duplicate Words Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Error",
+        "details": [
+          "Error executing rule: cannot refer to an open group at position 39"
+        ]
+      },
+      {
+        "rule_id": "dq_029",
+        "rule_name": "Number Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_030",
+        "rule_name": "JSON Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "v1",
+        "rule_name": "Salary Range Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v2",
+        "rule_name": "Department ID Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v3",
+        "rule_name": "Employee Age Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      }
+    ]
+  },
+  {
+    "timestamp": "2024-12-18 11:40:27",
+    "table_name": "per",
+    "rules_executed": 57,
+    "passed_rules": 50,
+    "failed_rules": 7,
+    "results": [
+      {
+        "rule_id": "gdpr_001",
+        "rule_name": "PII Data Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_003",
+        "rule_name": "SSN Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_004",
+        "rule_name": "Credit Card Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_005",
+        "rule_name": "Password Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_008",
+        "rule_name": "Phone Number Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_011",
+        "rule_name": "HTML Tag Check",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_012",
+        "rule_name": "SQL Injection Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_014",
+        "rule_name": "Unicode Control Chars",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "File Path Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "JWT Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "API Key Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Hash Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "XML Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "Binary Data Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "Script Tag Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "IBAN Format",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "Vehicle VIN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "OAuth Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "Geographic Coordinates",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "ISBN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_030",
+        "rule_name": "Domain Name Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "Credit Card Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "Passport Number Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "Date of Birth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_018",
+        "rule_name": "National ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_019",
+        "rule_name": "Bank Account Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Healthcare ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "Driver License Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "IP Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "GPS Coordinate Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "Password Hash Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "JWT Token Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "MAC Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "URL with Auth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_028",
+        "rule_name": "OAuth Token Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "API Key Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq1",
+        "rule_name": "No Missing Values",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq2",
+        "rule_name": "Date Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq3",
+        "rule_name": "Email Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq_016",
+        "rule_name": "Decimal Precision Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_017",
+        "rule_name": "Time Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_018",
+        "rule_name": "URL Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_019",
+        "rule_name": "Currency Format Check",
+        "category": "data_quality",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_020",
+        "rule_name": "Percentage Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_021",
+        "rule_name": "String Length Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_022",
+        "rule_name": "Alphanumeric Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_023",
+        "rule_name": "Date Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_024",
+        "rule_name": "Case Consistency Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_025",
+        "rule_name": "Whitespace Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_026",
+        "rule_name": "Special Character Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_027",
+        "rule_name": "Word Count Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_028",
+        "rule_name": "Duplicate Words Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Error",
+        "details": [
+          "Error executing rule: cannot refer to an open group at position 39"
+        ]
+      },
+      {
+        "rule_id": "dq_029",
+        "rule_name": "Number Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_030",
+        "rule_name": "JSON Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "v1",
+        "rule_name": "Salary Range Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v2",
+        "rule_name": "Department ID Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v3",
+        "rule_name": "Employee Age Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      }
+    ]
+  },
+  {
+    "timestamp": "2024-12-18 11:40:41",
+    "table_name": "person_addresses",
+    "rules_executed": 57,
+    "passed_rules": 49,
+    "failed_rules": 8,
+    "results": [
+      {
+        "rule_id": "gdpr_001",
+        "rule_name": "PII Data Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_003",
+        "rule_name": "SSN Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_004",
+        "rule_name": "Credit Card Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_005",
+        "rule_name": "Password Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_008",
+        "rule_name": "Phone Number Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_011",
+        "rule_name": "HTML Tag Check",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_012",
+        "rule_name": "SQL Injection Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_014",
+        "rule_name": "Unicode Control Chars",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "File Path Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "JWT Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "API Key Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Hash Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "XML Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "Binary Data Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "Script Tag Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "IBAN Format",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "Vehicle VIN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "OAuth Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "Geographic Coordinates",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "ISBN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_030",
+        "rule_name": "Domain Name Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "Credit Card Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "Passport Number Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "Date of Birth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_018",
+        "rule_name": "National ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_019",
+        "rule_name": "Bank Account Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Healthcare ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "Driver License Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "IP Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "GPS Coordinate Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "Password Hash Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "JWT Token Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "MAC Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "URL with Auth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_028",
+        "rule_name": "OAuth Token Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "API Key Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq1",
+        "rule_name": "No Missing Values",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq2",
+        "rule_name": "Date Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq3",
+        "rule_name": "Email Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq_016",
+        "rule_name": "Decimal Precision Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: division by zero"
+        ]
+      },
+      {
+        "rule_id": "dq_017",
+        "rule_name": "Time Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_018",
+        "rule_name": "URL Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_019",
+        "rule_name": "Currency Format Check",
+        "category": "data_quality",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_020",
+        "rule_name": "Percentage Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_021",
+        "rule_name": "String Length Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_022",
+        "rule_name": "Alphanumeric Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_023",
+        "rule_name": "Date Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_024",
+        "rule_name": "Case Consistency Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_025",
+        "rule_name": "Whitespace Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_026",
+        "rule_name": "Special Character Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_027",
+        "rule_name": "Word Count Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_028",
+        "rule_name": "Duplicate Words Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Error",
+        "details": [
+          "Error executing rule: cannot refer to an open group at position 39"
+        ]
+      },
+      {
+        "rule_id": "dq_029",
+        "rule_name": "Number Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_030",
+        "rule_name": "JSON Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "v1",
+        "rule_name": "Salary Range Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v2",
+        "rule_name": "Department ID Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v3",
+        "rule_name": "Employee Age Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      }
+    ]
+  },
+  {
+    "timestamp": "2024-12-18 11:43:17",
+    "table_name": "assignments",
+    "rules_executed": 57,
+    "passed_rules": 50,
+    "failed_rules": 7,
+    "results": [
+      {
+        "rule_id": "gdpr_001",
+        "rule_name": "PII Data Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_003",
+        "rule_name": "SSN Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_004",
+        "rule_name": "Credit Card Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_005",
+        "rule_name": "Password Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_008",
+        "rule_name": "Phone Number Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_011",
+        "rule_name": "HTML Tag Check",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_012",
+        "rule_name": "SQL Injection Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_014",
+        "rule_name": "Unicode Control Chars",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "File Path Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "JWT Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "API Key Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Hash Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "XML Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "Binary Data Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "Script Tag Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "IBAN Format",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "Vehicle VIN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "OAuth Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "Geographic Coordinates",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "ISBN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_030",
+        "rule_name": "Domain Name Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "Credit Card Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "Passport Number Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "Date of Birth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_018",
+        "rule_name": "National ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_019",
+        "rule_name": "Bank Account Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Healthcare ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "Driver License Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "IP Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "GPS Coordinate Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "Password Hash Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "JWT Token Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "MAC Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "URL with Auth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_028",
+        "rule_name": "OAuth Token Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "API Key Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq1",
+        "rule_name": "No Missing Values",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq2",
+        "rule_name": "Date Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq3",
+        "rule_name": "Email Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq_016",
+        "rule_name": "Decimal Precision Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_017",
+        "rule_name": "Time Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_018",
+        "rule_name": "URL Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_019",
+        "rule_name": "Currency Format Check",
+        "category": "data_quality",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_020",
+        "rule_name": "Percentage Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_021",
+        "rule_name": "String Length Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_022",
+        "rule_name": "Alphanumeric Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_023",
+        "rule_name": "Date Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_024",
+        "rule_name": "Case Consistency Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_025",
+        "rule_name": "Whitespace Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_026",
+        "rule_name": "Special Character Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_027",
+        "rule_name": "Word Count Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_028",
+        "rule_name": "Duplicate Words Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Error",
+        "details": [
+          "Error executing rule: cannot refer to an open group at position 39"
+        ]
+      },
+      {
+        "rule_id": "dq_029",
+        "rule_name": "Number Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_030",
+        "rule_name": "JSON Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "v1",
+        "rule_name": "Salary Range Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v2",
+        "rule_name": "Department ID Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v3",
+        "rule_name": "Employee Age Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      }
+    ]
+  },
+  {
+    "timestamp": "2024-12-18 11:43:23",
+    "table_name": "addresses",
+    "rules_executed": 57,
+    "passed_rules": 50,
+    "failed_rules": 7,
+    "results": [
+      {
+        "rule_id": "gdpr_001",
+        "rule_name": "PII Data Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_003",
+        "rule_name": "SSN Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_004",
+        "rule_name": "Credit Card Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_005",
+        "rule_name": "Password Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_008",
+        "rule_name": "Phone Number Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_011",
+        "rule_name": "HTML Tag Check",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_012",
+        "rule_name": "SQL Injection Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_014",
+        "rule_name": "Unicode Control Chars",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "File Path Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "JWT Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "API Key Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Hash Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "XML Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "Binary Data Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "Script Tag Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "IBAN Format",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "Vehicle VIN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "OAuth Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "Geographic Coordinates",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "ISBN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_030",
+        "rule_name": "Domain Name Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "Credit Card Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "Passport Number Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "Date of Birth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_018",
+        "rule_name": "National ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_019",
+        "rule_name": "Bank Account Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Healthcare ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "Driver License Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "IP Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "GPS Coordinate Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "Password Hash Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "JWT Token Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "MAC Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "URL with Auth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_028",
+        "rule_name": "OAuth Token Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "API Key Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq1",
+        "rule_name": "No Missing Values",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq2",
+        "rule_name": "Date Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq3",
+        "rule_name": "Email Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq_016",
+        "rule_name": "Decimal Precision Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_017",
+        "rule_name": "Time Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_018",
+        "rule_name": "URL Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_019",
+        "rule_name": "Currency Format Check",
+        "category": "data_quality",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_020",
+        "rule_name": "Percentage Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_021",
+        "rule_name": "String Length Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_022",
+        "rule_name": "Alphanumeric Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_023",
+        "rule_name": "Date Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_024",
+        "rule_name": "Case Consistency Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_025",
+        "rule_name": "Whitespace Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_026",
+        "rule_name": "Special Character Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_027",
+        "rule_name": "Word Count Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_028",
+        "rule_name": "Duplicate Words Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Error",
+        "details": [
+          "Error executing rule: cannot refer to an open group at position 39"
+        ]
+      },
+      {
+        "rule_id": "dq_029",
+        "rule_name": "Number Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_030",
+        "rule_name": "JSON Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "v1",
+        "rule_name": "Salary Range Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v2",
+        "rule_name": "Department ID Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v3",
+        "rule_name": "Employee Age Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      }
+    ]
+  },
+  {
+    "timestamp": "2024-12-18 11:43:26",
+    "table_name": "person_assignments",
+    "rules_executed": 57,
+    "passed_rules": 49,
+    "failed_rules": 8,
+    "results": [
+      {
+        "rule_id": "gdpr_001",
+        "rule_name": "PII Data Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_003",
+        "rule_name": "SSN Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_004",
+        "rule_name": "Credit Card Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_005",
+        "rule_name": "Password Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_008",
+        "rule_name": "Phone Number Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_011",
+        "rule_name": "HTML Tag Check",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_012",
+        "rule_name": "SQL Injection Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_014",
+        "rule_name": "Unicode Control Chars",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "File Path Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "JWT Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "API Key Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Hash Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "XML Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "Binary Data Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "Script Tag Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "IBAN Format",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "Vehicle VIN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "OAuth Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "Geographic Coordinates",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "ISBN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_030",
+        "rule_name": "Domain Name Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "Credit Card Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "Passport Number Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "Date of Birth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_018",
+        "rule_name": "National ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_019",
+        "rule_name": "Bank Account Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Healthcare ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "Driver License Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "IP Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "GPS Coordinate Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "Password Hash Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "JWT Token Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "MAC Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "URL with Auth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_028",
+        "rule_name": "OAuth Token Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "API Key Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq1",
+        "rule_name": "No Missing Values",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq2",
+        "rule_name": "Date Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq3",
+        "rule_name": "Email Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq_016",
+        "rule_name": "Decimal Precision Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: division by zero"
+        ]
+      },
+      {
+        "rule_id": "dq_017",
+        "rule_name": "Time Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_018",
+        "rule_name": "URL Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_019",
+        "rule_name": "Currency Format Check",
+        "category": "data_quality",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_020",
+        "rule_name": "Percentage Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_021",
+        "rule_name": "String Length Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_022",
+        "rule_name": "Alphanumeric Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_023",
+        "rule_name": "Date Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_024",
+        "rule_name": "Case Consistency Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_025",
+        "rule_name": "Whitespace Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_026",
+        "rule_name": "Special Character Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_027",
+        "rule_name": "Word Count Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_028",
+        "rule_name": "Duplicate Words Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Error",
+        "details": [
+          "Error executing rule: cannot refer to an open group at position 39"
+        ]
+      },
+      {
+        "rule_id": "dq_029",
+        "rule_name": "Number Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_030",
+        "rule_name": "JSON Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "v1",
+        "rule_name": "Salary Range Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v2",
+        "rule_name": "Department ID Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v3",
+        "rule_name": "Employee Age Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      }
+    ]
+  },
+  {
+    "timestamp": "2024-12-18 11:43:29",
+    "table_name": "sqlite_sequence",
+    "rules_executed": 57,
+    "passed_rules": 49,
+    "failed_rules": 8,
+    "results": [
+      {
+        "rule_id": "gdpr_001",
+        "rule_name": "PII Data Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_003",
+        "rule_name": "SSN Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_004",
+        "rule_name": "Credit Card Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_005",
+        "rule_name": "Password Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_008",
+        "rule_name": "Phone Number Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_011",
+        "rule_name": "HTML Tag Check",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_012",
+        "rule_name": "SQL Injection Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_014",
+        "rule_name": "Unicode Control Chars",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "File Path Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "JWT Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "API Key Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Hash Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "XML Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "Binary Data Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "Script Tag Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "IBAN Format",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "Vehicle VIN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "OAuth Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "Geographic Coordinates",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "ISBN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_030",
+        "rule_name": "Domain Name Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "Credit Card Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "Passport Number Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "Date of Birth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_018",
+        "rule_name": "National ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_019",
+        "rule_name": "Bank Account Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Healthcare ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "Driver License Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "IP Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "GPS Coordinate Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "Password Hash Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "JWT Token Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "MAC Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "URL with Auth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_028",
+        "rule_name": "OAuth Token Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "API Key Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq1",
+        "rule_name": "No Missing Values",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq2",
+        "rule_name": "Date Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq3",
+        "rule_name": "Email Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq_016",
+        "rule_name": "Decimal Precision Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: division by zero"
+        ]
+      },
+      {
+        "rule_id": "dq_017",
+        "rule_name": "Time Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_018",
+        "rule_name": "URL Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_019",
+        "rule_name": "Currency Format Check",
+        "category": "data_quality",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_020",
+        "rule_name": "Percentage Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_021",
+        "rule_name": "String Length Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_022",
+        "rule_name": "Alphanumeric Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_023",
+        "rule_name": "Date Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_024",
+        "rule_name": "Case Consistency Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_025",
+        "rule_name": "Whitespace Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_026",
+        "rule_name": "Special Character Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_027",
+        "rule_name": "Word Count Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_028",
+        "rule_name": "Duplicate Words Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Error",
+        "details": [
+          "Error executing rule: cannot refer to an open group at position 39"
+        ]
+      },
+      {
+        "rule_id": "dq_029",
+        "rule_name": "Number Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_030",
+        "rule_name": "JSON Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "v1",
+        "rule_name": "Salary Range Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v2",
+        "rule_name": "Department ID Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v3",
+        "rule_name": "Employee Age Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      }
+    ]
+  },
+  {
+    "timestamp": "2024-12-18 11:46:45",
+    "table_name": "person_addresses",
+    "rules_executed": 57,
+    "passed_rules": 49,
+    "failed_rules": 8,
+    "results": [
+      {
+        "rule_id": "gdpr_001",
+        "rule_name": "PII Data Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_003",
+        "rule_name": "SSN Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_004",
+        "rule_name": "Credit Card Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_005",
+        "rule_name": "Password Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_008",
+        "rule_name": "Phone Number Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_011",
+        "rule_name": "HTML Tag Check",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_012",
+        "rule_name": "SQL Injection Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_014",
+        "rule_name": "Unicode Control Chars",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "File Path Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "JWT Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "API Key Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Hash Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "XML Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "Binary Data Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "Script Tag Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "IBAN Format",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "Vehicle VIN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "OAuth Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "Geographic Coordinates",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "ISBN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_030",
+        "rule_name": "Domain Name Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "Credit Card Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "Passport Number Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "Date of Birth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_018",
+        "rule_name": "National ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_019",
+        "rule_name": "Bank Account Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Healthcare ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "Driver License Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "IP Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "GPS Coordinate Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "Password Hash Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "JWT Token Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "MAC Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "URL with Auth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_028",
+        "rule_name": "OAuth Token Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "API Key Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq1",
+        "rule_name": "No Missing Values",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq2",
+        "rule_name": "Date Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq3",
+        "rule_name": "Email Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq_016",
+        "rule_name": "Decimal Precision Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: division by zero"
+        ]
+      },
+      {
+        "rule_id": "dq_017",
+        "rule_name": "Time Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_018",
+        "rule_name": "URL Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_019",
+        "rule_name": "Currency Format Check",
+        "category": "data_quality",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_020",
+        "rule_name": "Percentage Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_021",
+        "rule_name": "String Length Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_022",
+        "rule_name": "Alphanumeric Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_023",
+        "rule_name": "Date Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_024",
+        "rule_name": "Case Consistency Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_025",
+        "rule_name": "Whitespace Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_026",
+        "rule_name": "Special Character Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_027",
+        "rule_name": "Word Count Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_028",
+        "rule_name": "Duplicate Words Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Error",
+        "details": [
+          "Error executing rule: cannot refer to an open group at position 39"
+        ]
+      },
+      {
+        "rule_id": "dq_029",
+        "rule_name": "Number Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_030",
+        "rule_name": "JSON Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "v1",
+        "rule_name": "Salary Range Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v2",
+        "rule_name": "Department ID Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v3",
+        "rule_name": "Employee Age Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      }
+    ]
+  },
+  {
+    "timestamp": "2024-12-18 11:55:15",
+    "table_name": "assignments",
+    "rules_executed": 57,
+    "passed_rules": 50,
+    "failed_rules": 7,
+    "results": [
+      {
+        "rule_id": "gdpr_001",
+        "rule_name": "PII Data Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_003",
+        "rule_name": "SSN Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_004",
+        "rule_name": "Credit Card Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_005",
+        "rule_name": "Password Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_008",
+        "rule_name": "Phone Number Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_011",
+        "rule_name": "HTML Tag Check",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_012",
+        "rule_name": "SQL Injection Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_014",
+        "rule_name": "Unicode Control Chars",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "File Path Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "JWT Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "API Key Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Hash Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "XML Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "Binary Data Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "Script Tag Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "IBAN Format",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "Vehicle VIN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "OAuth Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "Geographic Coordinates",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "ISBN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_030",
+        "rule_name": "Domain Name Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "Credit Card Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "Passport Number Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "Date of Birth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_018",
+        "rule_name": "National ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_019",
+        "rule_name": "Bank Account Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Healthcare ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "Driver License Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "IP Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "GPS Coordinate Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "Password Hash Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "JWT Token Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "MAC Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "URL with Auth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_028",
+        "rule_name": "OAuth Token Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "API Key Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq1",
+        "rule_name": "No Missing Values",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq2",
+        "rule_name": "Date Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq3",
+        "rule_name": "Email Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq_016",
+        "rule_name": "Decimal Precision Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_017",
+        "rule_name": "Time Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_018",
+        "rule_name": "URL Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_019",
+        "rule_name": "Currency Format Check",
+        "category": "data_quality",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_020",
+        "rule_name": "Percentage Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_021",
+        "rule_name": "String Length Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_022",
+        "rule_name": "Alphanumeric Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_023",
+        "rule_name": "Date Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_024",
+        "rule_name": "Case Consistency Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_025",
+        "rule_name": "Whitespace Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_026",
+        "rule_name": "Special Character Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_027",
+        "rule_name": "Word Count Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_028",
+        "rule_name": "Duplicate Words Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Error",
+        "details": [
+          "Error executing rule: cannot refer to an open group at position 39"
+        ]
+      },
+      {
+        "rule_id": "dq_029",
+        "rule_name": "Number Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_030",
+        "rule_name": "JSON Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "v1",
+        "rule_name": "Salary Range Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v2",
+        "rule_name": "Department ID Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v3",
+        "rule_name": "Employee Age Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      }
+    ]
+  },
+  {
+    "timestamp": "2024-12-18 11:57:50",
+    "table_name": "per",
+    "rules_executed": 57,
+    "passed_rules": 50,
+    "failed_rules": 7,
+    "results": [
+      {
+        "rule_id": "gdpr_001",
+        "rule_name": "PII Data Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_003",
+        "rule_name": "SSN Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_004",
+        "rule_name": "Credit Card Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_005",
+        "rule_name": "Password Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_008",
+        "rule_name": "Phone Number Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_011",
+        "rule_name": "HTML Tag Check",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_012",
+        "rule_name": "SQL Injection Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_014",
+        "rule_name": "Unicode Control Chars",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "File Path Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "JWT Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "API Key Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Hash Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "XML Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "Binary Data Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "Script Tag Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "IBAN Format",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "Vehicle VIN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "OAuth Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "Geographic Coordinates",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "ISBN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_030",
+        "rule_name": "Domain Name Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "Credit Card Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "Passport Number Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "Date of Birth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_018",
+        "rule_name": "National ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_019",
+        "rule_name": "Bank Account Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Healthcare ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "Driver License Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "IP Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "GPS Coordinate Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "Password Hash Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "JWT Token Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "MAC Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "URL with Auth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_028",
+        "rule_name": "OAuth Token Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "API Key Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq1",
+        "rule_name": "No Missing Values",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq2",
+        "rule_name": "Date Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq3",
+        "rule_name": "Email Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq_016",
+        "rule_name": "Decimal Precision Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_017",
+        "rule_name": "Time Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_018",
+        "rule_name": "URL Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_019",
+        "rule_name": "Currency Format Check",
+        "category": "data_quality",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_020",
+        "rule_name": "Percentage Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_021",
+        "rule_name": "String Length Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_022",
+        "rule_name": "Alphanumeric Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_023",
+        "rule_name": "Date Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_024",
+        "rule_name": "Case Consistency Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_025",
+        "rule_name": "Whitespace Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_026",
+        "rule_name": "Special Character Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_027",
+        "rule_name": "Word Count Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_028",
+        "rule_name": "Duplicate Words Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Error",
+        "details": [
+          "Error executing rule: cannot refer to an open group at position 39"
+        ]
+      },
+      {
+        "rule_id": "dq_029",
+        "rule_name": "Number Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_030",
+        "rule_name": "JSON Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "v1",
+        "rule_name": "Salary Range Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v2",
+        "rule_name": "Department ID Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v3",
+        "rule_name": "Employee Age Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      }
+    ]
+  },
+  {
+    "timestamp": "2024-12-18 12:05:19",
+    "table_name": "person_addresses",
+    "rules_executed": 57,
+    "passed_rules": 49,
+    "failed_rules": 8,
+    "results": [
+      {
+        "rule_id": "gdpr_001",
+        "rule_name": "PII Data Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_003",
+        "rule_name": "SSN Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_004",
+        "rule_name": "Credit Card Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_005",
+        "rule_name": "Password Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_008",
+        "rule_name": "Phone Number Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_011",
+        "rule_name": "HTML Tag Check",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_012",
+        "rule_name": "SQL Injection Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_014",
+        "rule_name": "Unicode Control Chars",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "File Path Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "JWT Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "API Key Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Hash Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "XML Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "Binary Data Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "Script Tag Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "IBAN Format",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "Vehicle VIN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "OAuth Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "Geographic Coordinates",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "ISBN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_030",
+        "rule_name": "Domain Name Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "Credit Card Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "Passport Number Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "Date of Birth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_018",
+        "rule_name": "National ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_019",
+        "rule_name": "Bank Account Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Healthcare ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "Driver License Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "IP Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "GPS Coordinate Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "Password Hash Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "JWT Token Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "MAC Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "URL with Auth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_028",
+        "rule_name": "OAuth Token Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "API Key Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq1",
+        "rule_name": "No Missing Values",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq2",
+        "rule_name": "Date Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq3",
+        "rule_name": "Email Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq_016",
+        "rule_name": "Decimal Precision Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: division by zero"
+        ]
+      },
+      {
+        "rule_id": "dq_017",
+        "rule_name": "Time Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_018",
+        "rule_name": "URL Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_019",
+        "rule_name": "Currency Format Check",
+        "category": "data_quality",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_020",
+        "rule_name": "Percentage Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_021",
+        "rule_name": "String Length Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_022",
+        "rule_name": "Alphanumeric Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_023",
+        "rule_name": "Date Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_024",
+        "rule_name": "Case Consistency Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_025",
+        "rule_name": "Whitespace Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_026",
+        "rule_name": "Special Character Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_027",
+        "rule_name": "Word Count Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_028",
+        "rule_name": "Duplicate Words Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Error",
+        "details": [
+          "Error executing rule: cannot refer to an open group at position 39"
+        ]
+      },
+      {
+        "rule_id": "dq_029",
+        "rule_name": "Number Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_030",
+        "rule_name": "JSON Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "v1",
+        "rule_name": "Salary Range Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v2",
+        "rule_name": "Department ID Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v3",
+        "rule_name": "Employee Age Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      }
+    ]
+  },
+  {
+    "timestamp": "2024-12-18 12:06:06",
+    "table_name": "person_addresses",
+    "rules_executed": 57,
+    "passed_rules": 49,
+    "failed_rules": 8,
+    "results": [
+      {
+        "rule_id": "gdpr_001",
+        "rule_name": "PII Data Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_003",
+        "rule_name": "SSN Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_004",
+        "rule_name": "Credit Card Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_005",
+        "rule_name": "Password Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_008",
+        "rule_name": "Phone Number Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_011",
+        "rule_name": "HTML Tag Check",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_012",
+        "rule_name": "SQL Injection Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_014",
+        "rule_name": "Unicode Control Chars",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "File Path Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "JWT Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "API Key Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Hash Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "XML Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "Binary Data Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "Script Tag Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "IBAN Format",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "Vehicle VIN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "OAuth Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "Geographic Coordinates",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "ISBN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_030",
+        "rule_name": "Domain Name Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "Credit Card Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "Passport Number Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "Date of Birth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_018",
+        "rule_name": "National ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_019",
+        "rule_name": "Bank Account Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Healthcare ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "Driver License Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "IP Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "GPS Coordinate Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "Password Hash Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "JWT Token Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "MAC Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "URL with Auth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_028",
+        "rule_name": "OAuth Token Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "API Key Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq1",
+        "rule_name": "No Missing Values",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq2",
+        "rule_name": "Date Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq3",
+        "rule_name": "Email Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq_016",
+        "rule_name": "Decimal Precision Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: division by zero"
+        ]
+      },
+      {
+        "rule_id": "dq_017",
+        "rule_name": "Time Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_018",
+        "rule_name": "URL Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_019",
+        "rule_name": "Currency Format Check",
+        "category": "data_quality",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_020",
+        "rule_name": "Percentage Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_021",
+        "rule_name": "String Length Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_022",
+        "rule_name": "Alphanumeric Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_023",
+        "rule_name": "Date Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_024",
+        "rule_name": "Case Consistency Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_025",
+        "rule_name": "Whitespace Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_026",
+        "rule_name": "Special Character Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_027",
+        "rule_name": "Word Count Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_028",
+        "rule_name": "Duplicate Words Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Error",
+        "details": [
+          "Error executing rule: cannot refer to an open group at position 39"
+        ]
+      },
+      {
+        "rule_id": "dq_029",
+        "rule_name": "Number Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_030",
+        "rule_name": "JSON Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "v1",
+        "rule_name": "Salary Range Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v2",
+        "rule_name": "Department ID Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v3",
+        "rule_name": "Employee Age Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      }
+    ]
+  },
+  {
+    "timestamp": "2024-12-18 12:06:29",
+    "table_name": "person_assignments",
+    "rules_executed": 57,
+    "passed_rules": 49,
+    "failed_rules": 8,
+    "results": [
+      {
+        "rule_id": "gdpr_001",
+        "rule_name": "PII Data Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_003",
+        "rule_name": "SSN Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_004",
+        "rule_name": "Credit Card Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_005",
+        "rule_name": "Password Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_008",
+        "rule_name": "Phone Number Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_011",
+        "rule_name": "HTML Tag Check",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_012",
+        "rule_name": "SQL Injection Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_014",
+        "rule_name": "Unicode Control Chars",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "File Path Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "JWT Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "API Key Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Hash Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "XML Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "Binary Data Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "Script Tag Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "IBAN Format",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "Vehicle VIN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "OAuth Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "Geographic Coordinates",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "ISBN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_030",
+        "rule_name": "Domain Name Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "Credit Card Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "Passport Number Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "Date of Birth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_018",
+        "rule_name": "National ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_019",
+        "rule_name": "Bank Account Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Healthcare ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "Driver License Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "IP Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "GPS Coordinate Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "Password Hash Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "JWT Token Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "MAC Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "URL with Auth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_028",
+        "rule_name": "OAuth Token Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "API Key Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq1",
+        "rule_name": "No Missing Values",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq2",
+        "rule_name": "Date Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq3",
+        "rule_name": "Email Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq_016",
+        "rule_name": "Decimal Precision Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: division by zero"
+        ]
+      },
+      {
+        "rule_id": "dq_017",
+        "rule_name": "Time Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_018",
+        "rule_name": "URL Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_019",
+        "rule_name": "Currency Format Check",
+        "category": "data_quality",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_020",
+        "rule_name": "Percentage Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_021",
+        "rule_name": "String Length Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_022",
+        "rule_name": "Alphanumeric Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_023",
+        "rule_name": "Date Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_024",
+        "rule_name": "Case Consistency Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_025",
+        "rule_name": "Whitespace Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_026",
+        "rule_name": "Special Character Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_027",
+        "rule_name": "Word Count Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_028",
+        "rule_name": "Duplicate Words Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Error",
+        "details": [
+          "Error executing rule: cannot refer to an open group at position 39"
+        ]
+      },
+      {
+        "rule_id": "dq_029",
+        "rule_name": "Number Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_030",
+        "rule_name": "JSON Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "v1",
+        "rule_name": "Salary Range Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v2",
+        "rule_name": "Department ID Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v3",
+        "rule_name": "Employee Age Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      }
+    ]
+  },
+  {
+    "timestamp": "2024-12-18 12:06:35",
+    "table_name": "person_assignments",
+    "rules_executed": 57,
+    "passed_rules": 49,
+    "failed_rules": 8,
+    "results": [
+      {
+        "rule_id": "gdpr_001",
+        "rule_name": "PII Data Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_003",
+        "rule_name": "SSN Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_004",
+        "rule_name": "Credit Card Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_005",
+        "rule_name": "Password Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_008",
+        "rule_name": "Phone Number Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_011",
+        "rule_name": "HTML Tag Check",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_012",
+        "rule_name": "SQL Injection Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_014",
+        "rule_name": "Unicode Control Chars",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "File Path Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "JWT Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "API Key Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Hash Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "XML Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "Binary Data Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "Script Tag Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "IBAN Format",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "Vehicle VIN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "OAuth Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "Geographic Coordinates",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "ISBN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_030",
+        "rule_name": "Domain Name Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "Credit Card Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "Passport Number Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "Date of Birth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_018",
+        "rule_name": "National ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_019",
+        "rule_name": "Bank Account Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Healthcare ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "Driver License Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "IP Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "GPS Coordinate Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "Password Hash Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "JWT Token Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "MAC Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "URL with Auth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_028",
+        "rule_name": "OAuth Token Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "API Key Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq1",
+        "rule_name": "No Missing Values",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq2",
+        "rule_name": "Date Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq3",
+        "rule_name": "Email Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq_016",
+        "rule_name": "Decimal Precision Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: division by zero"
+        ]
+      },
+      {
+        "rule_id": "dq_017",
+        "rule_name": "Time Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_018",
+        "rule_name": "URL Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_019",
+        "rule_name": "Currency Format Check",
+        "category": "data_quality",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_020",
+        "rule_name": "Percentage Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_021",
+        "rule_name": "String Length Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_022",
+        "rule_name": "Alphanumeric Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_023",
+        "rule_name": "Date Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_024",
+        "rule_name": "Case Consistency Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_025",
+        "rule_name": "Whitespace Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_026",
+        "rule_name": "Special Character Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_027",
+        "rule_name": "Word Count Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_028",
+        "rule_name": "Duplicate Words Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Error",
+        "details": [
+          "Error executing rule: cannot refer to an open group at position 39"
+        ]
+      },
+      {
+        "rule_id": "dq_029",
+        "rule_name": "Number Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_030",
+        "rule_name": "JSON Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "v1",
+        "rule_name": "Salary Range Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v2",
+        "rule_name": "Department ID Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v3",
+        "rule_name": "Employee Age Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      }
+    ]
+  },
+  {
+    "timestamp": "2024-12-18 12:09:07",
+    "table_name": "per",
+    "rules_executed": 57,
+    "passed_rules": 50,
+    "failed_rules": 7,
+    "results": [
+      {
+        "rule_id": "gdpr_001",
+        "rule_name": "PII Data Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_003",
+        "rule_name": "SSN Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_004",
+        "rule_name": "Credit Card Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_005",
+        "rule_name": "Password Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_008",
+        "rule_name": "Phone Number Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_011",
+        "rule_name": "HTML Tag Check",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_012",
+        "rule_name": "SQL Injection Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_014",
+        "rule_name": "Unicode Control Chars",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "File Path Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "JWT Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "API Key Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Hash Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "XML Pattern",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "Binary Data Pattern",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "Script Tag Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "IBAN Format",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "Vehicle VIN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "OAuth Token Pattern",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "Geographic Coordinates",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "ISBN Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_030",
+        "rule_name": "Domain Name Format",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_015",
+        "rule_name": "Credit Card Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_016",
+        "rule_name": "Passport Number Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_017",
+        "rule_name": "Date of Birth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_018",
+        "rule_name": "National ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_019",
+        "rule_name": "Bank Account Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_020",
+        "rule_name": "Healthcare ID Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_021",
+        "rule_name": "Driver License Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_022",
+        "rule_name": "IP Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_023",
+        "rule_name": "GPS Coordinate Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_024",
+        "rule_name": "Password Hash Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_025",
+        "rule_name": "JWT Token Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_026",
+        "rule_name": "MAC Address Detection",
+        "category": "gdpr",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_027",
+        "rule_name": "URL with Auth Detection",
+        "category": "gdpr",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_028",
+        "rule_name": "OAuth Token Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "gdpr_029",
+        "rule_name": "API Key Detection",
+        "category": "gdpr",
+        "severity": "Critical",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq1",
+        "rule_name": "No Missing Values",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq2",
+        "rule_name": "Date Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq3",
+        "rule_name": "Email Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "dq_016",
+        "rule_name": "Decimal Precision Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_017",
+        "rule_name": "Time Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_018",
+        "rule_name": "URL Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_019",
+        "rule_name": "Currency Format Check",
+        "category": "data_quality",
+        "severity": "High",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_020",
+        "rule_name": "Percentage Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_021",
+        "rule_name": "String Length Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_022",
+        "rule_name": "Alphanumeric Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_023",
+        "rule_name": "Date Range Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_024",
+        "rule_name": "Case Consistency Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_025",
+        "rule_name": "Whitespace Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_026",
+        "rule_name": "Special Character Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_027",
+        "rule_name": "Word Count Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_028",
+        "rule_name": "Duplicate Words Check",
+        "category": "data_quality",
+        "severity": "Low",
+        "status": "Error",
+        "details": [
+          "Error executing rule: cannot refer to an open group at position 39"
+        ]
+      },
+      {
+        "rule_id": "dq_029",
+        "rule_name": "Number Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "dq_030",
+        "rule_name": "JSON Format Check",
+        "category": "data_quality",
+        "severity": "Medium",
+        "status": "Passed",
+        "details": []
+      },
+      {
+        "rule_id": "v1",
+        "rule_name": "Salary Range Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v2",
+        "rule_name": "Department ID Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      },
+      {
+        "rule_id": "v3",
+        "rule_name": "Employee Age Check",
+        "category": "validation",
+        "severity": "Medium",
+        "status": "Error",
+        "details": [
+          "Error executing rule: 'type'"
+        ]
+      }
+    ]
+  }
+]
