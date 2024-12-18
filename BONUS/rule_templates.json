@@ -9,7 +9,7 @@
             "severity": "Critical",
             "validation_code": "df[column_name].str.match(r'\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b')",
             "message": "Column may contain email addresses (PII data)",
-            "active": false
+            "active": true
         },
         {
             "id": "gdpr_002",
@@ -31,7 +31,7 @@
             "severity": "Critical",
             "validation_code": "df[column_name].str.match(r'\\b\\d{3}-\\d{2}-\\d{4}\\b')",
             "message": "Column may contain SSNs (PII data)",
-            "active": false
+            "active": true
         },
         {
             "id": "gdpr_004",
@@ -130,7 +130,7 @@
             "severity": "Critical",
             "validation_code": "df[column_name].str.contains(r'\\b(SELECT|INSERT|UPDATE|DELETE|DROP|UNION)\\b', case=False)",
             "message": "Column may contain SQL injection patterns",
-            "active": false
+            "active": true
         },
         {
             "id": "gdpr_013",
