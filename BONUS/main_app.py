@@ -7,6 +7,7 @@ from data_loader import DataLoader
 from config import DEFAULT_PREVIEW_ROWS
 import pandas as pd
 import json
+from datetime import datetime
 
 # Initialize the Dash app with a modern theme
 app = dash.Dash(
@@ -28,6 +29,7 @@ sidebar = dbc.Nav(
         dbc.NavLink("Data Catalogue", href="/catalogue", active="exact", id="catalogue-link"),
         dbc.NavLink("Rule Catalogue", href="/rules", active="exact", id="rules-link"),
         dbc.NavLink("Rule Management", href="/manage-rules", active="exact", id="manage-rules-link"),
+        dbc.NavLink("Run Management", href="/run-management", active="exact", id="run-management-link"),
     ],
     vertical=True,
     pills=True,
@@ -271,15 +273,26 @@ def create_column_analysis_content(table_name=None, selected_columns=None):
                 distribution_section = html.Div(f"Error generating histogram: {str(e)}")
         else:
             # Categorical distribution
-            if profile['frequent_values']:
+            if profile['frequent_values'] and isinstance(profile['frequent_values'], list):
+                # Convert the frequent values list to a DataFrame with correct column names
                 freq_df = pd.DataFrame(profile['frequent_values'])
-                fig = px.bar(
-                    freq_df,
-                    x='value',
-                    y='count',
-                    title=f"Top Values in {column_name}"
-                )
-                distribution_section = dcc.Graph(figure=fig)
+                if not freq_df.empty and all(col in freq_df.columns for col in ['value', 'count']):
+                    fig = px.bar(
+                        freq_df,
+                        x='value',
+                        y='count',
+                        title=f"Top Values in {column_name}"
+                    )
+                    fig.update_layout(
+                        xaxis_title="Value",
+                        yaxis_title="Frequency",
+                        bargap=0.2
+                    )
+                    distribution_section = dcc.Graph(figure=fig)
+                else:
+                    distribution_section = html.Div("No valid frequency distribution data available")
+            else:
+                distribution_section = html.Div("No frequency distribution data available")
         
         # Summary statistics
         stats_section = None
@@ -626,7 +639,7 @@ def create_rule_management_layout():
         dbc.Col(
             dbc.Card(
                 dbc.CardBody([
-                    html.H4("Total Rules", className="card-title text-center mb-3"),
+                    html.H4("Total Rules", className="card-title text-center"),
                     html.H2(total_rules, className="text-center text-primary mb-0")
                 ]),
                 className="h-100 shadow-sm"
@@ -637,7 +650,7 @@ def create_rule_management_layout():
         dbc.Col(
             dbc.Card(
                 dbc.CardBody([
-                    html.H4("Active Rules", className="card-title text-center mb-3"),
+                    html.H4("Active Rules", className="card-title text-center"),
                     html.H2(active_rules, className="text-center text-success mb-0")
                 ]),
                 className="h-100 shadow-sm"
@@ -648,7 +661,7 @@ def create_rule_management_layout():
         dbc.Col(
             dbc.Card(
                 dbc.CardBody([
-                    html.H4("Categories", className="card-title text-center mb-3"),
+                    html.H4("Categories", className="card-title text-center"),
                     html.H2(len(rules_by_category), className="text-center text-info mb-3"),
                     html.Div(
                         [f"{cat}: {count}" for cat, count in rules_by_category.items()],
@@ -663,7 +676,7 @@ def create_rule_management_layout():
         dbc.Col(
             dbc.Card(
                 dbc.CardBody([
-                    html.H4("By Severity", className="card-title text-center mb-3"),
+                    html.H4("By Severity", className="card-title text-center"),
                     html.Div([
                         html.Div(
                             [
@@ -793,6 +806,197 @@ def create_rule_management_content():
     """Creates the main content for the Rule Management page."""
     return create_rule_management_layout()
 
+def create_run_management_content(table_name=None):
+    """Creates the layout for the Run Management page with execution history and insights."""
+    
+    # Load active rules
+    data_loader = DataLoader()
+    rules = data_loader.load_all_rules()
+    active_rules = [rule for rule in rules if rule.get('active', False)]
+    
+    # Create run history data (mock data for now - this would come from a database in production)
+    run_history = pd.DataFrame({
+        'run_id': range(1, 6),
+        'timestamp': pd.date_range(end=pd.Timestamp.now(), periods=5, freq='D'),
+        'rules_executed': [len(active_rules)] * 5,
+        'pass_rate': [0.85, 0.88, 0.82, 0.90, 0.87],
+        'fail_rate': [0.15, 0.12, 0.18, 0.10, 0.13],
+        'duration_seconds': [120, 115, 125, 118, 122]
+    })
+    
+    # Create summary cards
+    summary_cards = dbc.Row([
+        dbc.Col(
+            dbc.Card(
+                dbc.CardBody([
+                    html.H4("Active Rules", className="card-title text-center"),
+                    html.H2(f"{len(active_rules)}", className="text-center text-primary")
+                ])
+            ),
+            width=3
+        ),
+        dbc.Col(
+            dbc.Card(
+                dbc.CardBody([
+                    html.H4("Latest Pass Rate", className="card-title text-center"),
+                    html.H2(f"{run_history['pass_rate'].iloc[-1]:.1%}", className="text-center text-success")
+                ])
+            ),
+            width=3
+        ),
+        dbc.Col(
+            dbc.Card(
+                dbc.CardBody([
+                    html.H4("Latest Run Duration", className="card-title text-center"),
+                    html.H2(f"{run_history['duration_seconds'].iloc[-1]}s", className="text-center text-info")
+                ])
+            ),
+            width=3
+        ),
+        dbc.Col(
+            dbc.Card(
+                dbc.CardBody([
+                    html.H4("Total Runs", className="card-title text-center"),
+                    html.H2(f"{len(run_history)}", className="text-center text-secondary")
+                ])
+            ),
+            width=3
+        )
+    ], className="mb-4")
+    
+    # Create trend charts
+    trend_charts = dbc.Row([
+        dbc.Col(
+            dbc.Card([
+                dbc.CardHeader("Pass/Fail Rate Trend"),
+                dbc.CardBody(
+                    dcc.Graph(
+                        figure=px.line(
+                            run_history,
+                            x='timestamp',
+                            y=['pass_rate', 'fail_rate'],
+                            title="Pass/Fail Rate Over Time",
+                            labels={'value': 'Rate', 'timestamp': 'Date', 'variable': 'Metric'},
+                            color_discrete_map={'pass_rate': 'green', 'fail_rate': 'red'}
+                        )
+                    )
+                )
+            ]),
+            width=6
+        ),
+        dbc.Col(
+            dbc.Card([
+                dbc.CardHeader("Run Duration Trend"),
+                dbc.CardBody(
+                    dcc.Graph(
+                        figure=px.line(
+                            run_history,
+                            x='timestamp',
+                            y='duration_seconds',
+                            title="Run Duration Over Time",
+                            labels={'duration_seconds': 'Duration (seconds)', 'timestamp': 'Date'}
+                        )
+                    )
+                )
+            ]),
+            width=6
+        )
+    ], className="mb-4")
+    
+    # Create run history table
+    history_table = dbc.Card([
+        dbc.CardHeader("Run History"),
+        dbc.CardBody(
+            dash_table.DataTable(
+                data=run_history.to_dict('records'),
+                columns=[
+                    {'name': 'Run ID', 'id': 'run_id'},
+                    {'name': 'Timestamp', 'id': 'timestamp'},
+                    {'name': 'Rules Executed', 'id': 'rules_executed'},
+                    {'name': 'Pass Rate', 'id': 'pass_rate', 'format': {'specifier': '.1%'}},
+                    {'name': 'Fail Rate', 'id': 'fail_rate', 'format': {'specifier': '.1%'}},
+                    {'name': 'Duration (s)', 'id': 'duration_seconds'}
+                ],
+                style_table={'overflowX': 'auto'},
+                style_data_conditional=[
+                    {
+                        'if': {'column_id': 'pass_rate', 'filter_query': '{pass_rate} >= 0.85'},
+                        'backgroundColor': '#e6ffe6',
+                        'color': 'green'
+                    },
+                    {
+                        'if': {'column_id': 'fail_rate', 'filter_query': '{fail_rate} >= 0.15'},
+                        'backgroundColor': '#ffe6e6',
+                        'color': 'red'
+                    }
+                ],
+                sort_action='native',
+                page_size=10
+            )
+        )
+    ])
+    
+    # Create execute rules button
+    execute_button = dbc.Row(
+        dbc.Col(
+            dbc.Button(
+                "Execute Active Rules",
+                id="execute-rules-button",
+                color="primary",
+                className="mb-4"
+            ),
+            width={"size": 3, "offset": 9}
+        )
+    )
+    
+    # Return complete layout
+    return html.Div([
+        html.H2("Run Management", className="mb-4"),
+        html.P(
+            "Monitor rule execution history, track performance trends, and execute active rules.",
+            className="mb-4 text-muted"
+        ),
+        execute_button,
+        summary_cards,
+        trend_charts,
+        history_table,
+        dbc.Toast(
+            id="execution-toast",
+            header="Rule Execution",
+            is_open=False,
+            dismissable=True,
+            duration=4000,
+            style={"position": "fixed", "top": 66, "right": 10, "width": 350},
+        )
+    ])
+
+@app.callback(
+    [Output("execution-toast", "is_open"),
+     Output("execution-toast", "children")],
+    [Input("execute-rules-button", "n_clicks"),
+     Input("table-dropdown", "value")],
+    prevent_initial_call=True
+)
+def execute_rules(n_clicks, table_name):
+    if not n_clicks or not table_name:
+        raise dash.exceptions.PreventUpdate
+    
+    try:
+        data_loader = DataLoader()
+        result = data_loader.execute_rules(table_name)
+        
+        # Create a summary message
+        message = f"""
+        Rules executed successfully!
+        - Rules Executed: {result['rules_executed']}
+        - Pass Rate: {result['pass_rate']:.1%}
+        - Duration: {result['duration_seconds']:.1f}s
+        """
+        
+        return True, message
+    except Exception as e:
+        return True, f"Error executing rules: {str(e)}"
+
 # App layout
 app.layout = dbc.Container([
     dcc.Location(id='url', refresh=False),
@@ -838,6 +1042,8 @@ def render_page_content(table_name, pathname, selected_columns):
         return create_rule_management_content()
     elif pathname == "/overview" or pathname == "/":
         return create_overview_content(table_name)
+    elif pathname == "/run-management":
+        return create_run_management_content()
     else:
         return html.Div("404 - Page not found")
 
@@ -869,23 +1075,26 @@ def reset_selected_columns(table_name):
      Output("columns-link", "active"),
      Output("catalogue-link", "active"),
      Output("rules-link", "active"),
-     Output("manage-rules-link", "active")],
+     Output("manage-rules-link", "active"),
+     Output("run-management-link", "active")],
     [Input("url", "pathname")]
 )
 def toggle_active_links(pathname):
     if pathname == "/overview" or pathname == "/":
-        return True, False, False, False, False, False
+        return True, False, False, False, False, False, False
     elif pathname == "/quality":
-        return False, True, False, False, False, False
+        return False, True, False, False, False, False, False
     elif pathname == "/columns":
-        return False, False, True, False, False, False
+        return False, False, True, False, False, False, False
     elif pathname == "/catalogue":
-        return False, False, False, True, False, False
+        return False, False, False, True, False, False, False
     elif pathname == "/rules":
-        return False, False, False, False, True, False
+        return False, False, False, False, True, False, False
     elif pathname == "/manage-rules":
-        return False, False, False, False, False, True
-    return True, False, False, False, False, False
+        return False, False, False, False, False, True, False
+    elif pathname == "/run-management":
+        return False, False, False, False, False, False, True
+    return True, False, False, False, False, False, False
 
 def create_gauge_chart(value, title, description):
     return go.Figure(

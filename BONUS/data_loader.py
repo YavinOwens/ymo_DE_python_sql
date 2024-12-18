@@ -7,6 +7,7 @@ from config import DB_URI, DB_PATH
 import pandas as pd
 import contextlib
 import os
+from datetime import datetime
 
 class DataLoader:
     def __init__(self):
@@ -363,6 +364,69 @@ class DataLoader:
             return {'success': True}
         except Exception as e:
             return {'error': f"Error saving rule status: {str(e)}"}
+
+    def execute_rules(self, table_name):
+        """Execute active rules and return results."""
+        rules = self.load_all_rules()
+        active_rules = [rule for rule in rules if rule.get('active', False)]
+        
+        start_time = datetime.now()
+        results = []
+        
+        for rule in active_rules:
+            # Mock rule execution for now
+            # In production, this would actually evaluate the rule against the data
+            result = {
+                'rule_id': rule['id'],
+                'rule_name': rule['name'],
+                'passed': True,  # Mock result
+                'execution_time': 0.5  # Mock execution time
+            }
+            results.append(result)
+        
+        end_time = datetime.now()
+        duration = (end_time - start_time).total_seconds()
+        
+        # Calculate summary statistics
+        total_rules = len(results)
+        passed_rules = sum(1 for r in results if r['passed'])
+        pass_rate = passed_rules / total_rules if total_rules > 0 else 0
+        
+        # Store execution history
+        execution_summary = {
+            'timestamp': datetime.now().isoformat(),
+            'rules_executed': total_rules,
+            'pass_rate': pass_rate,
+            'fail_rate': 1 - pass_rate,
+            'duration_seconds': duration,
+            'results': results
+        }
+        
+        self._store_execution_history(execution_summary)
+        
+        return execution_summary
+    
+    def _store_execution_history(self, execution_summary):
+        """Store rule execution history in a JSON file."""
+        try:
+            with open('rule_execution_history.json', 'r') as f:
+                history = json.load(f)
+        except FileNotFoundError:
+            history = []
+        
+        history.append(execution_summary)
+        
+        with open('rule_execution_history.json', 'w') as f:
+            json.dump(history, f, indent=2)
+    
+    def get_execution_history(self):
+        """Retrieve rule execution history."""
+        try:
+            with open('rule_execution_history.json', 'r') as f:
+                history = json.load(f)
+            return history
+        except FileNotFoundError:
+            return []
 
 def load_rule_templates() -> Dict:
     """Load rule templates from JSON file."""

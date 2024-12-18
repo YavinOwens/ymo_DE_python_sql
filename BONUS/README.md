@@ -1,136 +1,144 @@
-# Dask Dashboard Data Loading
+# Data Quality Management Dashboard
 
-This dashboard supports loading data from various sources including CSV files, databases, and Parquet files. The data loading functionality is configured through the `data_config.json` file.
+This dashboard provides a comprehensive interface for managing data quality rules and monitoring data validation across your data pipeline. Built with Dash and Python, it offers an intuitive way to manage and configure data quality rules.
+
+## Features
+
+### Rule Management
+- View and manage all data quality rules in one place
+- Toggle rules between active and inactive states
+- Filter rules by category, severity, and status
+- Real-time status updates with visual feedback
+- Comprehensive statistics on rule usage and distribution
+
+### Rule Categories
+The system supports multiple types of data quality rules:
+
+1. GDPR Rules
+   - Personal data detection
+   - Data privacy compliance
+   - Sensitive information monitoring
+
+2. Table Level Rules
+   - Structure validation
+   - Relationship checks
+   - Performance monitoring
+   - Data integrity verification
+
+3. Data Quality Rules
+   - Missing value detection
+   - Format validation
+   - Data type checking
+
+4. Business Rules
+   - Business logic validation
+   - Cross-table relationships
+   - Custom business constraints
 
 ## Configuration
 
-The data loading configuration is managed through `data_config.json`. Here's how to configure different data sources:
-
-### CSV Files
-Place your CSV files in the `data/` directory and update the configuration:
+### Rule Templates
+Rules are configured through `rule_templates.json`. Each rule has the following structure:
 
 ```json
 {
-    "tables": {
-        "employees": {
-            "type": "csv",
-            "path": "data/employees.csv"
-        }
-    }
+    "id": "rule_001",
+    "name": "Rule Name",
+    "description": "Rule Description",
+    "category": "Category",
+    "type": "Rule Type",
+    "severity": "Critical|High|Medium|Low",
+    "validation_code": "Python validation code",
+    "message": "Error message",
+    "active": true|false
 }
 ```
 
-### Database Connection
-To load from a database, update the database configuration:
+### Adding New Rules
+To add new rules:
 
-```json
-{
-    "database": {
-        "enabled": true,
-        "connection_string": "postgresql://username:password@localhost:5432/database"
-    },
-    "tables": {
-        "employees": {
-            "type": "database",
-            "path": "SELECT * FROM employees"
-        }
-    }
-}
+1. Update `rule_templates.json` with your rule definition
+2. Follow the existing rule structure
+3. Ensure unique rule IDs
+4. Restart the application to load new rules
+
+## Installation
+
+1. Clone the repository
+2. Install required packages:
+```bash
+pip install dash dash-bootstrap-components pandas polars sqlite3
 ```
 
-### Parquet Files
-For Parquet files, specify the file path:
+3. Configure your environment:
+   - Set up database connections in `config.py`
+   - Customize rule templates in `rule_templates.json`
 
-```json
-{
-    "tables": {
-        "employees": {
-            "type": "parquet",
-            "path": "data/employees.parquet"
-        }
-    }
-}
+## Project Structure
+
+```
+project/
+├── BONUS/
+│   ├── main_app.py        # Main dashboard application
+│   ├── data_loader.py     # Data loading and rule management
+│   ├── config.py          # Configuration settings
+│   └── rule_templates.json # Rule definitions
 ```
 
-## Required Tables and Columns
+## Running the Application
 
-The dashboard expects the following tables with these columns:
+1. Navigate to the project directory
+2. Run the application:
+```bash
+python BONUS/main_app.py
+```
+3. Access the dashboard at `http://127.0.0.1:8050`
 
-1. employees
-   - employee_id
-   - email
-   - salary
-   - hire_date
-   - phone
-   - department_id
-   - age
-   - job_title
-   - manager_id
+## Rule Management Interface
 
-2. departments
-   - department_id
-   - department_name
-   - location
-   - budget
-   - manager_id
-   - creation_date
-   - department_code
-   - status
+The Rule Management page provides:
 
-3. salaries
-   - salary_id
-   - employee_id
-   - salary
-   - effective_date
-   - end_date
+1. Statistics Dashboard
+   - Total number of rules
+   - Active rules count
+   - Category distribution
+   - Severity breakdown
 
-4. job_history
-   - job_history_id
-   - employee_id
-   - department_id
-   - start_date
-   - end_date
+2. Filtering Options
+   - Filter by category
+   - Filter by severity level
+   - Filter by rule status
 
-5. locations
-   - location_id
-   - city
-   - country_code
-   - postal_code
-
-6. dependents
-   - dependent_id
-   - employee_id
-   - first_name
-   - last_name
-   - relationship
-   - birth_date
-
-## Data Loading Process
-
-1. The dashboard first attempts to load data from the configured sources in `data_config.json`
-2. For large files (>100MB), it automatically uses Dask for efficient processing
-3. If a table is missing or fails to load, an empty DataFrame with the required columns is created
-4. All data quality rules and validations are applied to the loaded data
+3. Rule Actions
+   - Toggle rule status
+   - View rule details
+   - Monitor rule statistics
 
 ## Error Handling
 
-- If a data source is unavailable, the system will log an error and continue with an empty DataFrame
-- Data type mismatches are handled gracefully with appropriate error messages
-- Large files are automatically processed using Dask for better performance
+- Visual feedback for rule status changes
+- Error messages for failed operations
+- Graceful handling of missing data
+- Safe rule status persistence
 
-## Adding New Data Sources
+## Contributing
 
-To add a new data source:
+To contribute:
 
-1. Update `data_config.json` with the new table configuration
-2. Place the data file in the appropriate location (e.g., CSV files in `data/`)
-3. Restart the dashboard to load the new data
+1. Fork the repository
+2. Create a feature branch
+3. Submit a pull request with your changes
+4. Ensure all existing tests pass
 
 ## Troubleshooting
 
-If you encounter issues loading data:
+If you encounter issues:
 
-1. Check file permissions and paths in `data_config.json`
-2. Verify database connection strings if using database sources
-3. Ensure CSV files have the required columns with correct names
-4. Check the console output for specific error messages
+1. Check the console for error messages
+2. Verify rule template format
+3. Ensure all required packages are installed
+4. Check database connections if applicable
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
