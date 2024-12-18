@@ -329,6 +329,171 @@
             "validation_code": "df[column_name].str.match(r'^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$')",
             "message": "Column may contain invalid domain names",
             "active": true
+        },
+        {
+            "id": "gdpr_015",
+            "name": "Credit Card Detection",
+            "description": "Identifies potential credit card numbers",
+            "category": "gdpr",
+            "type": "pattern_match",
+            "severity": "Critical",
+            "validation_code": "df[column_name].str.match(r'\\b\\d{4}[-\\s]?\\d{4}[-\\s]?\\d{4}[-\\s]?\\d{4}\\b')",
+            "message": "Column may contain credit card numbers",
+            "active": true
+        },
+        {
+            "id": "gdpr_016",
+            "name": "Passport Number Detection",
+            "description": "Identifies potential passport numbers",
+            "category": "gdpr",
+            "type": "pattern_match",
+            "severity": "Critical",
+            "validation_code": "df[column_name].str.match(r'\\b[A-Z]\\d{7}\\b')",
+            "message": "Column may contain passport numbers",
+            "active": true
+        },
+        {
+            "id": "gdpr_017",
+            "name": "Date of Birth Detection",
+            "description": "Identifies potential dates of birth",
+            "category": "gdpr",
+            "type": "pattern_match",
+            "severity": "High",
+            "validation_code": "df[column_name].str.match(r'\\b\\d{2}/\\d{2}/\\d{4}\\b')",
+            "message": "Column may contain dates of birth",
+            "active": true
+        },
+        {
+            "id": "gdpr_018",
+            "name": "National ID Detection",
+            "description": "Identifies potential national ID numbers",
+            "category": "gdpr",
+            "type": "pattern_match",
+            "severity": "Critical",
+            "validation_code": "df[column_name].str.match(r'\\b[A-Z]{2}\\d{6}[A-Z]\\b')",
+            "message": "Column may contain national ID numbers",
+            "active": true
+        },
+        {
+            "id": "gdpr_019",
+            "name": "Bank Account Detection",
+            "description": "Identifies potential bank account numbers",
+            "category": "gdpr",
+            "type": "pattern_match",
+            "severity": "Critical",
+            "validation_code": "df[column_name].str.match(r'\\b\\d{8,12}\\b')",
+            "message": "Column may contain bank account numbers",
+            "active": true
+        },
+        {
+            "id": "gdpr_020",
+            "name": "Healthcare ID Detection",
+            "description": "Identifies potential healthcare ID numbers",
+            "category": "gdpr",
+            "type": "pattern_match",
+            "severity": "Critical",
+            "validation_code": "df[column_name].str.match(r'\\b[H]\\d{9}\\b')",
+            "message": "Column may contain healthcare IDs",
+            "active": true
+        },
+        {
+            "id": "gdpr_021",
+            "name": "Driver License Detection",
+            "description": "Identifies potential driver license numbers",
+            "category": "gdpr",
+            "type": "pattern_match",
+            "severity": "High",
+            "validation_code": "df[column_name].str.match(r'\\b[A-Z]\\d{7}[A-Z]\\b')",
+            "message": "Column may contain driver license numbers",
+            "active": true
+        },
+        {
+            "id": "gdpr_022",
+            "name": "IP Address Detection",
+            "description": "Identifies IP addresses",
+            "category": "gdpr",
+            "type": "pattern_match",
+            "severity": "Medium",
+            "validation_code": "df[column_name].str.match(r'\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b')",
+            "message": "Column may contain IP addresses",
+            "active": true
+        },
+        {
+            "id": "gdpr_023",
+            "name": "GPS Coordinate Detection",
+            "description": "Identifies GPS coordinates",
+            "category": "gdpr",
+            "type": "pattern_match",
+            "severity": "High",
+            "validation_code": "df[column_name].str.match(r'\\b[-+]?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?),\\s*[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)\\b')",
+            "message": "Column may contain GPS coordinates",
+            "active": true
+        },
+        {
+            "id": "gdpr_024",
+            "name": "Password Hash Detection",
+            "description": "Identifies potential password hashes",
+            "category": "gdpr",
+            "type": "pattern_match",
+            "severity": "Critical",
+            "validation_code": "df[column_name].str.match(r'\\b[a-f0-9]{32}\\b|\\b[a-f0-9]{40}\\b|\\b[a-f0-9]{64}\\b')",
+            "message": "Column may contain password hashes",
+            "active": true
+        },
+        {
+            "id": "gdpr_025",
+            "name": "JWT Token Detection",
+            "description": "Identifies JWT tokens",
+            "category": "gdpr",
+            "type": "pattern_match",
+            "severity": "High",
+            "validation_code": "df[column_name].str.match(r'\\bey[A-Za-z0-9-_]+\\.ey[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\b')",
+            "message": "Column may contain JWT tokens",
+            "active": true
+        },
+        {
+            "id": "gdpr_026",
+            "name": "MAC Address Detection",
+            "description": "Identifies MAC addresses",
+            "category": "gdpr",
+            "type": "pattern_match",
+            "severity": "Medium",
+            "validation_code": "df[column_name].str.match(r'\\b([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})\\b')",
+            "message": "Column may contain MAC addresses",
+            "active": true
+        },
+        {
+            "id": "gdpr_027",
+            "name": "URL with Auth Detection",
+            "description": "Identifies URLs containing authentication information",
+            "category": "gdpr",
+            "type": "pattern_match",
+            "severity": "High",
+            "validation_code": "df[column_name].str.match(r'\\b[a-zA-Z]+://[^/\\s:@]*:[^/\\s:@]*@[^/\\s]+\\b')",
+            "message": "Column may contain URLs with authentication credentials",
+            "active": true
+        },
+        {
+            "id": "gdpr_028",
+            "name": "OAuth Token Detection",
+            "description": "Identifies OAuth tokens",
+            "category": "gdpr",
+            "type": "pattern_match",
+            "severity": "Critical",
+            "validation_code": "df[column_name].str.match(r'\\bya29\\.[0-9A-Za-z\\-_]+\\b')",
+            "message": "Column may contain OAuth tokens",
+            "active": true
+        },
+        {
+            "id": "gdpr_029",
+            "name": "API Key Detection",
+            "description": "Identifies potential API keys",
+            "category": "gdpr",
+            "type": "pattern_match",
+            "severity": "Critical",
+            "validation_code": "df[column_name].str.match(r'\\b[a-zA-Z0-9]{32,45}\\b')",
+            "message": "Column may contain API keys",
+            "active": true
         }
     ],
     "data_quality_rules": [
@@ -348,6 +513,171 @@
             "id": "dq3",
             "name": "Email Format Check",
             "description": "Validate email addresses format",
+            "active": true
+        },
+        {
+            "id": "dq_016",
+            "name": "Decimal Precision Check",
+            "description": "Validates decimal numbers have correct precision",
+            "category": "data_quality",
+            "type": "value_check",
+            "severity": "Medium",
+            "validation_code": "df[column_name].astype(str).str.match(r'^-?\\d+\\.\\d{2}$')",
+            "message": "Values should have exactly 2 decimal places",
+            "active": true
+        },
+        {
+            "id": "dq_017",
+            "name": "Time Format Check",
+            "description": "Validates time format (HH:MM:SS)",
+            "category": "data_quality",
+            "type": "format_check",
+            "severity": "Medium",
+            "validation_code": "df[column_name].str.match(r'^([01]\\d|2[0-3]):([0-5]\\d):([0-5]\\d)$')",
+            "message": "Time values should be in HH:MM:SS format",
+            "active": true
+        },
+        {
+            "id": "dq_018",
+            "name": "URL Format Check",
+            "description": "Validates URL format",
+            "category": "data_quality",
+            "type": "format_check",
+            "severity": "Medium",
+            "validation_code": "df[column_name].str.match(r'^https?://(?:www\\.)?[\\w\\d\\-_]+\\.\\w{2,}(?:/[\\w\\d\\-._/?%=]*)?$')",
+            "message": "Values should be valid URLs",
+            "active": true
+        },
+        {
+            "id": "dq_019",
+            "name": "Currency Format Check",
+            "description": "Validates currency format",
+            "category": "data_quality",
+            "type": "format_check",
+            "severity": "High",
+            "validation_code": "df[column_name].str.match(r'^\\$\\d+(\\.\\d{2})?$')",
+            "message": "Values should be in valid currency format ($X.XX)",
+            "active": true
+        },
+        {
+            "id": "dq_020",
+            "name": "Percentage Range Check",
+            "description": "Validates percentage values are between 0 and 100",
+            "category": "data_quality",
+            "type": "range_check",
+            "severity": "Medium",
+            "validation_code": "df[column_name].between(0, 100)",
+            "message": "Percentage values should be between 0 and 100",
+            "active": true
+        },
+        {
+            "id": "dq_021",
+            "name": "String Length Check",
+            "description": "Validates string length is within limits",
+            "category": "data_quality",
+            "type": "length_check",
+            "severity": "Low",
+            "validation_code": "df[column_name].str.len().between(1, 255)",
+            "message": "String length should be between 1 and 255 characters",
+            "active": true
+        },
+        {
+            "id": "dq_022",
+            "name": "Alphanumeric Check",
+            "description": "Validates values are alphanumeric only",
+            "category": "data_quality",
+            "type": "pattern_match",
+            "severity": "Low",
+            "validation_code": "df[column_name].str.match(r'^[a-zA-Z0-9]+$')",
+            "message": "Values should contain only letters and numbers",
+            "active": true
+        },
+        {
+            "id": "dq_023",
+            "name": "Date Range Check",
+            "description": "Validates dates are within acceptable range",
+            "category": "data_quality",
+            "type": "range_check",
+            "severity": "Medium",
+            "validation_code": "pd.to_datetime(df[column_name]).between('1900-01-01', '2100-12-31')",
+            "message": "Dates should be between 1900 and 2100",
+            "active": true
+        },
+        {
+            "id": "dq_024",
+            "name": "Case Consistency Check",
+            "description": "Validates text case consistency",
+            "category": "data_quality",
+            "type": "consistency_check",
+            "severity": "Low",
+            "validation_code": "df[column_name].str.match(r'^[A-Z]+$|^[a-z]+$')",
+            "message": "Text should be consistently upper or lower case",
+            "active": true
+        },
+        {
+            "id": "dq_025",
+            "name": "Whitespace Check",
+            "description": "Validates no leading/trailing whitespace",
+            "category": "data_quality",
+            "type": "format_check",
+            "severity": "Low",
+            "validation_code": "df[column_name].str.match(r'^\\S.*\\S$|^\\S$')",
+            "message": "Values should not have leading or trailing whitespace",
+            "active": true
+        },
+        {
+            "id": "dq_026",
+            "name": "Special Character Check",
+            "description": "Validates absence of special characters",
+            "category": "data_quality",
+            "type": "pattern_match",
+            "severity": "Medium",
+            "validation_code": "~df[column_name].str.match(r'[!@#$%^&*(),.?\":{}|<>]')",
+            "message": "Values should not contain special characters",
+            "active": true
+        },
+        {
+            "id": "dq_027",
+            "name": "Word Count Check",
+            "description": "Validates number of words in text",
+            "category": "data_quality",
+            "type": "length_check",
+            "severity": "Low",
+            "validation_code": "df[column_name].str.split().str.len().between(1, 100)",
+            "message": "Text should contain between 1 and 100 words",
+            "active": true
+        },
+        {
+            "id": "dq_028",
+            "name": "Duplicate Words Check",
+            "description": "Validates no consecutive duplicate words",
+            "category": "data_quality",
+            "type": "pattern_match",
+            "severity": "Low",
+            "validation_code": "~df[column_name].str.match(r'\\b(\\w+)\\s+\\1\\b')",
+            "message": "Text should not contain consecutive duplicate words",
+            "active": true
+        },
+        {
+            "id": "dq_029",
+            "name": "Number Format Check",
+            "description": "Validates number formatting",
+            "category": "data_quality",
+            "type": "format_check",
+            "severity": "Medium",
+            "validation_code": "df[column_name].str.match(r'^-?\\d{1,3}(,\\d{3})*(\\.\\d+)?$')",
+            "message": "Numbers should be properly formatted with commas and decimals",
+            "active": true
+        },
+        {
+            "id": "dq_030",
+            "name": "JSON Format Check",
+            "description": "Validates JSON string format",
+            "category": "data_quality",
+            "type": "format_check",
+            "severity": "Medium",
+            "validation_code": "df[column_name].apply(lambda x: bool(json.loads(x)) if isinstance(x, str) else False)",
+            "message": "Values should be valid JSON strings",
             "active": true
         }
     ],
@@ -653,7 +983,7 @@
             "type": "Structure",
             "severity": "Critical",
             "validation_code": "set(df.dtypes.astype(str).to_dict().items()) != set(expected_schema.items())",
-            "active": true
+            "active": false
         },
         {
             "id": "tl_028",
@@ -662,7 +992,7 @@
             "type": "Statistical",
             "severity": "Medium",
             "validation_code": "abs(df[numeric_columns].skew()).max() > skew_threshold",
-            "active": true
+            "active": false
         },
         {
             "id": "tl_029",
@@ -671,7 +1001,7 @@
             "type": "Process",
             "severity": "High",
             "validation_code": "len(df_new[df_new[date_column] > last_load_date]) == 0",
-            "active": true
+            "active": false
         },
         {
             "id": "tl_030",
@@ -680,6 +1010,156 @@
             "type": "Structure",
             "severity": "High",
             "validation_code": "not nx.is_directed_acyclic_graph(column_dependency_graph)",
+            "active": false
+        },
+        {
+            "id": "tl_016",
+            "name": "Row Count Growth Rate",
+            "description": "Monitors table growth rate",
+            "type": "Growth",
+            "severity": "Medium",
+            "validation_code": "abs((current_count - previous_count) / previous_count) <= 0.2",
+            "message": "Table growth rate exceeds 20%",
+            "active": true
+        },
+        {
+            "id": "tl_017",
+            "name": "Column Value Distribution",
+            "description": "Checks distribution of values across columns",
+            "type": "Statistical",
+            "severity": "Medium",
+            "validation_code": "df[column_name].value_counts(normalize=True).max() <= 0.8",
+            "message": "Column has highly skewed distribution",
+            "active": true
+        },
+        {
+            "id": "tl_018",
+            "name": "Update Frequency Check",
+            "description": "Monitors table update frequency",
+            "type": "Temporal",
+            "severity": "High",
+            "validation_code": "(current_time - last_update).total_seconds() <= 86400",
+            "message": "Table not updated within 24 hours",
+            "active": true
+        },
+        {
+            "id": "tl_019",
+            "name": "Schema Stability Check",
+            "description": "Monitors changes in table schema",
+            "type": "Schema",
+            "severity": "Critical",
+            "validation_code": "set(current_columns) == set(expected_columns)",
+            "message": "Unexpected schema changes detected",
+            "active": true
+        },
+        {
+            "id": "tl_020",
+            "name": "Data Freshness Check",
+            "description": "Validates data freshness",
+            "type": "Temporal",
+            "severity": "High",
+            "validation_code": "df['timestamp'].max() >= (current_time - pd.Timedelta(days=1))",
+            "message": "Data is not fresh (>24 hours old)",
+            "active": true
+        },
+        {
+            "id": "tl_021",
+            "name": "Column Dependency Check",
+            "description": "Validates dependencies between columns",
+            "type": "Relationship",
+            "severity": "Medium",
+            "validation_code": "df.groupby('parent_col')['child_col'].nunique() >= 1",
+            "message": "Invalid column dependencies found",
+            "active": true
+        },
+        {
+            "id": "tl_022",
+            "name": "Data Volatility Check",
+            "description": "Monitors data change frequency",
+            "type": "Statistical",
+            "severity": "Medium",
+            "validation_code": "df.groupby('id')['updated_at'].nunique().mean() <= 5",
+            "message": "Excessive data volatility detected",
+            "active": true
+        },
+        {
+            "id": "tl_023",
+            "name": "Column Cardinality Ratio",
+            "description": "Checks ratio of unique values",
+            "type": "Statistical",
+            "severity": "Low",
+            "validation_code": "df[column_name].nunique() / len(df) <= 0.9",
+            "message": "Column cardinality ratio too high",
+            "active": true
+        },
+        {
+            "id": "tl_024",
+            "name": "Null Pattern Check",
+            "description": "Analyzes patterns of null values",
+            "type": "Pattern",
+            "severity": "Medium",
+            "validation_code": "df.isnull().sum().max() / len(df) <= 0.1",
+            "message": "Suspicious null value patterns detected",
+            "active": true
+        },
+        {
+            "id": "tl_025",
+            "name": "Value Range Stability",
+            "description": "Monitors stability of value ranges",
+            "type": "Statistical",
+            "severity": "Medium",
+            "validation_code": "abs((current_range - historical_range) / historical_range) <= 0.2",
+            "message": "Unexpected change in value ranges",
+            "active": true
+        },
+        {
+            "id": "tl_026",
+            "name": "Cross-Column Correlation",
+            "description": "Checks correlations between columns",
+            "type": "Statistical",
+            "severity": "Low",
+            "validation_code": "abs(df[col1].corr(df[col2])) <= 0.9",
+            "message": "High correlation between columns detected",
+            "active": true
+        },
+        {
+            "id": "tl_027",
+            "name": "Temporal Pattern Check",
+            "description": "Analyzes temporal data patterns",
+            "type": "Temporal",
+            "severity": "Medium",
+            "validation_code": "df.groupby(df['timestamp'].dt.hour)['value'].std() <= threshold",
+            "message": "Unusual temporal patterns detected",
+            "active": true
+        },
+        {
+            "id": "tl_028",
+            "name": "Data Completeness Ratio",
+            "description": "Checks overall data completeness",
+            "type": "Completeness",
+            "severity": "High",
+            "validation_code": "df.notna().mean().mean() >= 0.95",
+            "message": "Overall data completeness below threshold",
+            "active": true
+        },
+        {
+            "id": "tl_029",
+            "name": "Duplicate Row Pattern",
+            "description": "Analyzes patterns in duplicate rows",
+            "type": "Pattern",
+            "severity": "Medium",
+            "validation_code": "df.duplicated(subset=key_columns).sum() / len(df) <= 0.01",
+            "message": "Unusual duplicate row patterns detected",
+            "active": true
+        },
+        {
+            "id": "tl_030",
+            "name": "Data Distribution Stability",
+            "description": "Monitors stability of data distribution",
+            "type": "Statistical",
+            "severity": "Medium",
+            "validation_code": "ks_2samp(current_distribution, historical_distribution).pvalue >= 0.05",
+            "message": "Significant change in data distribution",
             "active": true
         }
     ],
