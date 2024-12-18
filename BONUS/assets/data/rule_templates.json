@@ -64,7 +64,7 @@
             "severity": "High",
             "validation_code": "df[column_name].str.match(r'^[\\w\\.-]+@[\\w\\.-]+\\.\\w+$')",
             "message": "Column may contain invalid email formats",
-            "active": false
+            "active": true
         },
         {
             "id": "gdpr_007",

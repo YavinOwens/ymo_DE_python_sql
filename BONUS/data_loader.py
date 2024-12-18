@@ -11,8 +11,12 @@ from config import DB_PATH
 class DataLoader:
     def __init__(self):
         """Initialize the DataLoader with data directory."""
-        self.data_dir = os.path.dirname(os.path.abspath(__file__))
-        self.execution_history_file = os.path.join(self.data_dir, 'execution_history.json')
+        self.data_dir = "assets/data"
+        self.config_file = "assets/config/data_config.json"
+        self.execution_history_file = "assets/data/execution_history.json"
+        self.rule_execution_history_file = "assets/data/rule_execution_history.json"
+        self.rule_templates_file = "assets/data/rule_templates.json"
+        self.activities_file = "assets/data/activities.json"
         
         # Initialize execution history file if it doesn't exist
         if not os.path.exists(self.execution_history_file):
@@ -40,6 +44,10 @@ class DataLoader:
         except Exception as e:
             print(f"Error getting table names: {str(e)}")
             return []
+    
+    def get_available_tables(self) -> List[str]:
+        """Get list of available tables from database."""
+        return self.get_table_names()
     
     def get_table_schema(self, table_name: str) -> List[Dict]:
         """Get schema information for a table."""

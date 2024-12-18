@@ -17,10 +17,9 @@ import traceback
 
 # Configure logging
 logging.basicConfig(
+    filename='assets/logs/app_log.log',
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    filename='app_log.log',
-    filemode='a'
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 
 # Initialize DataLoader
@@ -31,13 +30,99 @@ app = dash.Dash(
     __name__, 
     external_stylesheets=[
         dbc.themes.FLATLY,
-        dbc.icons.BOOTSTRAP
+        dbc.icons.BOOTSTRAP,
+        "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
     ],
     suppress_callback_exceptions=True
 )
 app.title = "Data Quality Dashboard"
 
-# Custom CSS
+# Layout
+app.layout = dbc.Container([
+    dcc.Store(id='table_name', storage_type='memory'),
+    dcc.Store(id='selected-columns-store', storage_type='memory', data=[]),
+    dcc.Location(id='url', refresh=False),
+    
+    # Navigation
+    dbc.Row([
+        dbc.Col([
+            html.Div([
+                # Table Selector at the top
+                html.Div([
+                    html.Label("Select Table", className="form-label"),
+                    dcc.Dropdown(
+                        id="table-dropdown",
+                        options=[
+                            {"label": table, "value": table}
+                            for table in data_loader.get_table_names()
+                        ],
+                        placeholder="Select a table...",
+                        className="mb-3"
+                    )
+                ], className="table-selector"),
+                
+                # Navigation Links
+                dbc.Nav([
+                    dbc.NavLink([
+                        html.I(className="bi bi-house-door me-2"),
+                        "Overview"
+                    ], href="/overview", id="overview-link", active="exact"),
+                    dbc.NavLink([
+                        html.I(className="bi bi-check-circle me-2"),
+                        "Quality Check"
+                    ], href="/quality", id="quality-link", active="exact"),
+                    dbc.NavLink([
+                        html.I(className="bi bi-columns-gap me-2"),
+                        "Column Analysis"
+                    ], href="/columns", id="columns-link", active="exact"),
+                    dbc.NavLink([
+                        html.I(className="bi bi-database me-2"),
+                        "Data Catalogue"
+                    ], href="/catalogue", id="catalogue-link", active="exact"),
+                    dbc.NavLink([
+                        html.I(className="bi bi-list-check me-2"),
+                        "Rules"
+                    ], href="/rules", id="rules-link", active="exact"),
+                    dbc.NavLink([
+                        html.I(className="bi bi-gear me-2"),
+                        "Rule Management"
+                    ], href="/manage-rules", id="manage-rules-link", active="exact"),
+                    dbc.NavLink([
+                        html.I(className="bi bi-play-circle me-2"),
+                        "Run Management"
+                    ], href="/run-management", id="run-management-link", active="exact"),
+                    dbc.NavLink([
+                        html.I(className="bi bi-file-earmark-text me-2"),
+                        "Report"
+                    ], href="/report", id="report-link", active="exact"),
+                    dbc.NavLink([
+                        html.I(className="bi bi-exclamation-triangle me-2"),
+                        "Failed Data"
+                    ], href="/failed-data", id="failed-data-link", active="exact"),
+                ], vertical=True, pills=True, className="mb-4")
+            ], className="sidebar-container")
+        ], width=3, className="border-end"),
+        
+        # Main content area
+        dbc.Col([
+            # Column selector at the top of main content
+            html.Div(id="column-dropdown-container", children=[
+                html.Label("Select Columns", className="form-label"),
+                dcc.Dropdown(
+                    id="column-multi-dropdown",
+                    multi=True,
+                    placeholder="Select columns...",
+                    className="mb-3"
+                )
+            ], className="mb-4"),
+            
+            # Page content
+            html.Div(id="page-content")
+        ], width=9, className="p-4")
+    ], className="h-100")
+], fluid=True, className="h-100 py-4")
+
+# Remove inline styles from index_string and use our custom.css
 app.index_string = '''
 <!DOCTYPE html>
 <html>
@@ -46,55 +131,6 @@ app.index_string = '''
         <title>{%title%}</title>
         {%favicon%}
         {%css%}
-        <style>
-            .card {
-                border-radius: 8px;
-                transition: all 0.2s ease-in-out;
-            }
-            .card:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            }
-            .progress {
-                height: 12px;
-                border-radius: 6px;
-            }
-            .progress-bar {
-                transition: width 0.6s ease;
-                font-size: 0.875rem !important;
-                line-height: 12px !important;
-            }
-            .text-muted {
-                color: #6c757d !important;
-            }
-            .bi {
-                vertical-align: -0.125em;
-                font-size: 1.1em;
-            }
-            .card-body {
-                padding: 1.5rem;
-            }
-            .h4 {
-                font-size: 1.5rem;
-                font-weight: 600;
-                line-height: 1.2;
-            }
-            .fs-5 {
-                font-size: 1.15rem !important;
-            }
-            .mb-3 {
-                margin-bottom: 1rem !important;
-            }
-            .mb-4 {
-                margin-bottom: 1.5rem !important;
-            }
-            .me-2 {
-                margin-right: 0.5rem !important;
-            }
-            .p-4 {
-                padding: 1.5rem !important;
-            }
-        </style>
     </head>
     <body>
         {%app_entry%}
@@ -106,23 +142,6 @@ app.index_string = '''
     </body>
 </html>
 '''
-
-# Sidebar layout
-sidebar = dbc.Nav(
-    [
-        dbc.NavLink("Overview", href="/overview", active="exact", id="overview-link"),
-        dbc.NavLink("Data Quality", href="/quality", active="exact", id="quality-link"),
-        dbc.NavLink("Column Analysis", href="/columns", active="exact", id="columns-link"),
-        dbc.NavLink("Data Catalogue", href="/catalogue", active="exact", id="catalogue-link"),
-        dbc.NavLink("Rule Catalogue", href="/rules", active="exact", id="rules-link"),
-        dbc.NavLink("Rule Management", href="/manage-rules", active="exact", id="manage-rules-link"),
-        dbc.NavLink("Run Management", href="/run-management", active="exact", id="run-management-link"),
-        dbc.NavLink("Report", href="/report", active="exact", id="report-link"),
-    ],
-    vertical=True,
-    pills=True,
-    className="bg-light",
-)
 
 # Layout components
 def create_overview_content(table_name=None):
@@ -530,150 +549,84 @@ def create_catalogue_content(table_name=None):
 
 def create_rule_catalogue_content():
     """Create the rule catalogue content."""
-    # Load all rules using the same source as rule management
+    # Load all rules
     rules = data_loader.load_all_rules()
     
+    # Handle potential error in rule loading
     if isinstance(rules, dict) and 'error' in rules:
         return html.Div(f"Error loading rules: {rules['error']}")
-
-    # Calculate statistics
-    total_rules = len(rules)
-    active_rules = len([rule for rule in rules if rule.get('active', True)])
     
-    # Group rules by category
+    # Categorize rules by severity and type
+    rules_by_severity = {}
     rules_by_category = {}
-    for rule in rules:
-        category = rule.get('category', 'Uncategorized')
-        if category not in rules_by_category:
-            rules_by_category[category] = []
-        rules_by_category[category].append(rule)
-
-    # Create summary cards
-    summary_cards = dbc.Row([
-        dbc.Col(
-            dbc.Card(
-                dbc.CardBody([
-                    html.H4("Total Rules", className="card-title text-center"),
-                    html.H2(f"{total_rules}", className="text-center text-primary")
-                ])
-            ),
-            width=3,
-            className="mb-4"
-        ),
-        dbc.Col(
-            dbc.Card(
-                dbc.CardBody([
-                    html.H4("Active Rules", className="card-title text-center"),
-                    html.H2(f"{active_rules}", className="text-center text-success")
-                ])
-            ),
-            width=3,
-            className="mb-4"
-        ),
-        dbc.Col(
-            dbc.Card(
-                dbc.CardBody([
-                    html.H4("Categories", className="card-title text-center"),
-                    html.H2(f"{len(rules_by_category)}", className="text-center text-info mb-3"),
-                    html.Div(
-                        [f"{cat}: {len(rules)}" for cat, rules in rules_by_category.items()],
-                        className="small text-muted px-2"
-                    )
-                ])
-            ),
-            width=3,
-            className="mb-4"
-        ),
-        dbc.Col(
-            dbc.Card(
-                dbc.CardBody([
-                    html.H4("By Severity", className="card-title text-center"),
-                    html.Div([
-                        html.Div(
-                            [
-                                html.Span(f"{sev}: ", className="fw-bold"),
-                                html.Span(f"{count}")
-                            ],
-                            className="mb-2"
-                        ) for sev, count in rules_by_severity.items()
-                    ], className="px-2")
-                ])
-            ),
-            width=3,
-            className="mb-4"
-        )
-    ])
-
-    # Create category breakdown
-    category_breakdown = dbc.Row([
-        dbc.Col([
-            dbc.Card([
-                dbc.CardHeader("Rules by Category"),
-                dbc.CardBody([
-                    html.Div([
-                        dbc.Row([
-                            dbc.Col(html.H6(category, className="mb-0"), width=8),
-                            dbc.Col(html.H6(len(rules), className="text-end mb-0"), width=4)
-                        ], className="mb-2")
-                        for category, rules in rules_by_category.items()
-                    ])
-                ])
-            ])
-        ])
-    ])
-
-    # Create rule sections by category
-    rule_sections = []
-    for category, category_rules in rules_by_category.items():
-        category_name = category.replace('_', ' ').title()
-        rules_table = dbc.Table([
-            html.Thead([
-                html.Tr([
-                    html.Th("ID"),
-                    html.Th("Name"),
-                    html.Th("Description"),
-                    html.Th("Type"),
-                    html.Th("Severity"),
-                    html.Th("Status")
-                ])
-            ]),
-            html.Tbody([
-                html.Tr([
-                    html.Td(rule['id']),
-                    html.Td(rule['name']),
-                    html.Td(rule['description']),
-                    html.Td(rule.get('type', 'N/A')),
-                    html.Td(
-                        html.Span(
-                            rule.get('severity', 'N/A'),
-                            className=f"badge {'bg-danger' if rule.get('severity') == 'Critical' else 'bg-warning'}"
-                        )
-                    ),
-                    html.Td(
-                        html.Span(
-                            "Active" if rule.get('active', True) else "Inactive",
-                            className=f"badge {'bg-success' if rule.get('active', True) else 'bg-secondary'}"
-                        )
-                    )
-                ]) for rule in category_rules
-            ])
-        ], striped=True, bordered=True, hover=True, className="mb-4")
-
-        rule_sections.append(
-            dbc.Card([
-                dbc.CardHeader(category_name),
-                dbc.CardBody(rules_table)
-            ], className="mb-4")
-        )
     
-    return html.Div([
-        html.H2("Rule Catalogue", className="mb-4"),
-        html.P("Browse and manage data quality rules by category.", className="mb-4"),
-        summary_cards,
-        category_breakdown,
-        html.Hr(),
-        *rule_sections
-    ])
+    for rule in rules:
+        # Count rules by severity
+        severity = rule.get('severity', 'Unknown').lower()
+        rules_by_severity[severity] = rules_by_severity.get(severity, 0) + 1
+        
+        # Count rules by category
+        category = rule.get('category', 'Uncategorized').lower()
+        rules_by_category[category] = rules_by_category.get(category, 0) + 1
+    
+    # Define color mapping
+    severity_colors = {
+        'critical': 'danger',
+        'high': 'warning',
+        'medium': 'info',
+        'low': 'success',
+        'unknown': 'secondary'
+    }
+    
+    # Create severity distribution card
+    severity_distribution = dbc.Card(
+        dbc.CardBody([
+            html.H4("Rules by Severity", className="card-title mb-3"),
+            html.Div([
+                dbc.Progress(
+                    f"{sev.capitalize()}: {count}", 
+                    value=(count / len(rules)) * 100, 
+                    color=severity_colors.get(sev, 'secondary'),
+                    style={"height": "20px", "marginBottom": "10px"}
+                ) for sev, count in rules_by_severity.items()
+            ], style={"padding": "10px"}),
+            html.Small(f"Total Rules: {len(rules)}", className="text-muted")
+        ]),
+        className="mb-4",
+        style={"padding": "15px"}
+    )
+    
+    # Create category distribution card
+    category_distribution = dbc.Card(
+        dbc.CardBody([
+            html.H4("Rules by Category", className="card-title mb-3"),
+            html.Div([
+                dbc.Progress(
+                    f"{cat.capitalize()}: {count}", 
+                    value=(count / len(rules)) * 100, 
+                    color="primary",
+                    style={"height": "20px", "marginBottom": "10px"}
+                ) for cat, count in rules_by_category.items()
+            ], style={"padding": "10px"}),
+            html.Small(f"Total Categories: {len(rules_by_category)}", className="text-muted")
+        ]),
+        className="mb-4",
+        style={"padding": "15px"}
+    )
+    
+    # Create rules table
+    rules_table = create_rules_table(rules)
+    
+    # Layout
+    return dbc.Container([
+        dbc.Row([
+            dbc.Col(severity_distribution, md=6),
+            dbc.Col(category_distribution, md=6)
+        ], className="mb-4"),
+        dbc.Row([
+            dbc.Col(rules_table, width=12)
+        ])
+    ], fluid=True, style={"padding": "20px"})
 
 def create_rules_table(rules, category_filter=None, severity_filter=None, status_filter=None):
     """Create the filtered rules table."""
@@ -961,10 +914,9 @@ def create_run_management_content(table_name=None):
             dbc.Col(
                 dbc.Card(
                     dbc.CardBody([
-                        html.I(className="bi bi-play-circle fs-1 text-primary"),
-                        html.H4("Total Rules", className="mt-3"),
-                        html.H2(f"{total_rules}", className="text-primary")
-                    ], className="text-center"),
+                        html.H4("Total Rules", className="card-title text-center"),
+                        html.H2(f"{total_rules}", className="text-center text-primary")
+                    ])
                 ),
                 width=3,
                 className="mb-4"
@@ -972,10 +924,9 @@ def create_run_management_content(table_name=None):
             dbc.Col(
                 dbc.Card(
                     dbc.CardBody([
-                        html.I(className="bi bi-check-circle fs-1 text-success"),
-                        html.H4("Total Executions", className="mt-3"),
-                        html.H2(f"{total_executions}", className="text-success")
-                    ], className="text-center"),
+                        html.H4("Total Executions", className="card-title text-center"),
+                        html.H2(f"{total_executions}", className="text-center text-success")
+                    ])
                 ),
                 width=3,
                 className="mb-4"
@@ -983,10 +934,9 @@ def create_run_management_content(table_name=None):
             dbc.Col(
                 dbc.Card(
                     dbc.CardBody([
-                        html.I(className="bi bi-percent fs-1 text-info"),
-                        html.H4("Average Pass Rate", className="mt-3"),
-                        html.H2(f"{avg_pass_rate:.1f}%", className="text-info")
-                    ], className="text-center"),
+                        html.H4("Average Pass Rate", className="card-title text-center"),
+                        html.H2(f"{avg_pass_rate:.1f}%", className="text-center text-info")
+                    ])
                 ),
                 width=3,
                 className="mb-4"
@@ -994,13 +944,12 @@ def create_run_management_content(table_name=None):
             dbc.Col(
                 dbc.Card(
                     dbc.CardBody([
-                        html.I(className="bi bi-x-circle fs-1 text-danger"),
-                        html.H4("Failed Rules", className="mt-3"),
+                        html.H4("Failed Rules", className="card-title text-center"),
                         html.H2(
                             str(total_failed) if table_history else "0",
-                            className="text-danger"
+                            className="text-center text-danger"
                         )
-                    ], className="text-center"),
+                    ])
                 ),
                 width=3,
                 className="mb-4"
@@ -1657,40 +1606,207 @@ def create_report_content(table_name=None):
         logging.error(f"Error creating report: {str(e)}")
         return html.Div(f"Error creating report: {str(e)}")
 
-# App layout
-app.layout = dbc.Container([
-    dcc.Location(id='url', refresh=False),
-    dcc.Store(id='selected-columns-store', data=[]),
-    dbc.Row([
-        dbc.Col(html.H1("Data Quality Dashboard", className="text-primary mb-4"), width=12)
-    ]),
-    dbc.Row([
-        dbc.Col([
-            html.H4("Select Table"),
-            dcc.Dropdown(
-                id='table-dropdown',
-                options=[{'label': table, 'value': table} for table in data_loader.get_table_names()],
-                value=None,
-                clearable=False,
-                className="mb-4"
-            )
-        ])
-    ]),
-    dbc.Row([
-        dbc.Col(sidebar, width=2, className="bg-light"),
-        dbc.Col(html.Div(id="page-content"), width=10)
-    ])
-], fluid=True)
+def create_failed_data_selector():
+    """Create a page to select a table for viewing failed data."""
+    try:
+        # Load available tables
+        data_loader = DataLoader()
+        available_tables = data_loader.get_available_tables()
+        
+        # Create table selection cards
+        table_cards = []
+        for table in available_tables:
+            try:
+                with open('execution_history.json', 'r') as f:
+                    execution_history = json.load(f)
+                
+                table_executions = [
+                    exec_data for exec_data in execution_history 
+                    if exec_data.get('table_name') == table
+                ]
+                
+                total_failures = 0
+                if table_executions:
+                    latest_execution = max(table_executions, key=lambda x: x.get('timestamp', ''))
+                    for rule_result in latest_execution.get('results', []):
+                        if not rule_result['passed']:
+                            total_failures += len(rule_result['failed_indices'])
+                
+                table_cards.append(
+                    dbc.Col(
+                        dbc.Card([
+                            dbc.CardBody([
+                                html.H4(table, className="card-title"),
+                                html.P(f"{total_failures} failed rows", 
+                                      className="text-danger" if total_failures > 0 else "text-muted"),
+                                dbc.Button(
+                                    "View Failed Data",
+                                    href=f"/failed-data/{table}",
+                                    color="primary",
+                                    className="mt-3"
+                                )
+                            ])
+                        ], className="h-100 shadow-sm")
+                    , width=4, className="mb-4")
+                )
+            except Exception as e:
+                logging.error(f"Error loading execution history for table {table}: {e}")
+                continue
+        
+        card_rows = []
+        for i in range(0, len(table_cards), 3):
+            card_rows.append(dbc.Row(table_cards[i:i+3], className="mb-4"))
+        
+        if not table_cards:
+            content = html.Div([
+                html.I(className="bi bi-info-circle-fill text-info me-2"),
+                "No tables with execution history found."
+            ], className="alert alert-info")
+        else:
+            content = html.Div(card_rows)
+        
+        return dbc.Container([
+            html.H2([
+                html.I(className="bi bi-exclamation-triangle-fill text-danger me-3"),
+                "Failed Data Analysis"
+            ], className="mb-4"),
+            
+            html.P(
+                "Select a table to view its failed data report.",
+                className="text-muted mb-4"
+            ),
+            
+            content
+        ], fluid=True, className="py-4")
+        
+    except Exception as e:
+        logging.error(f"Error creating failed data selector: {e}")
+        return html.Div([
+            html.I(className="bi bi-exclamation-triangle-fill text-danger me-2"),
+            f"Error creating failed data selector: {str(e)}"
+        ], className="alert alert-danger")
 
-# Callback for page content
+def create_failed_data_page(table_name):
+    """Create a page layout to display failed data from the execution history."""
+    try:
+        with open('execution_history.json', 'r') as f:
+            execution_history = json.load(f)
+    except Exception as e:
+        logging.error(f"Error reading execution history: {e}")
+        return html.Div([
+            html.I(className="bi bi-exclamation-triangle-fill text-danger me-2"),
+            "Error loading execution history"
+        ], className="alert alert-danger")
+    
+    table_executions = [
+        exec_data for exec_data in execution_history 
+        if exec_data.get('table_name') == table_name
+    ]
+    
+    if not table_executions:
+        return html.Div([
+            html.I(className="bi bi-info-circle-fill text-info me-2"),
+            "No execution history found for this table"
+        ], className="alert alert-info")
+    
+    latest_execution = max(table_executions, key=lambda x: x.get('timestamp', ''))
+    
+    failed_data = []
+    total_failed = 0
+    for rule_result in latest_execution.get('results', []):
+        if not rule_result['passed']:
+            for idx in rule_result['failed_indices']:
+                failed_data.append({
+                    'Index': idx,
+                    'Rule': rule_result['rule_name'],
+                    'Description': rule_result.get('description', '')
+                })
+                total_failed += 1
+
+    summary_cards = dbc.Row([
+        dbc.Col(
+            dbc.Card(
+                dbc.CardBody([
+                    html.H4(total_failed, className="text-center text-danger"),
+                    html.P("Failed Rows", className="text-center text-muted")
+                ])
+            )
+        , width=6),
+        dbc.Col(
+            dbc.Card(
+                dbc.CardBody([
+                    html.H4(
+                        datetime.fromisoformat(latest_execution['timestamp']).strftime("%Y-%m-%d %H:%M"),
+                        className="text-center"
+                    ),
+                    html.P("Last Execution", className="text-center text-muted")
+                ])
+            )
+        , width=6)
+    ], className="mb-4")
+
+    failed_table = dash_table.DataTable(
+        data=failed_data,
+        columns=[{"name": i, "id": i} for i in ['Index', 'Rule', 'Description']],
+        style_table={'overflowX': 'auto'},
+        style_header={
+            'backgroundColor': 'var(--background)',
+            'fontWeight': 'bold',
+            'textAlign': 'left',
+            'padding': '12px'
+        },
+        style_cell={
+            'textAlign': 'left',
+            'padding': '12px',
+            'fontFamily': 'var(--font-family)'
+        },
+        style_data_conditional=[{
+            'if': {'row_index': 'odd'},
+            'backgroundColor': 'var(--background)'
+        }],
+        page_size=10
+    )
+    
+    return dbc.Container([
+        html.H2([
+            html.I(className="bi bi-exclamation-triangle-fill text-danger me-3"),
+            f"Failed Data Report: {table_name}"
+        ], className="mb-4"),
+        
+        html.P(
+            "Detailed breakdown of data quality rule failures and affected rows.",
+            className="text-muted mb-4"
+        ),
+        
+        summary_cards,
+        failed_table
+        
+    ], fluid=True, className="py-4")
+
 @app.callback(
-    Output("page-content", "children"),
-    [Input("table-dropdown", "value"),
-     Input("url", "pathname"),
-     Input("selected-columns-store", "data")]
+    Output('url', 'pathname'),
+    [Input({'type': 'view-failed-data-btn', 'rule': ALL}, 'n_clicks')],
+    [State('table_name', 'data')]
 )
-def render_page_content(table_name, pathname, selected_columns):
-    if pathname == "/quality":
+def navigate_to_failed_data_page(n_clicks, table_name):
+    if any(n_clicks):
+        return f"/failed-data/{table_name}"
+    raise dash.exceptions.PreventUpdate
+
+@app.callback(
+    Output('page-content', 'children'),
+    [Input('url', 'pathname'),
+     Input('table_name', 'data'),
+     Input('selected-columns-store', 'data')]
+)
+def render_page_content(pathname, table_name, selected_columns):
+    """Unified callback for rendering page content based on pathname and table selection."""
+    ctx = dash.callback_context
+    trigger = ctx.triggered[0]['prop_id'].split('.')[0] if ctx.triggered else None
+    
+    if pathname == "/overview":
+        return create_overview_content(table_name)
+    elif pathname == "/quality":
         return create_quality_content(table_name)
     elif pathname == "/columns":
         return create_column_analysis_content(table_name, selected_columns)
@@ -1700,14 +1816,20 @@ def render_page_content(table_name, pathname, selected_columns):
         return create_rule_catalogue_content()
     elif pathname == "/manage-rules":
         return create_rule_management_content()
-    elif pathname == "/overview" or pathname == "/":
-        return create_overview_content(table_name)
     elif pathname == "/run-management":
         return create_run_management_content(table_name)
     elif pathname == "/report":
         return create_report_content(table_name)
+    elif pathname == "/failed-data":
+        return create_failed_data_selector()
+    elif pathname.startswith('/failed-data/'):
+        table_name = pathname.split('/')[-1]
+        return create_failed_data_page(table_name)
     else:
-        return html.Div("404 - Page not found")
+        return html.Div([
+            html.H3("404 - Page not found", className="text-danger"),
+            html.P("The requested page does not exist.", className="text-muted")
+        ], className="p-4")
 
 # Callback to update selected columns when dropdown changes
 @app.callback(
@@ -1739,27 +1861,58 @@ def reset_selected_columns(table_name):
      Output("rules-link", "active"),
      Output("manage-rules-link", "active"),
      Output("run-management-link", "active"),
-     Output("report-link", "active")],
+     Output("report-link", "active"),
+     Output("failed-data-link", "active")],
     [Input("url", "pathname")]
 )
 def toggle_active_links(pathname):
     if pathname == "/overview" or pathname == "/":
-        return True, False, False, False, False, False, False, False
+        return True, False, False, False, False, False, False, False, False
     elif pathname == "/quality":
-        return False, True, False, False, False, False, False, False
+        return False, True, False, False, False, False, False, False, False
     elif pathname == "/columns":
-        return False, False, True, False, False, False, False, False
+        return False, False, True, False, False, False, False, False, False
     elif pathname == "/catalogue":
-        return False, False, False, True, False, False, False, False
+        return False, False, False, True, False, False, False, False, False
     elif pathname == "/rules":
-        return False, False, False, False, True, False, False, False
+        return False, False, False, False, True, False, False, False, False
     elif pathname == "/manage-rules":
-        return False, False, False, False, False, True, False, False
+        return False, False, False, False, False, True, False, False, False
     elif pathname == "/run-management":
-        return False, False, False, False, False, False, True, False
+        return False, False, False, False, False, False, True, False, False
     elif pathname == "/report":
-        return False, False, False, False, False, False, False, True
-    return True, False, False, False, False, False, False, False
+        return False, False, False, False, False, False, False, True, False
+    elif pathname.startswith('/failed-data/'):
+        return False, False, False, False, False, False, False, False, True
+    return True, False, False, False, False, False, False, False, False
+
+@app.callback(
+    [Output("column-multi-dropdown", "options"),
+     Output("column-multi-dropdown", "value")],
+    [Input("table-dropdown", "value")]
+)
+def update_column_dropdown(selected_table):
+    """Update column dropdown options when a table is selected."""
+    if not selected_table:
+        return [], []
+    
+    try:
+        # Get table schema to get column names
+        schema = data_loader.get_table_schema(selected_table)
+        columns = [col['name'] for col in schema]
+        options = [{"label": col, "value": col} for col in columns]
+        return options, []
+    except Exception as e:
+        print(f"Error updating column dropdown: {str(e)}")
+        return [], []
+
+@app.callback(
+    Output("table_name", "data"),
+    [Input("table-dropdown", "value")]
+)
+def update_selected_table(value):
+    """Update the stored table name when dropdown changes."""
+    return value
 
 def create_gauge_chart(value, title, description):
     return go.Figure(
