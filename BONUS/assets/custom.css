@@ -1,0 +1,162 @@
+/* Custom styles for the Data Quality Dashboard */
+
+/* EY Corporate Theme */
+:root {
+    --primary: #4361ee;
+    --primary-light: #edf2ff;
+    --text-primary: #2d3436;
+    --text-secondary: #636e72;
+    --background: #f8f9fa;
+    --card-bg: #ffffff;
+    --border: #e9ecef;
+    --success: #2ecc71;
+    --warning: #f39c12;
+    --danger: #e74c3c;
+    --accent: #1a73e8;
+    --secondary: #e9ecef;
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--background);
+    color: var(--text-primary);
+    font-family: var(--font-family);
+}
+
+/* Cards */
+.card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-bottom: var(--spacing-md);
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-body {
+    padding: var(--spacing-md);
+}
+
+.card-title {
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+    font-weight: 500;
+}
+
+/* Navigation */
+.nav-link {
+    color: var(--text-primary);
+    padding: var(--spacing-md);
+    margin: var(--spacing-xs) 0;
+    border-radius: 4px;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.nav-link:hover {
+    background-color: var(--primary-light);
+    color: var(--primary);
+}
+
+.nav-link.active {
+    background-color: var(--primary);
+    color: white;
+}
+
+/* Tables */
+.table {
+    width: 100%;
+    margin-top: var(--spacing-md);
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.table th {
+    background-color: var(--background);
+    color: var(--text-primary);
+    font-weight: 500;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-bottom: 2px solid var(--border);
+}
+
+.table td {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-bottom: 1px solid var(--border);
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: var(--background);
+}
+
+.table-hover tbody tr:hover {
+    background-color: var(--primary-light);
+}
+
+/* Charts and Metrics */
+.gauge-chart {
+    margin: var(--spacing-md) 0;
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    padding: var(--spacing-md);
+}
+
+.metric-card {
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    padding: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.metric-value {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--primary);
+    margin: var(--spacing-xs) 0;
+}
+
+.metric-label {
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        margin-bottom: var(--spacing-md);
+    }
+    
+    .card {
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Utility Classes */
+.text-primary { color: var(--primary) !important; }
+.text-success { color: var(--success) !important; }
+.text-warning { color: var(--warning) !important; }
+.text-danger { color: var(--danger) !important; }
+
+.bg-light { background-color: var(--background) !important; }
+.bg-primary { background-color: var(--primary) !important; }
+.bg-success { background-color: var(--success) !important; }
+.bg-warning { background-color: var(--warning) !important; }
+.bg-danger { background-color: var(--danger) !important; }

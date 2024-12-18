@@ -20,7 +20,7 @@
             "severity": "High",
             "validation_code": "df[column_name].str.match(r'\\b\\d{3}[-.]?\\d{3}[-.]?\\d{4}\\b')",
             "message": "Column may contain phone numbers (PII data)",
-            "active": true
+            "active": false
         },
         {
             "id": "gdpr_003",
@@ -64,7 +64,7 @@
             "severity": "High",
             "validation_code": "df[column_name].str.match(r'^[\\w\\.-]+@[\\w\\.-]+\\.\\w+$')",
             "message": "Column may contain invalid email formats",
-            "active": true
+            "active": false
         },
         {
             "id": "gdpr_007",
@@ -75,7 +75,7 @@
             "severity": "Medium",
             "validation_code": "pd.to_datetime(df[column_name], errors='coerce')",
             "message": "Column may contain invalid date formats",
-            "active": true
+            "active": false
         },
         {
             "id": "gdpr_008",
@@ -97,7 +97,7 @@
             "severity": "Low",
             "validation_code": "df[column_name].str.match(r'https?://(?:[-\\w.]|(?:%[\\da-fA-F]{2}))+[^\\s]*')",
             "message": "Column may contain invalid URL formats",
-            "active": true
+            "active": false
         },
         {
             "id": "gdpr_010",
@@ -108,7 +108,7 @@
             "severity": "Low",
             "validation_code": "df[column_name].str.match(r'\\b\\d{5}(?:-\\d{4})?\\b')",
             "message": "Column may contain invalid ZIP code formats",
-            "active": true
+            "active": false
         },
         {
             "id": "gdpr_011",
@@ -196,7 +196,7 @@
             "severity": "Low",
             "validation_code": "df[column_name].str.match(r'^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$')",
             "message": "Column may contain invalid MAC addresses",
-            "active": true
+            "active": false
         },
         {
             "id": "gdpr_019",
@@ -207,7 +207,7 @@
             "severity": "Low",
             "validation_code": "df[column_name].str.match(r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$')",
             "message": "Column may contain invalid GUIDs",
-            "active": true
+            "active": false
         },
         {
             "id": "gdpr_020",
@@ -306,7 +306,7 @@
             "severity": "Low",
             "validation_code": "df[column_name].str.match(r'^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$')",
             "message": "Column may contain invalid color codes",
-            "active": true
+            "active": false
         },
         {
             "id": "gdpr_029",
@@ -334,564 +334,60 @@
     "data_quality_rules": [
         {
             "id": "dq1",
-            "name": "Null Check",
-            "description": "Checks for null values in specified columns",
-            "type": "Completeness",
-            "severity": "High",
-            "validation_code": "df[column_name].isnull()",
+            "name": "No Missing Values",
+            "description": "Check for missing values in required fields",
             "active": true
         },
         {
             "id": "dq2",
-            "name": "Duplicate Check",
-            "description": "Identifies duplicate records",
-            "type": "Uniqueness",
-            "severity": "Medium",
-            "validation_code": "df.duplicated(subset=[column_name])",
+            "name": "Date Format Check",
+            "description": "Ensure dates are in the correct format (YYYY-MM-DD)",
             "active": true
         },
         {
             "id": "dq3",
-            "name": "Value Range Check",
-            "description": "Validates if values are within expected range",
-            "type": "Accuracy",
-            "severity": "High",
-            "validation_code": "~df[column_name].between(min_value, max_value)",
+            "name": "Email Format Check",
+            "description": "Validate email addresses format",
+            "active": true
+        }
+    ],
+    "validation_rules": [
+        {
+            "id": "v1",
+            "name": "Salary Range Check",
+            "description": "Ensure salaries are within valid range",
             "active": true
         },
         {
-            "id": "dq4",
-            "name": "String Length Check",
-            "description": "Validates string length constraints",
-            "type": "Consistency",
-            "severity": "Low",
-            "validation_code": "df[column_name].str.len().between(min_length, max_length)",
+            "id": "v2",
+            "name": "Department ID Check",
+            "description": "Verify department IDs exist in departments table",
             "active": true
         },
         {
-            "id": "dq5",
-            "name": "Categorical Values",
-            "description": "Checks if values are from allowed categories",
-            "type": "Validity",
-            "severity": "Medium",
-            "validation_code": "~df[column_name].isin(allowed_values)",
-            "active": true
-        },
-        {
-            "id": "dq6",
-            "name": "Numeric Type Check",
-            "description": "Ensures values are numeric",
-            "type": "Format",
-            "severity": "High",
-            "validation_code": "pd.to_numeric(df[column_name], errors='coerce').isnull()",
-            "active": true
-        },
-        {
-            "id": "dq7",
-            "name": "Date Range Check",
-            "description": "Validates dates within acceptable range",
-            "type": "Timeliness",
-            "severity": "Medium",
-            "validation_code": "~pd.to_datetime(df[column_name]).between(start_date, end_date)",
-            "active": true
-        },
-        {
-            "id": "dq8",
-            "name": "Whitespace Check",
-            "description": "Identifies leading/trailing whitespace",
-            "type": "Cleanliness",
-            "severity": "Low",
-            "validation_code": "df[column_name].str.match(r'^\\s|\\s$')",
-            "active": true
-        },
-        {
-            "id": "dq9",
-            "name": "Cross-Column Match",
-            "description": "Validates relationships between columns",
-            "type": "Consistency",
-            "severity": "High",
-            "validation_code": "df[column_name_1] != df[column_name_2]",
-            "active": true
-        },
-        {
-            "id": "dq10",
-            "name": "Row Count Check",
-            "description": "Validates minimum number of records",
-            "type": "Completeness",
-            "severity": "Critical",
-            "validation_code": "len(df) < minimum_rows",
-            "active": true
-        },
-        {
-            "id": "dq11",
-            "name": "Outlier Detection",
-            "description": "Identifies statistical outliers",
-            "type": "Accuracy",
-            "severity": "Medium",
-            "validation_code": "abs((df[column_name] - df[column_name].mean()) / df[column_name].std()) > 3",
-            "active": true
-        },
-        {
-            "id": "dq12",
-            "name": "Pattern Frequency",
-            "description": "Checks if pattern frequency is within normal range",
-            "type": "Consistency",
-            "severity": "Medium",
-            "validation_code": "df[column_name].value_counts(normalize=True) > threshold",
-            "active": true
-        },
-        {
-            "id": "dq13",
-            "name": "Missing Pattern",
-            "description": "Identifies non-standard missing value patterns",
-            "type": "Completeness",
-            "severity": "Medium",
-            "validation_code": "df[column_name].isin(['N/A', 'NA', 'none', 'null', '-'])",
-            "active": true
-        },
-        {
-            "id": "dq14",
-            "name": "Character Set",
-            "description": "Validates character set usage",
-            "type": "Format",
-            "severity": "Low",
-            "validation_code": "df[column_name].str.contains(r'[^a-zA-Z0-9\\s]')",
-            "active": true
-        },
-        {
-            "id": "dq15",
-            "name": "Decimal Places",
-            "description": "Checks decimal place consistency",
-            "type": "Consistency",
-            "severity": "Low",
-            "validation_code": "df[column_name].astype(str).str.extract(r'\\.([0-9]+)')[0].str.len() != expected_decimals",
-            "active": true
-        },
-        {
-            "id": "dq16",
-            "name": "Time Zone Check",
-            "description": "Validates time zone consistency",
-            "type": "Consistency",
-            "severity": "Medium",
-            "validation_code": "pd.to_datetime(df[column_name]).dt.tz != expected_timezone",
-            "active": true
-        },
-        {
-            "id": "dq17",
-            "name": "Case Consistency",
-            "description": "Checks for consistent case usage",
-            "type": "Consistency",
-            "severity": "Low",
-            "validation_code": "~df[column_name].str.match(case_pattern)",
-            "active": true
-        },
-        {
-            "id": "dq18",
-            "name": "Forbidden Values",
-            "description": "Checks for presence of forbidden values",
-            "type": "Validity",
-            "severity": "High",
-            "validation_code": "df[column_name].isin(forbidden_values)",
-            "active": true
-        },
-        {
-            "id": "dq19",
-            "name": "Correlation Check",
-            "description": "Validates correlation between columns",
-            "type": "Consistency",
-            "severity": "Medium",
-            "validation_code": "abs(df[column_1].corr(df[column_2])) < min_correlation",
-            "active": true
-        },
-        {
-            "id": "dq20",
-            "name": "Growth Rate Check",
-            "description": "Validates growth rate between consecutive values",
-            "type": "Accuracy",
-            "severity": "High",
-            "validation_code": "abs(df[column_name].pct_change()) > max_growth_rate",
-            "active": true
-        },
-        {
-            "id": "dq21",
-            "name": "Seasonality Check",
-            "description": "Validates seasonal patterns in time series",
-            "type": "Pattern",
-            "severity": "Medium",
-            "validation_code": "df.groupby(df[date_column].dt.month)[value_column].mean().std() < seasonality_threshold",
-            "active": true
-        },
-        {
-            "id": "dq22",
-            "name": "Distribution Shape",
-            "description": "Checks if distribution matches expected shape",
-            "type": "Statistical",
-            "severity": "Medium",
-            "validation_code": "abs(df[column_name].skew()) > skew_threshold or abs(df[column_name].kurtosis()) > kurtosis_threshold",
-            "active": true
-        },
-        {
-            "id": "dq23",
-            "name": "Entropy Check",
-            "description": "Validates information content in column",
-            "type": "Statistical",
-            "severity": "Low",
-            "validation_code": "-(df[column_name].value_counts(normalize=True) * np.log2(df[column_name].value_counts(normalize=True))).sum() < min_entropy",
-            "active": true
-        },
-        {
-            "id": "dq24",
-            "name": "Cardinality Ratio",
-            "description": "Checks unique value ratio in column",
-            "type": "Uniqueness",
-            "severity": "Medium",
-            "validation_code": "len(df[column_name].unique()) / len(df) < min_cardinality_ratio",
-            "active": true
-        },
-        {
-            "id": "dq25",
-            "name": "Moving Average",
-            "description": "Validates moving average within bounds",
-            "type": "Statistical",
-            "severity": "Medium",
-            "validation_code": "df[column_name].rolling(window=window_size).mean().std() > volatility_threshold",
-            "active": true
-        },
-        {
-            "id": "dq26",
-            "name": "Word Count",
-            "description": "Validates word count in text fields",
-            "type": "Content",
-            "severity": "Low",
-            "validation_code": "df[column_name].str.split().str.len() < min_words or df[column_name].str.split().str.len() > max_words",
-            "active": true
-        },
-        {
-            "id": "dq27",
-            "name": "Language Detection",
-            "description": "Validates text is in expected language",
-            "type": "Content",
-            "severity": "Medium",
-            "validation_code": "df[column_name].apply(lambda x: detect(x) != expected_language if x else False)",
-            "active": true
-        },
-        {
-            "id": "dq28",
-            "name": "Cyclic Pattern",
-            "description": "Validates cyclic patterns in data",
-            "type": "Pattern",
-            "severity": "Medium",
-            "validation_code": "df[column_name].diff().autocorr(lag=cycle_length) < min_autocorr",
-            "active": true
-        },
-        {
-            "id": "dq29",
-            "name": "Density Check",
-            "description": "Validates data density in time series",
-            "type": "Completeness",
-            "severity": "High",
-            "validation_code": "df.resample(time_interval, on=time_column).size().min() < min_density",
-            "active": true
-        },
-        {
-            "id": "dq30",
-            "name": "Format Consistency",
-            "description": "Checks consistent formatting across values",
-            "type": "Consistency",
-            "severity": "Medium",
-            "validation_code": "df[column_name].str.match(format_pattern).value_counts().size() > 1",
+            "id": "v3",
+            "name": "Employee Age Check",
+            "description": "Validate employee age is between 18 and 65",
             "active": true
         }
     ],
     "business_rules": [
         {
-            "id": "br_001",
-            "name": "Date Sequence Check",
-            "description": "Ensures end date is after start date",
-            "category": "business_rules",
-            "type": "Multi-Column",
-            "severity": "Critical",
-            "validation_code": "df[end_date] > df[start_date]",
-            "message": "End date must be after start date",
+            "id": "b1",
+            "name": "Manager Assignment",
+            "description": "Each department must have a manager",
             "active": true
         },
         {
-            "id": "br_002",
-            "name": "Foreign Key Check",
-            "description": "Validates foreign key relationships between tables",
-            "category": "business_rules",
-            "type": "Multi-Table",
-            "severity": "Critical",
-            "validation_code": "df[column].isin(reference_df[ref_column]).all()",
-            "message": "Foreign key constraint violation",
+            "id": "b2",
+            "name": "Budget Constraint",
+            "description": "Department total salaries must not exceed budget",
             "active": true
         },
         {
-            "id": "br_003",
-            "name": "Salary Hierarchy Check",
-            "description": "Ensures manager salary is higher than employee salary",
-            "category": "business_rules",
-            "type": "Business Logic",
-            "severity": "High",
-            "validation_code": "df.merge(manager_df, on='manager_id')['salary_x'] < df.merge(manager_df, on='manager_id')['salary_y']",
-            "message": "Manager salary must be higher than employee salary",
-            "active": false
-        },
-        {
-            "id": "br_004",
-            "name": "Category Values",
-            "description": "Validate categorical values",
-            "category": "business_rules",
-            "type": "categorical",
-            "severity": "Medium",
-            "validation_code": "df[column_name].isin(valid_categories).all()",
-            "message": "Invalid category values found",
-            "active": true
-        },
-        {
-            "id": "br_005",
-            "name": "Minimum Order Quantity",
-            "description": "Ensures minimum order quantity is met",
-            "category": "business_rules",
-            "type": "Business Logic",
-            "severity": "Medium",
-            "validation_code": "df[order_quantity] >= minimum_order_quantity",
-            "message": "Minimum order quantity not met",
-            "active": true
-        },
-        {
-            "id": "br_006",
-            "name": "Maximum Order Quantity",
-            "description": "Ensures maximum order quantity is not exceeded",
-            "category": "business_rules",
-            "type": "Business Logic",
-            "severity": "Medium",
-            "validation_code": "df[order_quantity] <= maximum_order_quantity",
-            "message": "Maximum order quantity exceeded",
-            "active": true
-        },
-        {
-            "id": "br_007",
-            "name": "Order Total Check",
-            "description": "Validates order total is within acceptable range",
-            "category": "business_rules",
-            "type": "Business Logic",
-            "severity": "Medium",
-            "validation_code": "df[order_total].between(min_order_total, max_order_total)",
-            "message": "Order total is outside acceptable range",
-            "active": true
-        },
-        {
-            "id": "br_008",
-            "name": "Discount Eligibility",
-            "description": "Checks if customer is eligible for discount",
-            "category": "business_rules",
-            "type": "Business Logic",
-            "severity": "Medium",
-            "validation_code": "df[customer_type].isin(eligible_customer_types)",
-            "message": "Customer is not eligible for discount",
-            "active": true
-        },
-        {
-            "id": "br_009",
-            "name": "Shipping Address Check",
-            "description": "Validates shipping address is within allowed regions",
-            "category": "business_rules",
-            "type": "Business Logic",
-            "severity": "Medium",
-            "validation_code": "df[shipping_address].isin(allowed_regions)",
-            "message": "Shipping address is outside allowed regions",
-            "active": true
-        },
-        {
-            "id": "br_010",
-            "name": "Payment Method Check",
-            "description": "Validates payment method is within allowed methods",
-            "category": "business_rules",
-            "type": "Business Logic",
-            "severity": "Medium",
-            "validation_code": "df[payment_method].isin(allowed_payment_methods)",
-            "message": "Payment method is outside allowed methods",
-            "active": true
-        },
-        {
-            "id": "br_011",
-            "name": "Age Restriction",
-            "description": "Validates age requirements",
-            "type": "Business Logic",
-            "severity": "High",
-            "validation_code": "df['age'] < minimum_age",
-            "active": true
-        },
-        {
-            "id": "br_012",
-            "name": "Credit Limit Check",
-            "description": "Ensures credit limit is not exceeded",
-            "type": "Business Logic",
-            "severity": "Critical",
-            "validation_code": "df['credit_used'] > df['credit_limit']",
-            "active": true
-        },
-        {
-            "id": "br_013",
-            "name": "Inventory Level",
-            "description": "Checks if inventory is below reorder point",
-            "type": "Business Logic",
-            "severity": "High",
-            "validation_code": "df['stock_level'] <= df['reorder_point']",
-            "active": true
-        },
-        {
-            "id": "br_014",
-            "name": "Service Level Agreement",
-            "description": "Validates response time within SLA",
-            "type": "Business Logic",
-            "severity": "Medium",
-            "validation_code": "(df['response_time'] - df['request_time']).dt.total_seconds() > sla_threshold",
-            "active": true
-        },
-        {
-            "id": "br_015",
-            "name": "Budget Limit",
-            "description": "Ensures expenses within budget",
-            "type": "Business Logic",
-            "severity": "High",
-            "validation_code": "df.groupby('department')['expenses'].sum() > df.groupby('department')['budget'].first()",
-            "active": true
-        },
-        {
-            "id": "br_016",
-            "name": "Working Hours",
-            "description": "Validates work hours within allowed range",
-            "type": "Business Logic",
-            "severity": "Medium",
-            "validation_code": "~df['work_hours'].between(min_hours, max_hours)",
-            "active": true
-        },
-        {
-            "id": "br_017",
-            "name": "Customer Segmentation",
-            "description": "Validates customer segment assignment",
-            "type": "Business Logic",
-            "severity": "Medium",
-            "validation_code": "~df['customer_segment'].isin(valid_segments)",
-            "active": true
-        },
-        {
-            "id": "br_018",
-            "name": "Product Margin",
-            "description": "Ensures minimum profit margin",
-            "type": "Business Logic",
-            "severity": "High",
-            "validation_code": "(df['selling_price'] - df['cost_price']) / df['cost_price'] < min_margin",
-            "active": true
-        },
-        {
-            "id": "br_019",
-            "name": "Return Policy",
-            "description": "Validates return request within policy",
-            "type": "Business Logic",
-            "severity": "Medium",
-            "validation_code": "(df['return_date'] - df['purchase_date']).dt.days > return_period",
-            "active": true
-        },
-        {
-            "id": "br_020",
-            "name": "Loyalty Points",
-            "description": "Validates loyalty points calculation",
-            "type": "Business Logic",
-            "severity": "Low",
-            "validation_code": "df['points_earned'] != (df['purchase_amount'] * points_multiplier).round()",
-            "active": true
-        },
-        {
-            "id": "br_021",
-            "name": "Profit Margin Trend",
-            "description": "Validates profit margin trend",
-            "type": "Business Logic",
-            "severity": "High",
-            "validation_code": "df.groupby(time_period)['profit_margin'].mean().pct_change().rolling(3).mean() < min_growth_rate",
-            "active": true
-        },
-        {
-            "id": "br_022",
-            "name": "Customer Lifetime Value",
-            "description": "Validates CLV calculations",
-            "type": "Business Logic",
-            "severity": "Medium",
-            "validation_code": "df.groupby('customer_id')['total_value'].sum() < min_clv_threshold",
-            "active": true
-        },
-        {
-            "id": "br_023",
-            "name": "Product Bundle Rules",
-            "description": "Validates product bundle combinations",
-            "type": "Business Logic",
-            "severity": "Medium",
-            "validation_code": "~df.groupby('order_id')['product_id'].apply(lambda x: set(required_bundle).issubset(set(x)))",
-            "active": true
-        },
-        {
-            "id": "br_024",
-            "name": "Seasonal Pricing",
-            "description": "Validates seasonal price adjustments",
-            "type": "Business Logic",
-            "severity": "Medium",
-            "validation_code": "df[df['season'] == peak_season]['price'] <= df[df['season'] != peak_season]['price'].mean()",
-            "active": true
-        },
-        {
-            "id": "br_025",
-            "name": "Customer Risk Score",
-            "description": "Validates customer risk assessment",
-            "type": "Business Logic",
-            "severity": "High",
-            "validation_code": "df['risk_score'] > max_acceptable_risk",
-            "active": true
-        },
-        {
-            "id": "br_026",
-            "name": "Order Fulfillment Time",
-            "description": "Validates order processing time",
-            "type": "Business Logic",
-            "severity": "High",
-            "validation_code": "(df['fulfillment_date'] - df['order_date']).dt.total_seconds() > max_processing_time",
-            "active": true
-        },
-        {
-            "id": "br_027",
-            "name": "Supplier Performance",
-            "description": "Validates supplier quality metrics",
-            "type": "Business Logic",
-            "severity": "High",
-            "validation_code": "df.groupby('supplier_id')['defect_rate'].mean() > max_defect_rate",
-            "active": true
-        },
-        {
-            "id": "br_028",
-            "name": "Employee Productivity",
-            "description": "Validates employee performance metrics",
-            "type": "Business Logic",
-            "severity": "Medium",
-            "validation_code": "df.groupby('employee_id')['tasks_completed'].mean() < min_productivity",
-            "active": true
-        },
-        {
-            "id": "br_029",
-            "name": "Marketing ROI",
-            "description": "Validates marketing campaign returns",
-            "type": "Business Logic",
-            "severity": "High",
-            "validation_code": "(df['campaign_revenue'] - df['campaign_cost']) / df['campaign_cost'] < min_roi",
-            "active": true
-        },
-        {
-            "id": "br_030",
-            "name": "Customer Churn Risk",
-            "description": "Validates customer churn predictions",
-            "type": "Business Logic",
-            "severity": "Critical",
-            "validation_code": "df['churn_probability'] > churn_threshold",
+            "id": "b3",
+            "name": "Location Requirement",
+            "description": "Each department must have a valid location",
             "active": true
         }
     ],
@@ -916,7 +412,7 @@
             "severity": "High",
             "validation_code": "not df.duplicated().any()",
             "message": "Duplicate rows found",
-            "active": false
+            "active": true
         },
         {
             "id": "tl_003",
@@ -1049,7 +545,7 @@
             "type": "Structure",
             "severity": "Low",
             "validation_code": "df.columns.tolist() != expected_column_order",
-            "active": true
+            "active": false
         },
         {
             "id": "tl_016",
@@ -1431,7 +927,7 @@
                 "severity": "Low",
                 "validation_code": "df['address_line1'].str.len() > max_address_length | df['address_line2'].str.len() > max_address_length",
                 "message": "Address line exceeds maximum length",
-                "active": true
+                "active": false
             },
             {
                 "id": "addr_005",
