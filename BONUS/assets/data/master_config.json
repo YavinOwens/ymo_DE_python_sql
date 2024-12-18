@@ -1,0 +1,238 @@
+{
+    "data_config": {
+        "data_sources": {
+            "employees": {
+                "type": "csv",
+                "path": "../dummy_data/PER_ALL_PEOPLE_F_20241216.csv"
+            },
+            "assignments": {
+                "type": "csv",
+                "path": "../dummy_data/PER_ALL_ASSIGNMENTS_F_20241216.csv"
+            },
+            "addresses": {
+                "type": "csv",
+                "path": "../dummy_data/HR_ALL_ADDRESSES_20241216.csv"
+            }
+        },
+        "database": {
+            "connection_string": "",
+            "tables": []
+        }
+    },
+    "rule_templates": [
+        {
+            "id": "gdpr_001",
+            "name": "PII Data Detection",
+            "description": "Detect personally identifiable information in columns",
+            "category": "GDPR",
+            "type": "pattern_match",
+            "severity": "Critical",
+            "validation_code": "df[column_name].str.match(r'\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b')",
+            "message": "Column may contain email addresses (PII data)",
+            "active": true
+        },
+        {
+            "id": "dq1",
+            "name": "No Missing Values",
+            "description": "Check for missing values in required fields",
+            "category": "Data Quality",
+            "type": "completeness",
+            "severity": "High",
+            "validation_code": "df[column_name].notna().all()",
+            "message": "Column contains missing values",
+            "active": true
+        },
+        {
+            "id": "v1",
+            "name": "Salary Range Check",
+            "description": "Validates salary is within acceptable range",
+            "category": "Validation",
+            "type": "range",
+            "severity": "Medium",
+            "validation_code": "(df[column_name] >= 0) & (df[column_name] <= 1000000)",
+            "message": "Salary value outside acceptable range",
+            "active": true
+        }
+    ],
+    "activities": [
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 3,
+                "categories": [
+                    "Data Quality",
+                    "GDPR",
+                    "Validation"
+                ]
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 3,
+                "categories": [
+                    "Data Quality",
+                    "GDPR",
+                    "Validation"
+                ]
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Activities page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "activities_count": 4,
+                "success_rate": 100.0,
+                "active_rules": 0
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Activities page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "activities_count": 5,
+                "success_rate": 100.0,
+                "active_rules": 0
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Activities page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "activities_count": 6,
+                "success_rate": 100.0,
+                "active_rules": 0
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": "addresses"
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 3,
+                "categories": [
+                    "Data Quality",
+                    "GDPR",
+                    "Validation"
+                ]
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 3,
+                "categories": [
+                    "Data Quality",
+                    "GDPR",
+                    "Validation"
+                ]
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Rule Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "rules_count": 3,
+                "categories": [
+                    "Data Quality",
+                    "GDPR",
+                    "Validation"
+                ]
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed empty Run Management page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "table_name": null
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Activities page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "activities_count": 13,
+                "success_rate": 100.0,
+                "active_rules": 0
+            }
+        },
+        {
+            "type": "page_view",
+            "description": "Viewed Activities page",
+            "timestamp": "2024-12-18T15:40:19Z",
+            "status": "success",
+            "metadata": {
+                "activities_count": 14,
+                "success_rate": 100.0,
+                "active_rules": 0
+            }
+        }
+    ],
+    "execution_history": [],
+    "rule_execution_history": [],
+    "last_updated": "2024-12-18T15:48:15.084794",
+    "version": "1.0.0",
+    "metadata": {
+        "description": "Master configuration file for the data quality management system",
+        "created_at": "2024-12-18T15:36:09Z",
+        "updated_at": "2024-12-18T15:36:09Z"
+    }
+}

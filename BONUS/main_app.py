@@ -16,8 +16,9 @@ import logging
 import traceback
 
 # Configure logging
+os.makedirs('BONUS/assets/logs', exist_ok=True)
 logging.basicConfig(
-    filename='assets/logs/app_log.log',
+    filename='BONUS/assets/logs/app_log.log',
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
@@ -99,28 +100,20 @@ app.layout = dbc.Container([
                         html.I(className="bi bi-exclamation-triangle me-2"),
                         "Failed Data"
                     ], href="/failed-data", id="failed-data-link", active="exact"),
-                ], vertical=True, pills=True, className="mb-4")
-            ], className="sidebar-container")
-        ], width=3, className="border-end"),
+                    dbc.NavLink([
+                        html.I(className="bi bi-activity me-2"),
+                        "Activities"
+                    ], href="/activities", id="activities-link", active="exact")
+                ], vertical=True, pills=True, className="mb-3")
+            ], className="sidebar")
+        ], width=3, className="bg-light sidebar-col"),
         
         # Main content area
         dbc.Col([
-            # Column selector at the top of main content
-            html.Div(id="column-dropdown-container", children=[
-                html.Label("Select Columns", className="form-label"),
-                dcc.Dropdown(
-                    id="column-multi-dropdown",
-                    multi=True,
-                    placeholder="Select columns...",
-                    className="mb-3"
-                )
-            ], className="mb-4"),
-            
-            # Page content
-            html.Div(id="page-content")
-        ], width=9, className="p-4")
+            html.Div(id="page-content", className="p-4")
+        ], width=9)
     ], className="h-100")
-], fluid=True, className="h-100 py-4")
+], fluid=True, className="h-100")
 
 # Remove inline styles from index_string and use our custom.css
 app.index_string = '''
@@ -281,13 +274,14 @@ def create_column_analysis_content(table_name=None, selected_columns=None):
     column_selector = dbc.Row([
         dbc.Col(
             [
-                html.H4("Select Columns"),
+                html.H4("Select Column for Analysis"),
                 dcc.Dropdown(
                     id='column-multi-dropdown',
                     options=column_options,
-                    value=selected_columns if selected_columns else [],
-                    multi=True,
-                    className="mb-4"
+                    value=selected_columns[0] if selected_columns else None,
+                    multi=False,  
+                    className="mb-4",
+                    placeholder="Select a column to analyze..."
                 )
             ],
             width=12
@@ -298,153 +292,119 @@ def create_column_analysis_content(table_name=None, selected_columns=None):
         return html.Div([
             html.H2("Column Analysis", className="mb-4"),
             column_selector,
-            html.Div("Please select one or more columns to analyze.", className="mt-4")
+            html.Div("Please select a column to analyze.", className="mt-4")
         ])
     
-    analysis_sections = []
+    # Get the selected column (now we only work with a single column)
+    column_name = selected_columns[0] if isinstance(selected_columns, list) else selected_columns
+    profile = data_loader.get_column_profile(table_name, column_name)
     
-    # Create correlation matrix if multiple columns are selected
-    if len(selected_columns) > 1:
-        try:
-            correlation_data = data_loader.get_correlation_matrix(table_name, selected_columns)
-            if 'error' not in correlation_data:
-                correlation_fig = px.imshow(
-                    correlation_data,
-                    labels=dict(x="Column", y="Column", color="Correlation"),
-                    color_continuous_scale="RdBu",
-                    aspect="auto"
-                )
-                correlation_fig.update_layout(
-                    title="Correlation Matrix",
-                    height=400
-                )
-                analysis_sections.append(
-                    dbc.Card(
-                        dbc.CardBody([
-                            html.H4("Correlation Analysis", className="card-title"),
-                            dcc.Graph(figure=correlation_fig)
-                        ]),
-                        className="mb-4"
-                    )
-                )
-        except Exception as e:
-            analysis_sections.append(
-                html.Div(f"Error generating correlation matrix: {str(e)}")
-            )
-    
-    # Individual column profiles
-    for column_name in selected_columns:
-        profile = data_loader.get_column_profile(table_name, column_name)
-        if 'error' in profile:
-            analysis_sections.append(
-                html.Div(f"Error loading profile for {column_name}: {profile['error']}")
-            )
-            continue
-        
-        # Column header with stats
-        column_header = dbc.Row([
-            dbc.Col([
-                dbc.Card(
-                    dbc.CardBody([
-                        html.H4("Data Type", className="card-title"),
-                        html.H3(profile['dtype'], className="text-primary")
-                    ]),
-                    className="mb-4"
-                )
-            ], width=4),
-            dbc.Col([
-                dbc.Card(
-                    dbc.CardBody([
-                        html.H4("Non-null Count", className="card-title"),
-                        html.H3(f"{profile['non_null_count']:,}", className="text-primary")
-                    ]),
-                    className="mb-4"
-                )
-            ], width=4),
-            dbc.Col([
-                dbc.Card(
-                    dbc.CardBody([
-                        html.H4("Unique Values", className="card-title"),
-                        html.H3(f"{profile['unique_count']:,}", className="text-primary")
-                    ]),
-                    className="mb-4"
-                )
-            ], width=4)
+    if 'error' in profile:
+        return html.Div([
+            html.H2("Column Analysis", className="mb-4"),
+            column_selector,
+            html.Div(f"Error loading profile for {column_name}: {profile['error']}")
         ])
-        
-        # Distribution visualization
-        distribution_section = None
-        if profile['dtype'] in ['int64', 'float64']:
-            # Numerical distribution
-            try:
-                hist_data = data_loader.get_numerical_distribution(table_name, column_name)
-                if 'error' not in hist_data:
-                    hist_fig = px.histogram(
-                        hist_data,
-                        x=column_name,
-                        title=f"Distribution of {column_name}",
-                        marginal="box"
-                    )
-                    distribution_section = dcc.Graph(figure=hist_fig)
-            except Exception as e:
-                distribution_section = html.Div(f"Error generating histogram: {str(e)}")
-        else:
-            # Categorical distribution
-            if profile['frequent_values'] and isinstance(profile['frequent_values'], list):
-                # Convert the frequent values list to a DataFrame with correct column names
-                freq_df = pd.DataFrame(profile['frequent_values'])
-                if not freq_df.empty and all(col in freq_df.columns for col in ['value', 'count']):
-                    fig = px.bar(
-                        freq_df,
-                        x='value',
-                        y='count',
-                        title=f"Top Values in {column_name}"
-                    )
-                    fig.update_layout(
-                        xaxis_title="Value",
-                        yaxis_title="Frequency",
-                        bargap=0.2
-                    )
-                    distribution_section = dcc.Graph(figure=fig)
-                else:
-                    distribution_section = html.Div("No valid frequency distribution data available")
-            else:
-                distribution_section = html.Div("No frequency distribution data available")
-        
-        # Summary statistics
-        stats_section = None
-        if profile['dtype'] in ['int64', 'float64']:
-            try:
-                stats = data_loader.get_numerical_stats(table_name, column_name)
-                if 'error' not in stats:
-                    stats_section = dbc.Table([
-                        html.Thead([
-                            html.Tr([html.Th("Statistic"), html.Th("Value")])
-                        ]),
-                        html.Tbody([
-                            html.Tr([html.Td(k), html.Td(f"{v:,.2f}")]) 
-                            for k, v in stats.items()
-                        ])
-                    ], bordered=True, hover=True, striped=True, className="mb-4")
-            except Exception as e:
-                stats_section = html.Div(f"Error generating statistics: {str(e)}")
-        
-        # Add all sections for this column
-        analysis_sections.append(
-            dbc.Card([
-                dbc.CardHeader(html.H3(column_name)),
+
+    # Column header with stats
+    column_header = dbc.Row([
+        dbc.Col([
+            dbc.Card(
                 dbc.CardBody([
-                    column_header,
-                    distribution_section,
-                    stats_section
-                ])
-            ], className="mb-4")
-        )
+                    html.H4("Data Type", className="card-title"),
+                    html.H3(profile['dtype'], className="text-primary")
+                ]),
+                className="mb-4"
+            )
+        ], width=4),
+        dbc.Col([
+            dbc.Card(
+                dbc.CardBody([
+                    html.H4("Non-null Count", className="card-title"),
+                    html.H3(f"{profile['non_null_count']:,}", className="text-primary")
+                ]),
+                className="mb-4"
+            )
+        ], width=4),
+        dbc.Col([
+            dbc.Card(
+                dbc.CardBody([
+                    html.H4("Unique Values", className="card-title"),
+                    html.H3(f"{profile['unique_count']:,}", className="text-primary")
+                ]),
+                className="mb-4"
+            )
+        ], width=4)
+    ])
+    
+    # Distribution visualization
+    distribution_section = None
+    if profile['dtype'] in ['int64', 'float64']:
+        try:
+            hist_data = data_loader.get_numerical_distribution(table_name, column_name)
+            if 'error' not in hist_data:
+                hist_fig = px.histogram(
+                    hist_data,
+                    x=column_name,
+                    title=f"Distribution of {column_name}",
+                    marginal="box"
+                )
+                distribution_section = dcc.Graph(figure=hist_fig)
+        except Exception as e:
+            distribution_section = html.Div(f"Error generating histogram: {str(e)}")
+    else:
+        if profile['frequent_values'] and isinstance(profile['frequent_values'], list):
+            freq_df = pd.DataFrame(profile['frequent_values'])
+            if not freq_df.empty and all(col in freq_df.columns for col in ['value', 'count']):
+                fig = px.bar(
+                    freq_df,
+                    x='value',
+                    y='count',
+                    title=f"Top Values in {column_name}"
+                )
+                fig.update_layout(
+                    xaxis_title="Value",
+                    yaxis_title="Frequency",
+                    bargap=0.2
+                )
+                distribution_section = dcc.Graph(figure=fig)
+            else:
+                distribution_section = html.Div("No valid frequency distribution data available")
+        else:
+            distribution_section = html.Div("No frequency distribution data available")
+    
+    # Summary statistics for numerical columns
+    stats_section = None
+    if profile['dtype'] in ['int64', 'float64']:
+        try:
+            stats = data_loader.get_numerical_stats(table_name, column_name)
+            if 'error' not in stats:
+                stats_section = dbc.Table([
+                    html.Thead([
+                        html.Tr([html.Th("Statistic"), html.Th("Value")])
+                    ]),
+                    html.Tbody([
+                        html.Tr([html.Td(k), html.Td(f"{v:,.2f}")]) 
+                        for k, v in stats.items()
+                    ])
+                ], bordered=True, hover=True, striped=True, className="mb-4")
+        except Exception as e:
+            stats_section = html.Div(f"Error generating statistics: {str(e)}")
+    
+    # Combine all sections
+    analysis_content = dbc.Card([
+        dbc.CardHeader(html.H3(column_name)),
+        dbc.CardBody([
+            column_header,
+            distribution_section,
+            stats_section
+        ])
+    ], className="mb-4")
     
     return html.Div([
         html.H2("Column Analysis", className="mb-4"),
         column_selector,
-        *analysis_sections
+        analysis_content
     ])
 
 def create_catalogue_content(table_name=None):
@@ -692,139 +652,108 @@ def create_rules_table(rules, category_filter=None, severity_filter=None, status
         ])
     ], bordered=True, hover=True, striped=True, className="mb-4")
 
-def create_rule_management_layout():
-    """Creates the layout for the Rule Management page with statistics and filters."""
-    # Load rules using the same source as rule management
-    rules = data_loader.load_all_rules()
-    
-    if isinstance(rules, dict) and 'error' in rules:
-        return html.Div(f"Error loading rules: {rules['error']}")
+def create_rule_management_content():
+    """Creates the main content for the Rule Management page."""
+    try:
+        # Get rules from master config
+        rules = data_loader.get_rule_templates()
+        
+        if not rules:
+            data_loader.save_activity({
+                'type': 'page_view',
+                'description': 'Viewed empty Rule Management page',
+                'timestamp': '2024-12-18T15:40:19Z',
+                'status': 'success',
+                'metadata': {'rules_count': 0}
+            })
+            return html.Div("No rules defined yet.", className="text-muted p-4")
 
-    # Calculate statistics
-    total_rules = len(rules)
-    active_rules = len([rule for rule in rules if rule.get('active', False)])
-    rules_by_category = {}
-    rules_by_severity = {}
-    
-    for rule in rules:
-        category = rule.get('category', 'Uncategorized')
-        severity = rule.get('severity', 'Undefined')
-        rules_by_category[category] = rules_by_category.get(category, 0) + 1
-        rules_by_severity[severity] = rules_by_severity.get(severity, 0) + 1
-
-    # Create statistics cards with consistent spacing and styling
-    stats_cards = [
-        dbc.Col(
-            dbc.Card(
-                dbc.CardBody([
-                    html.H4("Total Rules", className="card-title text-center"),
-                    html.H2(total_rules, className="text-center text-primary")
-                ])
-            ),
-            width=3,
-            className="mb-4"
-        ),
-        dbc.Col(
-            dbc.Card(
-                dbc.CardBody([
-                    html.H4("Active Rules", className="card-title text-center"),
-                    html.H2(active_rules, className="text-center text-success")
-                ])
-            ),
-            width=3,
-            className="mb-4"
-        ),
-        dbc.Col(
-            dbc.Card(
-                dbc.CardBody([
-                    html.H4("Categories", className="card-title text-center"),
-                    html.H2(len(rules_by_category), className="text-center text-info mb-3"),
-                    html.Div(
-                        [f"{cat}: {count}" for cat, count in rules_by_category.items()],
-                        className="small text-muted px-2"
+        # Create category tabs
+        categories = sorted(set(rule.get('category', 'Uncategorized') for rule in rules))
+        
+        # Create tab content for each category
+        tab_content = []
+        for category in categories:
+            category_rules = [rule for rule in rules if rule.get('category', 'Uncategorized') == category]
+            
+            # Create cards for each rule in the category
+            rule_cards = []
+            for rule in category_rules:
+                rule_cards.append(
+                    dbc.Card(
+                        dbc.CardBody([
+                            html.Div([
+                                html.H5(rule['name'], className="card-title"),
+                                dbc.Switch(
+                                    id={'type': 'rule-switch', 'index': rule['id']},
+                                    value=rule.get('active', False),
+                                    className="float-end"
+                                )
+                            ]),
+                            html.P(rule['description'], className="card-text text-muted"),
+                            html.Div([
+                                dbc.Badge(
+                                    rule.get('severity', 'Medium'),
+                                    color={'High': 'danger', 'Medium': 'warning', 'Low': 'info'}.get(rule.get('severity', 'Medium'), 'secondary'),
+                                    className="me-2"
+                                ),
+                                dbc.Badge(
+                                    rule.get('type', 'Custom'),
+                                    color="secondary",
+                                    className="me-2"
+                                )
+                            ])
+                        ]),
+                        className="mb-3"
                     )
-                ])
-            ),
-            width=3,
-            className="mb-4"
-        ),
-        dbc.Col(
-            dbc.Card(
-                dbc.CardBody([
-                    html.H4("By Severity", className="card-title text-center"),
-                    html.Div([
-                        html.Div(
-                            [
-                                html.Span(f"{sev}: ", className="fw-bold"),
-                                html.Span(f"{count}")
-                            ],
-                            className="mb-2"
-                        ) for sev, count in rules_by_severity.items()
-                    ], className="px-2")
-                ])
-            ),
-            width=3,
-            className="mb-4"
-        )
-    ]
-
-    # Create filter dropdowns with consistent spacing
-    filter_row = dbc.Row([
-        dbc.Col([
-            html.Label("Category:", className="fw-bold mb-2"),
-            dcc.Dropdown(
-                id='category-filter',
-                options=[{'label': cat, 'value': cat} for cat in rules_by_category.keys()],
-                multi=True,
-                placeholder="Select Category",
-                className="mb-3"
+                )
+            
+            # Add the category's rules to tab content
+            tab_content.append(
+                dbc.Tab(
+                    dbc.Row([
+                        dbc.Col(card, width=6) for card in rule_cards
+                    ], className="g-4"),
+                    label=category,
+                    tab_id=f"tab-{category.lower()}"
+                )
             )
-        ], width=4),
-        dbc.Col([
-            html.Label("Severity:", className="fw-bold mb-2"),
-            dcc.Dropdown(
-                id='severity-filter',
-                options=[{'label': sev, 'value': sev} for sev in rules_by_severity.keys()],
-                multi=True,
-                placeholder="Select Severity",
-                className="mb-3"
-            )
-        ], width=4),
-        dbc.Col([
-            html.Label("Status:", className="fw-bold mb-2"),
-            dcc.Dropdown(
-                id='status-filter',
-                options=[
-                    {'label': 'Active', 'value': 'active'},
-                    {'label': 'Inactive', 'value': 'inactive'}
-                ],
-                multi=True,
-                placeholder="Select Status",
-                className="mb-3"
-            )
-        ], width=4)
-    ], className="mb-4")
 
-    # Create initial rules table
-    rules_table = html.Div(id="filtered-rules-table")
+        # Log activity
+        data_loader.save_activity({
+            'type': 'page_view',
+            'description': 'Viewed Rule Management page',
+            'timestamp': '2024-12-18T15:40:19Z',
+            'status': 'success',
+            'metadata': {
+                'rules_count': len(rules),
+                'categories': list(categories)
+            }
+        })
 
-    # Return the complete layout with consistent spacing
-    return html.Div([
-        html.H2("Rule Management", className="mb-4"),
-        html.P("Manage and configure data quality rules.", className="mb-4 text-muted"),
-        dbc.Row(stats_cards, className="mb-4"),
-        filter_row,
-        rules_table,
-        dcc.Store(id='rules-data', data=rules),
-        dbc.Toast(
-            id="rule-update-toast",
-            header="Rule Status Update",
-            is_open=False,
-            dismissable=True,
-            duration=4000,
-            style={"position": "fixed", "top": 66, "right": 10, "width": 350},
-        )
-    ], className="p-4")
+        return html.Div([
+            html.H2("Rule Management", className="mb-4"),
+            dbc.Tabs(
+                tab_content,
+                id="rule-category-tabs",
+                active_tab=f"tab-{categories[0].lower()}" if categories else None
+            )
+        ])
+
+    except Exception as e:
+        error_message = f"Error creating rule management page: {str(e)}"
+        data_loader.save_activity({
+            'type': 'error',
+            'description': 'Failed to create Rule Management page',
+            'timestamp': '2024-12-18T15:40:19Z',
+            'status': 'error',
+            'details': error_message,
+            'metadata': {
+                'error_type': type(e).__name__,
+                'error_message': str(e)
+            }
+        })
+        return html.Div(error_message)
 
 @app.callback(
     Output("filtered-rules-table", "children"),
@@ -848,190 +777,73 @@ def update_filtered_table(category_filter, severity_filter, status_filter, rules
      State("rules-data", "data")]
 )
 def update_rule_status(values, ids, rules):
-    """Update rule status when toggle switches are changed."""
-    if not values or not ids:
-        raise dash.exceptions.PreventUpdate
-        
-    ctx = dash.callback_context
-    if not ctx.triggered:
-        raise dash.exceptions.PreventUpdate
-        
-    input_id = ctx.triggered[0]['prop_id'].split('.')[0]
-    if input_id == '':
-        raise dash.exceptions.PreventUpdate
-        
-    rule_id = eval(input_id)['index']
-    new_value = ctx.triggered[0]['value']
+    if not ids:
+        return dash.no_update
     
-    # Update the rule status in the rules list
-    for rule in rules:
-        if rule['id'] == rule_id:
-            rule['active'] = new_value
-            message = f"Rule '{rule['name']}' has been {'activated' if new_value else 'deactivated'}."
-            break
-    
-    # Save updated rules to file
-    data_loader.save_rule_status(rule_id, new_value)
-    
-    return rules, True, message
-
-def create_rule_management_content():
-    """Creates the main content for the Rule Management page."""
-    return create_rule_management_layout()
-
-def create_run_management_content(table_name=None):
-    """Creates the layout for the Run Management page with execution history and insights."""
     try:
-        # Create execute button
-        execute_button = dbc.Button(
-            [html.I(className="bi bi-play-circle me-2"), "Execute Rules"],
-            id="execute-rules-button",
-            color="primary",
-            className="mb-4"
-        )
+        rule_id = ids['rule_id']
+        new_status = rule_id in values
         
-        # Get execution history
-        history = data_loader.get_execution_history()
-        table_history = [run for run in history if run['table_name'] == table_name] if table_name else []
+        rule = next((r for r in rules if r['id'] == rule_id), None)
+        if not rule:
+            data_loader.save_activity({
+                'type': 'error',
+                'description': f'Failed to update rule status: Rule {rule_id} not found',
+                'timestamp': datetime.now().isoformat(),
+                'status': 'error',
+                'details': 'Attempted to update status for non-existent rule',
+                'metadata': {'rule_id': rule_id}
+            })
+            return dash.no_update
         
-        # Get latest run for accurate rule count
-        latest_run = table_history[-1] if table_history else None
-        total_rules = latest_run['rules_executed'] if latest_run else 0
+        old_status = rule.get('active', False)
+        if old_status != new_status:
+            result = data_loader.save_rule_status(rule_id, new_status)
+            
+            if result.get('success'):
+                data_loader.save_activity({
+                    'type': 'rule_status',
+                    'description': f"Rule '{rule['name']}' {new_status and 'activated' or 'deactivated'}",
+                    'timestamp': datetime.now().isoformat(),
+                    'status': 'success',
+                    'details': f"Changed rule status from {old_status and 'active' or 'inactive'} to {new_status and 'active' or 'inactive'}",
+                    'metadata': {
+                        'rule_id': rule_id,
+                        'rule_name': rule['name'],
+                        'old_status': old_status,
+                        'new_status': new_status
+                    }
+                })
+            else:
+                data_loader.save_activity({
+                    'type': 'error',
+                    'description': f"Failed to update rule '{rule['name']}' status",
+                    'timestamp': datetime.now().isoformat(),
+                    'status': 'error',
+                    'details': result.get('error', 'Unknown error occurred'),
+                    'metadata': {
+                        'rule_id': rule_id,
+                        'rule_name': rule['name'],
+                        'attempted_status': new_status
+                    }
+                })
+                return dash.no_update
         
-        # Calculate summary statistics
-        total_executions = len(table_history)
-        if total_executions > 0:
-            total_passed = sum(run['passed_rules'] for run in table_history)
-            total_rules_executed = sum(run['rules_executed'] for run in table_history)
-            avg_pass_rate = (total_passed / total_rules_executed * 100) if total_rules_executed > 0 else 0
-            total_failed = sum(run['failed_rules'] for run in table_history)
-        else:
-            avg_pass_rate = 0
-            total_failed = 0
-        
-        # Create summary cards
-        summary_cards = dbc.Row([
-            dbc.Col(
-                dbc.Card(
-                    dbc.CardBody([
-                        html.H4("Total Rules", className="card-title text-center"),
-                        html.H2(f"{total_rules}", className="text-center text-primary")
-                    ])
-                ),
-                width=3,
-                className="mb-4"
-            ),
-            dbc.Col(
-                dbc.Card(
-                    dbc.CardBody([
-                        html.H4("Total Executions", className="card-title text-center"),
-                        html.H2(f"{total_executions}", className="text-center text-success")
-                    ])
-                ),
-                width=3,
-                className="mb-4"
-            ),
-            dbc.Col(
-                dbc.Card(
-                    dbc.CardBody([
-                        html.H4("Average Pass Rate", className="card-title text-center"),
-                        html.H2(f"{avg_pass_rate:.1f}%", className="text-center text-info")
-                    ])
-                ),
-                width=3,
-                className="mb-4"
-            ),
-            dbc.Col(
-                dbc.Card(
-                    dbc.CardBody([
-                        html.H4("Failed Rules", className="card-title text-center"),
-                        html.H2(
-                            str(total_failed) if table_history else "0",
-                            className="text-center text-danger"
-                        )
-                    ])
-                ),
-                width=3,
-                className="mb-4"
-            )
-        ])
-        
-        # Create execution history table
-        if table_history:
-            history_table = dbc.Table([
-                html.Thead([
-                    html.Tr([
-                        html.Th("Timestamp"),
-                        html.Th("Rules Executed"),
-                        html.Th("Pass Rate"),
-                        html.Th("Status"),
-                        html.Th("Actions")
-                    ])
-                ]),
-                html.Tbody([
-                    html.Tr([
-                        html.Td(run['timestamp']),
-                        html.Td(run['rules_executed']),
-                        html.Td(f"{(run['passed_rules'] / run['rules_executed'] * 100):.1f}%"),
-                        html.Td(
-                            html.Span(
-                                "All Passed" if run['failed_rules'] == 0 else f"{run['failed_rules']} Failed",
-                                className=f"badge {'bg-success' if run['failed_rules'] == 0 else 'bg-danger'}"
-                            )
-                        ),
-                        html.Td([
-                            dbc.Button(
-                                [html.I(className="bi bi-info-circle me-2"), "View Details"],
-                                id={'type': 'view-details-btn', 'index': i},
-                                color="info",
-                                size="sm",
-                                className="me-2"
-                            ),
-                            dbc.Button(
-                                [html.I(className="bi bi-exclamation-circle me-2"), "View Failed Data"],
-                                id={'type': 'view-failed-data-btn', 'index': i},
-                                color="danger",
-                                size="sm",
-                                disabled=run['failed_rules'] == 0
-                            )
-                        ])
-                    ]) for i, run in enumerate(reversed(table_history))
-                ])
-            ], bordered=True, hover=True, className="mb-4")
-        else:
-            history_table = html.Div("No execution history available.", className="text-muted")
-        
-        # Create failed rules section
-        failed_rules_section = html.Div(id="failed-rules-section")
-        
-        # Create details modal
-        details_modal = dbc.Modal([
-            dbc.ModalHeader(dbc.ModalTitle("Run Details")),
-            dbc.ModalBody(id="run-details-modal-body"),
-            dbc.ModalFooter(
-                dbc.Button("Close", id="close-run-details-modal", className="ms-auto")
-            )
-        ], id="run-details-modal", size="xl")
-
-        # Create failed data modal
-        failed_data_modal = create_failed_data_modal(table_name)
-
-        return html.Div([
-            html.Div(id="run-management-content", children=[
-                html.H2("Run Management", className="mb-4"),
-                execute_button,
-                html.Div(id='execution-status', className="mb-4"),
-                summary_cards,
-                html.H4("Execution History", className="mb-3"),
-                history_table,
-                failed_rules_section,
-                details_modal,
-                failed_data_modal
-            ])
-        ])
+        return dash.no_update
         
     except Exception as e:
-        return html.Div(f"Error creating run management page: {str(e)}")
+        data_loader.save_activity({
+            'type': 'error',
+            'description': 'Error updating rule status',
+            'timestamp': datetime.now().isoformat(),
+            'status': 'error',
+            'details': str(e),
+            'metadata': {
+                'error_type': type(e).__name__,
+                'error_message': str(e)
+            }
+        })
+        return dash.no_update
 
 @app.callback(
     [Output("execution-status", "children"),
@@ -1044,161 +856,117 @@ def create_run_management_content(table_name=None):
 )
 def execute_rules(n_clicks, table_name, pathname):
     """Execute active rules and update run history."""
-    # Enhanced input validation
-    if n_clicks is None:
-        logging.info("Rule execution prevented: No button click")
-        raise dash.exceptions.PreventUpdate
+    if not n_clicks or not table_name:
+        raise PreventUpdate
     
-    if not table_name:
-        logging.warning("Rule execution prevented: No table selected")
-        return html.Div([
-            html.Div([
-                html.I(className="bi bi-exclamation-triangle-fill text-warning me-2"),
-                "No Table Selected"
-            ], className="alert alert-warning"),
-            html.P("Please select a table before executing rules.", className="text-muted")
-        ]), dash.no_update, dash.no_update
+    # Load table data
+    table_data = data_loader.load_table_data(table_name)
+    if table_data is None:
+        data_loader.save_activity({
+            'type': 'error',
+            'description': f'Failed to load data for table {table_name}',
+            'timestamp': datetime.now().isoformat(),
+            'status': 'error',
+            'details': 'Table data could not be loaded',
+            'metadata': {'table_name': table_name}
+        })
+        return None
+    
+    # Get active rules
+    rules = data_loader.load_all_rules()
+    active_rules = [rule for rule in rules if rule.get('active', True)]
+    
+    start_time = datetime.now()
+    results = []
+    passed_rules = 0
+    failed_rules = 0
+    
+    # Log start of rule execution
+    data_loader.save_activity({
+        'type': 'rule_execution',
+        'description': f'Started rule execution for table {table_name}',
+        'timestamp': start_time.isoformat(),
+        'status': 'info',
+        'details': f'Executing {len(active_rules)} active rules',
+        'metadata': {
+            'table_name': table_name,
+            'rule_count': len(active_rules)
+        }
+    })
     
     try:
-        # Extensive logging
-        logging.info(f"Starting rule execution for table: {table_name}")
-        
-        # Robust rule loading
-        try:
-            rules = data_loader.load_all_rules()
-            if isinstance(rules, dict) and 'error' in rules:
-                logging.error(f"Rule loading error: {rules['error']}")
-                return html.Div([
-                    html.Div([
-                        html.I(className="bi bi-exclamation-triangle-fill text-danger me-2"),
-                        "Rule Loading Error"
-                    ], className="alert alert-danger"),
-                    html.P(rules['error'], className="text-muted")
-                ]), dash.no_update, dash.no_update
-        except Exception as rule_load_error:
-            logging.error(f"Unexpected error loading rules: {rule_load_error}")
-            return html.Div([
-                html.Div([
-                    html.I(className="bi bi-exclamation-triangle-fill text-danger me-2"),
-                    "Rule Loading Failure"
-                ], className="alert alert-danger"),
-                html.P(f"Unable to load rules: {rule_load_error}", className="text-muted")
-            ]), dash.no_update, dash.no_update
-        
-        # Filter active rules with detailed logging
-        active_rules = [rule for rule in rules if rule.get('active', False)]
-        if not active_rules:
-            logging.warning("No active rules found to execute")
-            return html.Div([
-                html.Div([
-                    html.I(className="bi bi-info-circle-fill text-info me-2"),
-                    "No Active Rules"
-                ], className="alert alert-info"),
-                html.P("Please activate at least one rule before execution.", className="text-muted")
-            ]), dash.no_update, dash.no_update
-        
-        # Robust data loading with enhanced error handling
-        try:
-            table_data_result = data_loader.load_table_data(table_name)
-        except Exception as load_error:
-            logging.error(f"Error loading table data: {load_error}")
-            return html.Div([
-                html.Div([
-                    html.I(className="bi bi-exclamation-triangle-fill text-danger me-2"),
-                    "Data Loading Error"
-                ], className="alert alert-danger"),
-                html.P(f"Failed to load table data: {load_error}", className="text-muted")
-            ]), dash.no_update, dash.no_update
-        
-        # Ensure we have a pandas DataFrame with comprehensive type checking
-        if isinstance(table_data_result, dict) and 'data' in table_data_result:
-            if isinstance(table_data_result['data'], pl.DataFrame):
-                table_data = table_data_result['data'].to_pandas()
-            elif isinstance(table_data_result['data'], pd.DataFrame):
-                table_data = table_data_result['data']
-            else:
-                logging.error("Unable to convert table data to DataFrame")
-                return html.Div([
-                    html.Div([
-                        html.I(className="bi bi-exclamation-triangle-fill text-danger me-2"),
-                        "Data Conversion Error"
-                    ], className="alert alert-danger"),
-                    html.P("Unsupported data format detected.", className="text-muted")
-                ]), dash.no_update, dash.no_update
-        elif isinstance(table_data_result, pl.DataFrame):
-            table_data = table_data_result.to_pandas()
-        elif isinstance(table_data_result, pd.DataFrame):
-            table_data = table_data_result
-        else:
-            logging.error("Unable to convert table data to DataFrame")
-            return html.Div([
-                html.Div([
-                    html.I(className="bi bi-exclamation-triangle-fill text-danger me-2"),
-                    "Data Conversion Error"
-                ], className="alert alert-danger"),
-                html.P("Unsupported data format detected.", className="text-muted")
-            ]), dash.no_update, dash.no_update
-        
-        # Execute rules
-        results = []
-        passed_rules = 0
-        failed_rules = 0
-        total_failed_rows = 0
-        
         for rule in active_rules:
-            rule_result = execute_rule(rule, table_data)
-            results.append(rule_result)
+            result = execute_rule(rule, table_data)
+            results.append(result)
             
-            # Update pass/fail counters
-            if rule_result['passed']:
+            if result['passed']:
                 passed_rules += 1
             else:
                 failed_rules += 1
-                total_failed_rows += rule_result['failed_rows_count']
+                
+            # Log individual rule result
+            data_loader.save_activity({
+                'type': 'validation',
+                'description': f"Rule '{rule['name']}' {result['passed'] and 'passed' or 'failed'}",
+                'timestamp': datetime.now().isoformat(),
+                'status': result['passed'] and 'success' or 'error',
+                'details': result.get('message', ''),
+                'metadata': {
+                    'rule_id': rule['id'],
+                    'rule_name': rule['name'],
+                    'table_name': table_name,
+                    'execution_time': result.get('execution_time', 0)
+                }
+            })
         
-        # Calculate pass rate
-        total_rules = len(active_rules)
-        pass_rate = passed_rules / total_rules if total_rules > 0 else 0
+        end_time = datetime.now()
+        duration = (end_time - start_time).total_seconds()
         
-        # Save execution results
-        execution_results = {
-            "timestamp": datetime.now().isoformat(),
-            "rules_executed": total_rules,
-            "passed_rules": passed_rules,
-            "failed_rules": failed_rules,
-            "pass_rate": pass_rate,
-            "total_failed_rows": total_failed_rows,
-            "results": results
+        # Create execution summary
+        execution_summary = {
+            'timestamp': end_time.isoformat(),
+            'rules_executed': len(active_rules),
+            'pass_rate': passed_rules / len(active_rules) if active_rules else 0,
+            'fail_rate': failed_rules / len(active_rules) if active_rules else 0,
+            'duration_seconds': duration,
+            'results': results
         }
-        data_loader.save_execution_results(table_name, execution_results)
         
-        # Prepare success message
-        success_message = html.Div([
-            html.I(className="bi bi-check-circle-fill text-success me-2"),
-            f"Executed {total_rules} rules: ",
-            html.Span(f"{passed_rules} passed", className="text-success"),
-            " / ",
-            html.Span(f"{failed_rules} failed", className="text-danger"),
-            html.Div(f"Pass Rate: {pass_rate:.2%}", className="text-muted mt-2"),
-            html.Div(f"Total Failed Rows: {total_failed_rows}", className="text-muted")
-        ])
+        # Save execution history
+        data_loader.save_rule_execution_history(execution_summary)
         
-        # Update page content based on current page
-        page_content = create_report_content(table_name) if pathname == '/report' else dash.no_update
+        # Log completion
+        data_loader.save_activity({
+            'type': 'rule_execution',
+            'description': f'Completed rule execution for table {table_name}',
+            'timestamp': end_time.isoformat(),
+            'status': failed_rules == 0 and 'success' or 'warning',
+            'details': f'Executed {len(active_rules)} rules. {passed_rules} passed, {failed_rules} failed.',
+            'metadata': {
+                'table_name': table_name,
+                'passed_rules': passed_rules,
+                'failed_rules': failed_rules,
+                'duration': duration
+            }
+        })
         
-        # Return updated content
-        return success_message, create_run_management_content(table_name), page_content
-    
+        return execution_summary
+        
     except Exception as e:
-        logging.error(f"Unexpected error in rule execution: {str(e)}")
-        logging.error(traceback.format_exc())
-        return html.Div([
-            html.Div([
-                html.I(className="bi bi-exclamation-triangle-fill text-danger me-2"),
-                "Unexpected Rule Execution Error"
-            ], className="alert alert-danger"),
-            html.P(str(e), className="text-muted mt-2")
-        ]), dash.no_update, dash.no_update
+        error_msg = str(e)
+        data_loader.save_activity({
+            'type': 'error',
+            'description': f'Error during rule execution for table {table_name}',
+            'timestamp': datetime.now().isoformat(),
+            'status': 'error',
+            'details': error_msg,
+            'metadata': {
+                'table_name': table_name,
+                'error_type': type(e).__name__,
+                'error_message': error_msg
+            }
+        })
+        raise
 
 def execute_rule(rule, table_data):
     """
@@ -1374,6 +1142,190 @@ def execute_rule(rule, table_data):
             "error": f"Unexpected error: {str(e)}",
             "failed_rows_count": 0
         }
+
+def create_run_management_content(table_name=None):
+    """Creates the layout for the Run Management page with execution history and insights."""
+    try:
+        # Create execute button
+        execute_button = dbc.Button(
+            [html.I(className="bi bi-play-circle me-2"), "Execute Rules"],
+            id="execute-rules-button",
+            color="primary",
+            className="mb-4"
+        )
+        
+        # Get execution history from master config
+        history = data_loader.get_execution_history()
+        table_history = [run for run in history if run['table_name'] == table_name] if table_name else []
+        
+        if not table_history:
+            data_loader.save_activity({
+                'type': 'page_view',
+                'description': 'Viewed empty Run Management page',
+                'timestamp': '2024-12-18T15:40:19Z',
+                'status': 'success',
+                'metadata': {'table_name': table_name}
+            })
+            return html.Div([
+                html.H2("Run Management", className="mb-4"),
+                execute_button,
+                html.Div("No execution history available for this table.", className="text-muted p-4")
+            ])
+
+        # Get latest run for accurate rule count
+        latest_run = table_history[-1]
+        total_rules = latest_run['rules_executed']
+        
+        # Calculate summary statistics
+        total_executions = len(table_history)
+        total_passed = sum(run['passed_rules'] for run in table_history)
+        total_rules_executed = sum(run['rules_executed'] for run in table_history)
+        avg_pass_rate = (total_passed / total_rules_executed * 100) if total_rules_executed > 0 else 0
+        total_failed = sum(run['failed_rules'] for run in table_history)
+        
+        # Create summary cards
+        summary_cards = dbc.Row([
+            dbc.Col(
+                dbc.Card(
+                    dbc.CardBody([
+                        html.H4("Total Rules", className="card-title text-center"),
+                        html.H2(f"{total_rules}", className="text-center text-primary")
+                    ])
+                ),
+                width=3,
+                className="mb-4"
+            ),
+            dbc.Col(
+                dbc.Card(
+                    dbc.CardBody([
+                        html.H4("Total Executions", className="card-title text-center"),
+                        html.H2(f"{total_executions}", className="text-center text-success")
+                    ])
+                ),
+                width=3,
+                className="mb-4"
+            ),
+            dbc.Col(
+                dbc.Card(
+                    dbc.CardBody([
+                        html.H4("Average Pass Rate", className="card-title text-center"),
+                        html.H2(f"{avg_pass_rate:.1f}%", className="text-center text-info")
+                    ])
+                ),
+                width=3,
+                className="mb-4"
+            ),
+            dbc.Col(
+                dbc.Card(
+                    dbc.CardBody([
+                        html.H4("Failed Rules", className="card-title text-center"),
+                        html.H2(
+                            str(total_failed),
+                            className="text-center text-danger"
+                        )
+                    ])
+                ),
+                width=3,
+                className="mb-4"
+            )
+        ])
+        
+        # Create execution history table
+        history_table = dbc.Table([
+            html.Thead([
+                html.Tr([
+                    html.Th("Timestamp"),
+                    html.Th("Rules Executed"),
+                    html.Th("Pass Rate"),
+                    html.Th("Status"),
+                    html.Th("Actions")
+                ])
+            ]),
+            html.Tbody([
+                html.Tr([
+                    html.Td(run['timestamp']),
+                    html.Td(run['rules_executed']),
+                    html.Td(f"{(run['passed_rules'] / run['rules_executed'] * 100):.1f}%"),
+                    html.Td(
+                        html.Span(
+                            "All Passed" if run['failed_rules'] == 0 else f"{run['failed_rules']} Failed",
+                            className=f"badge {'bg-success' if run['failed_rules'] == 0 else 'bg-danger'}"
+                        )
+                    ),
+                    html.Td([
+                        dbc.Button(
+                            [html.I(className="bi bi-info-circle me-2"), "View Details"],
+                            id={'type': 'view-details-btn', 'index': i},
+                            color="info",
+                            size="sm",
+                            className="me-2"
+                        ),
+                        dbc.Button(
+                            [html.I(className="bi bi-exclamation-circle me-2"), "View Failed Data"],
+                            id={'type': 'view-failed-data-btn', 'index': i},
+                            color="danger",
+                            size="sm",
+                            disabled=run['failed_rules'] == 0
+                        )
+                    ])
+                ]) for i, run in enumerate(reversed(table_history))
+            ])
+        ], bordered=True, hover=True, className="mb-4")
+        
+        # Create failed rules section
+        failed_rules_section = html.Div(id="failed-rules-section")
+        
+        # Create details modal
+        details_modal = dbc.Modal([
+            dbc.ModalHeader(dbc.ModalTitle("Run Details")),
+            dbc.ModalBody(id="run-details-modal-body"),
+            dbc.ModalFooter(
+                dbc.Button("Close", id="close-run-details-modal", className="ms-auto")
+            )
+        ], id="run-details-modal", size="xl")
+
+        # Create failed data modal
+        failed_data_modal = create_failed_data_modal(table_name)
+
+        # Log activity
+        data_loader.save_activity({
+            'type': 'page_view',
+            'description': 'Viewed Run Management page',
+            'timestamp': '2024-12-18T15:40:19Z',
+            'status': 'success',
+            'metadata': {
+                'table_name': table_name,
+                'total_executions': total_executions,
+                'avg_pass_rate': avg_pass_rate
+            }
+        })
+
+        return html.Div([
+            html.H2("Run Management", className="mb-4"),
+            execute_button,
+            summary_cards,
+            html.H4("Execution History", className="mb-3"),
+            history_table,
+            failed_rules_section,
+            details_modal,
+            failed_data_modal
+        ])
+        
+    except Exception as e:
+        error_message = f"Error creating run management page: {str(e)}"
+        data_loader.save_activity({
+            'type': 'error',
+            'description': 'Failed to create Run Management page',
+            'timestamp': '2024-12-18T15:40:19Z',
+            'status': 'error',
+            'details': error_message,
+            'metadata': {
+                'error_type': type(e).__name__,
+                'error_message': str(e),
+                'table_name': table_name
+            }
+        })
+        return html.Div(error_message)
 
 def create_report_content(table_name=None):
     """Creates a report page with high-level cards for each column."""
@@ -1715,13 +1667,13 @@ def create_failed_data_page(table_name):
     total_failed = 0
     for rule_result in latest_execution.get('results', []):
         if not rule_result['passed']:
-            for idx in rule_result['failed_indices']:
-                failed_data.append({
-                    'Index': idx,
-                    'Rule': rule_result['rule_name'],
-                    'Description': rule_result.get('description', '')
-                })
-                total_failed += 1
+            # Create a card for each failed rule
+            failed_data.append({
+                'Index': rule_result['failed_indices'],
+                'Rule': rule_result['rule_name'],
+                'Description': rule_result.get('description', '')
+            })
+            total_failed += len(rule_result['failed_indices'])
 
     summary_cards = dbc.Row([
         dbc.Col(
@@ -1825,6 +1777,8 @@ def render_page_content(pathname, table_name, selected_columns):
     elif pathname.startswith('/failed-data/'):
         table_name = pathname.split('/')[-1]
         return create_failed_data_page(table_name)
+    elif pathname == "/activities":
+        return create_activities_content()
     else:
         return html.Div([
             html.H3("404 - Page not found", className="text-danger"),
@@ -1841,7 +1795,7 @@ def render_page_content(pathname, table_name, selected_columns):
 def update_selected_columns(new_value, current_value):
     if new_value is None:
         return current_value
-    return new_value
+    return [new_value] if new_value else []
 
 # Reset selected columns when table changes
 @app.callback(
@@ -1862,29 +1816,32 @@ def reset_selected_columns(table_name):
      Output("manage-rules-link", "active"),
      Output("run-management-link", "active"),
      Output("report-link", "active"),
-     Output("failed-data-link", "active")],
+     Output("failed-data-link", "active"),
+     Output("activities-link", "active")],
     [Input("url", "pathname")]
 )
 def toggle_active_links(pathname):
     if pathname == "/overview" or pathname == "/":
-        return True, False, False, False, False, False, False, False, False
+        return True, False, False, False, False, False, False, False, False, False
     elif pathname == "/quality":
-        return False, True, False, False, False, False, False, False, False
+        return False, True, False, False, False, False, False, False, False, False
     elif pathname == "/columns":
-        return False, False, True, False, False, False, False, False, False
+        return False, False, True, False, False, False, False, False, False, False
     elif pathname == "/catalogue":
-        return False, False, False, True, False, False, False, False, False
+        return False, False, False, True, False, False, False, False, False, False
     elif pathname == "/rules":
-        return False, False, False, False, True, False, False, False, False
+        return False, False, False, False, True, False, False, False, False, False
     elif pathname == "/manage-rules":
-        return False, False, False, False, False, True, False, False, False
+        return False, False, False, False, False, True, False, False, False, False
     elif pathname == "/run-management":
-        return False, False, False, False, False, False, True, False, False
+        return False, False, False, False, False, False, True, False, False, False
     elif pathname == "/report":
-        return False, False, False, False, False, False, False, True, False
+        return False, False, False, False, False, False, False, True, False, False
     elif pathname.startswith('/failed-data/'):
-        return False, False, False, False, False, False, False, False, True
-    return True, False, False, False, False, False, False, False, False
+        return False, False, False, False, False, False, False, False, True, False
+    elif pathname == "/activities":
+        return False, False, False, False, False, False, False, False, False, True
+    return True, False, False, False, False, False, False, False, False, False
 
 @app.callback(
     [Output("column-multi-dropdown", "options"),
@@ -2005,7 +1962,7 @@ def toggle_run_details_modal(view_clicks, close_clicks, is_open, table_name):
                     dbc.CardBody([
                         html.H6("Pass Rate", className="mb-2"),
                         html.P(
-                            f"{(run['passed_rules'] / run['rules_executed'] * 100):.1f}%",
+                            f"{(run['passed_rules'] / run['rules_executed'] * 100):.1f}%" if run['rules_executed'] > 0 else "0%",
                             className=f"mb-0 {'text-success' if run['passed_rules'] == run['rules_executed'] else 'text-warning'}"
                         )
                     ]),
@@ -2237,19 +2194,236 @@ def create_failed_data_modal(table_name):
         is_open=False
     )
 
+def create_activities_content():
+    """Creates the layout for the Activities page."""
+    try:
+        # Get activities directly as a list
+        activities = data_loader.get_activities()
+        
+        if not activities:
+            # Log empty activities view
+            data_loader.save_activity({
+                'type': 'page_view',
+                'description': 'Viewed empty Activities page',
+                'timestamp': '2024-12-18T15:40:19Z',
+                'status': 'success',
+                'metadata': {'activities_count': 0}
+            })
+            return html.Div("No activities recorded yet.", className="text-muted p-4")
+
+        # Calculate statistics
+        total_activities = len(activities)
+        success_count = sum(1 for activity in activities if activity.get('status') == 'success')
+        error_count = sum(1 for activity in activities if activity.get('status') == 'error')
+        success_rate = (success_count / total_activities * 100) if total_activities > 0 else 0
+        
+        # Get the timestamp of the last activity
+        last_activity = activities[-1]['timestamp'] if activities else 'No activities'
+        
+        # Count active rules
+        active_rules = sum(1 for activity in activities 
+                         if activity.get('type') == 'rule_status' 
+                         and activity.get('metadata', {}).get('new_status', False))
+
+        # Create statistics cards
+        stats_cards = dbc.Row([
+            dbc.Col(
+                dbc.Card(
+                    dbc.CardBody([
+                        html.H4("Total Activities", className="card-title text-center"),
+                        html.H2(str(total_activities), className="text-center text-primary")
+                    ])
+                ),
+                width=3,
+                className="mb-4"
+            ),
+            dbc.Col(
+                dbc.Card(
+                    dbc.CardBody([
+                        html.H4("Success Rate", className="card-title text-center"),
+                        html.H2(f"{success_rate:.1f}%", className="text-center text-success")
+                    ])
+                ),
+                width=3,
+                className="mb-4"
+            ),
+            dbc.Col(
+                dbc.Card(
+                    dbc.CardBody([
+                        html.H4("Last Activity", className="card-title text-center"),
+                        html.H2(last_activity, className="text-center text-info", style={'font-size': '1.25rem'})
+                    ])
+                ),
+                width=3,
+                className="mb-4"
+            ),
+            dbc.Col(
+                dbc.Card(
+                    dbc.CardBody([
+                        html.H4("Active Rules", className="card-title text-center"),
+                        html.H2(str(active_rules), className="text-center text-warning")
+                    ])
+                ),
+                width=3,
+                className="mb-4"
+            )
+        ])
+
+        # Create timeline items for each activity
+        timeline_items = []
+        for activity in reversed(activities):  # Show newest first
+            # Determine icon and color based on activity type and status
+            icon_class = "bi-check-circle" if activity.get('status') == 'success' else "bi-x-circle"
+            if activity.get('type') == 'rule_execution':
+                icon_class = "bi-play-circle"
+            elif activity.get('type') == 'rule_status':
+                icon_class = "bi-toggle-on"
+            elif activity.get('type') == 'page_view':
+                icon_class = "bi-eye"
+            
+            color_class = "text-success" if activity.get('status') == 'success' else "text-danger"
+            if activity.get('type') == 'page_view':
+                color_class = "text-info"
+
+            timeline_items.append(
+                dbc.Card(
+                    dbc.CardBody([
+                        html.Div([
+                            html.I(className=f"bi {icon_class} {color_class} me-2", style={'font-size': '1.5rem'}),
+                            html.H5(activity.get('description', 'Unknown Activity'), className="d-inline")
+                        ], className="mb-2"),
+                        html.P([
+                            html.Small(activity.get('timestamp', 'Unknown time'), className="text-muted"),
+                            html.Span(
+                                activity.get('status', 'unknown').title(),
+                                className=f"badge {'bg-success' if activity.get('status') == 'success' else 'bg-danger'} ms-2"
+                            )
+                        ]),
+                        html.P(activity.get('details', ''), className="text-muted small")
+                    ]),
+                    className="mb-3"
+                )
+            )
+
+        # Log activity view
+        data_loader.save_activity({
+            'type': 'page_view',
+            'description': 'Viewed Activities page',
+            'timestamp': '2024-12-18T15:40:19Z',
+            'status': 'success',
+            'metadata': {
+                'activities_count': total_activities,
+                'success_rate': success_rate,
+                'active_rules': active_rules
+            }
+        })
+
+        return html.Div([
+            html.H2("Activities", className="mb-4"),
+            stats_cards,
+            html.Div(timeline_items, className="timeline")
+        ])
+
+    except Exception as e:
+        error_message = f"Error creating activities page: {str(e)}"
+        data_loader.save_activity({
+            'type': 'error',
+            'description': 'Failed to create Activities page',
+            'timestamp': '2024-12-18T15:40:19Z',
+            'status': 'error',
+            'details': error_message,
+            'metadata': {
+                'error_type': type(e).__name__,
+                'error_message': str(e)
+            }
+        })
+        return html.Div(error_message)
+
+def get_activity_icon(activity):
+    """Get the appropriate Bootstrap icon for an activity type."""
+    icon_map = {
+        'rule_execution': 'play-circle',
+        'rule_status': 'toggle-on',
+        'validation': 'check-circle',
+        'config': 'gear',
+        'error': 'exclamation-triangle'
+    }
+    return icon_map.get(activity.get('type'), 'circle')
+
+def get_activity_color(activity):
+    """Get the appropriate color for an activity type."""
+    color_map = {
+        'rule_execution': '#007bff',  # blue
+        'rule_status': '#6f42c1',    # purple
+        'validation': '#28a745',     # green
+        'config': '#fd7e14',         # orange
+        'error': '#dc3545'          # red
+    }
+    return color_map.get(activity.get('type'), '#6c757d')
+
+def get_status_color(status):
+    """Get the appropriate Bootstrap color for a status."""
+    color_map = {
+        'success': 'success',
+        'warning': 'warning',
+        'error': 'danger',
+        'unknown': 'secondary'
+    }
+    return color_map.get(status, 'secondary')
+
 def safe_execute(func):
     """
     Decorator to provide safe execution with logging and error handling
     """
     def wrapper(*args, **kwargs):
         try:
-            return func(*args, **kwargs)
+            result = func(*args, **kwargs)
+            
+            # Log successful execution
+            if func.__name__ != 'add_activity':  # Prevent infinite recursion
+                data_loader.save_activity({
+                    'type': 'function_execution',
+                    'description': f'Successfully executed {func.__name__}',
+                    'timestamp': datetime.now().isoformat(),
+                    'status': 'success',
+                    'details': f'Function {func.__name__} completed successfully',
+                    'metadata': {
+                        'function': func.__name__,
+                        'args': str(args),
+                        'kwargs': str(kwargs)
+                    }
+                })
+            
+            return result
+            
         except Exception as e:
-            logging.error(f"Error in {func.__name__}: {str(e)}")
+            error_msg = str(e)
+            logging.error(f"Error in {func.__name__}: {error_msg}")
             logging.error(traceback.format_exc())
+            
+            # Log error activity
+            try:
+                if func.__name__ != 'add_activity':  # Prevent infinite recursion
+                    data_loader.save_activity({
+                        'type': 'error',
+                        'description': f'Error in {func.__name__}: {error_msg}',
+                        'timestamp': datetime.now().isoformat(),
+                        'status': 'error',
+                        'details': traceback.format_exc(),
+                        'metadata': {
+                            'function': func.__name__,
+                            'error_type': type(e).__name__,
+                            'error_message': error_msg,
+                            'args': str(args),
+                            'kwargs': str(kwargs)
+                        }
+                    })
+            except Exception as log_error:
+                logging.error(f"Failed to log error activity: {str(log_error)}")
+            
             return html.Div([
                 html.H3("An error occurred", className="text-danger"),
-                html.P(str(e), className="text-muted")
+                html.P(error_msg, className="text-muted")
             ])
     return wrapper
 

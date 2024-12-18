@@ -180,6 +180,51 @@ If you encounter issues:
 4. Check database connections if applicable
 5. Review rule execution history for errors
 
+## Educational Notebooks
+
+### Automated Data Quality Checks Implementation
+This notebook covers the implementation of automated data quality checks. It includes setting up validation rules for HR data and creating a reporting mechanism for data quality issues.
+
+### Regular Data Quality Monitoring
+Focuses on setting up automated monitoring schedules, creating a quality metrics dashboard, and implementing an alert system for quality issues.
+
+### Continuous Improvement Framework for Data Quality
+Implements a framework for continuous improvement, including quality metrics analysis, root cause analysis, improvement recommendations, and implementation tracking.
+
+## Screenshots
+
+### Home Screen
+<img src="rsc/home%20screen%20no%20table%20selection.PNG" alt="Home Screen" width="600"/>
+*The home screen provides an overview of the dashboard without any table selection.*
+
+### Sidebar Navigation
+<img src="rsc/sidebar%20navigation.PNG" alt="Sidebar Navigation" width="600"/>
+*The sidebar allows easy navigation between different sections of the dashboard.*
+
+### Data Catalogue
+<img src="rsc/data%20catalogue.PNG" alt="Data Catalogue" width="600"/>
+*The data catalogue displays metadata about available tables and columns.*
+
+### Column Analysis
+<img src="rsc/Column%20analysis.PNG" alt="Column Analysis" width="600"/>
+*The column analysis section provides detailed insights into individual column data quality.*
+
+### Rule Management
+<img src="rsc/Rule%20managment.PNG" alt="Rule Management" width="600"/>
+*Manage data quality rules, toggle their active states, and view statistics.*
+
+### Rules Overview
+<img src="rsc/Rules.PNG" alt="Rules Overview" width="600"/>
+*An overview of all rules, categorized for easy access and management.*
+
+### Run Management
+<img src="rsc/Report.PNG" alt="Run Management" width="600"/>
+*Track rule execution history, monitor pass/fail rates, and view execution statistics.*
+
+### App Activity
+<img src="rsc/App%20Activity.PNG" alt="App Activity" width="600"/>
+*Visualize recent activities and interactions within the app.*
+
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.

@@ -7,28 +7,119 @@ import contextlib
 import os
 from datetime import datetime
 from config import DB_PATH
+import pandas as pd
 
 class DataLoader:
     def __init__(self):
-        """Initialize the DataLoader with data directory."""
-        self.data_dir = "assets/data"
-        self.config_file = "assets/config/data_config.json"
-        self.execution_history_file = "assets/data/execution_history.json"
-        self.rule_execution_history_file = "assets/data/rule_execution_history.json"
-        self.rule_templates_file = "assets/data/rule_templates.json"
-        self.activities_file = "assets/data/activities.json"
+        self.base_path = os.path.join(os.path.dirname(__file__), 'assets', 'data')
+        self.master_config_path = os.path.join(self.base_path, 'master_config.json')
+        self._ensure_master_config_exists()
         
-        # Initialize execution history file if it doesn't exist
-        if not os.path.exists(self.execution_history_file):
-            with open(self.execution_history_file, 'w') as f:
-                json.dump([], f)
+    def _ensure_master_config_exists(self):
+        """Ensures master config file exists and has all required sections."""
+        if not os.path.exists(self.master_config_path):
+            default_config = {
+                "data_config": {
+                    "data_sources": {},
+                    "database": {"connection_string": "", "tables": []}
+                },
+                "rule_templates": [],
+                "activities": [],
+                "execution_history": [],
+                "rule_execution_history": [],
+                "last_updated": datetime.now().isoformat(),
+                "version": "1.0.0"
+            }
+            self._save_json(self.master_config_path, default_config)
+    
+    def _load_master_config(self):
+        """Load the master configuration file."""
+        try:
+            with open(self.master_config_path, 'r') as f:
+                return json.load(f)
+        except Exception as e:
+            print(f"Error loading master config: {str(e)}")
+            return None
+    
+    def _save_master_config(self, config):
+        """Save the master configuration file."""
+        config['last_updated'] = datetime.now().isoformat()
+        self._save_json(self.master_config_path, config)
+    
+    def _save_json(self, path, data):
+        """Save data to a JSON file with proper formatting."""
+        with open(path, 'w') as f:
+            json.dump(data, f, indent=4)
+    
+    def get_data_config(self):
+        """Get data configuration."""
+        config = self._load_master_config()
+        return config.get('data_config', {})
+    
+    def get_rule_templates(self):
+        """Get rule templates."""
+        config = self._load_master_config()
+        return config.get('rule_templates', [])
+    
+    def save_rule_templates(self, templates):
+        """Save rule templates."""
+        config = self._load_master_config()
+        config['rule_templates'] = templates
+        self._save_master_config(config)
+    
+    def get_activities(self):
+        """Get activities."""
+        config = self._load_master_config()
+        return config.get('activities', [])
+    
+    def save_activity(self, activity):
+        """Save a new activity."""
+        config = self._load_master_config()
+        activities = config.get('activities', [])
+        activities.append(activity)
+        config['activities'] = activities
+        self._save_master_config(config)
+    
+    def get_execution_history(self):
+        """Get execution history."""
+        config = self._load_master_config()
+        return config.get('execution_history', [])
+    
+    def save_execution_history(self, history):
+        """Save execution history."""
+        config = self._load_master_config()
+        config['execution_history'] = history
+        self._save_master_config(config)
+    
+    def get_rule_execution_history(self):
+        """Get rule execution history."""
+        config = self._load_master_config()
+        return config.get('rule_execution_history', [])
+    
+    def save_rule_execution_history(self, history):
+        """Save rule execution history."""
+        config = self._load_master_config()
+        config['rule_execution_history'] = history
+        self._save_master_config(config)
+    
+    def save_rule_status(self, rule_id, status):
+        """Save rule status."""
+        config = self._load_master_config()
+        templates = config.get('rule_templates', [])
         
-        self.db_path = DB_PATH
+        for template in templates:
+            if template['id'] == rule_id:
+                template['active'] = status
+                break
+                
+        config['rule_templates'] = templates
+        self._save_master_config(config)
+        return {"success": True}
     
     @contextlib.contextmanager
     def get_connection(self):
         """Create a new connection for each operation."""
-        conn = sqlite3.connect(self.db_path)
+        conn = sqlite3.connect(DB_PATH)
         try:
             yield conn
         finally:
@@ -275,27 +366,16 @@ class DataLoader:
     def update_rule_status(self, rule_id, active_status):
         """Update a rule's active status."""
         try:
-            with open('rule_templates.json', 'r') as f:
-                rules = json.loads(f.read())
+            config = self._load_master_config()
+            templates = config.get('rule_templates', [])
             
-            # Find and update the rule
-            rule_found = False
-            for category, rule_list in rules.items():
-                if isinstance(rule_list, list):
-                    for rule in rule_list:
-                        if rule['id'] == rule_id:
-                            rule['active'] = active_status
-                            rule_found = True
-                            break
-                    if rule_found:
-                        break
+            for template in templates:
+                if template['id'] == rule_id:
+                    template['active'] = active_status
+                    break
             
-            if not rule_found:
-                return {'error': f'Rule {rule_id} not found'}
-            
-            # Write back to file
-            with open('rule_templates.json', 'w') as f:
-                json.dump(rules, f, indent=4)
+            config['rule_templates'] = templates
+            self._save_master_config(config)
             
             return {'success': True}
         except Exception as e:
@@ -304,83 +384,50 @@ class DataLoader:
     def get_all_rules(self):
         """Get all rules with their current status."""
         try:
-            with open('rule_templates.json', 'r') as f:
-                rules = json.loads(f.read())
+            config = self._load_master_config()
+            templates = config.get('rule_templates', [])
             
             flat_rules = []
-            for category, rule_list in rules.items():
-                if isinstance(rule_list, list):
-                    category_name = category.replace('_', ' ').title()
-                    for rule in rule_list:
-                        flat_rules.append({
-                            'id': rule['id'],
-                            'name': rule['name'],
-                            'category': category_name,
-                            'description': rule['description'],
-                            'type': rule.get('type', 'N/A'),
-                            'severity': rule.get('severity', 'N/A'),
-                            'active': rule.get('active', True)
-                        })
+            for template in templates:
+                flat_rules.append({
+                    'id': template['id'],
+                    'name': template['name'],
+                    'category': template.get('category', 'N/A'),
+                    'description': template['description'],
+                    'type': template.get('type', 'N/A'),
+                    'severity': template.get('severity', 'N/A'),
+                    'active': template.get('active', True)
+                })
             return flat_rules
         except Exception as e:
             return {'error': str(e)}
 
-    @staticmethod
-    def load_all_rules():
+    def load_all_rules(self):
         """Load all rules from the rule templates file."""
         try:
-            rule_file_path = os.path.join(os.path.dirname(__file__), 'rule_templates.json')
-            with open(rule_file_path, 'r') as f:
-                rules_data = json.load(f)
+            config = self._load_master_config()
+            templates = config.get('rule_templates', [])
             
-            # Flatten all rules into a single list
             all_rules = []
             
-            # Add rules from each category
-            for category, rules in rules_data.items():
-                if isinstance(rules, list):
-                    for rule in rules:
-                        rule['category'] = category.replace('_rules', '')
-                        all_rules.append(rule)
-                elif isinstance(rules, dict):
-                    for subcategory, subrules in rules.items():
-                        for rule in subrules:
-                            rule['category'] = f"{category.replace('_rules', '')}/{subcategory.replace('_rules', '')}"
-                            all_rules.append(rule)
+            for template in templates:
+                all_rules.append({
+                    'id': template['id'],
+                    'name': template['name'],
+                    'description': template['description'],
+                    'category': template.get('category', 'N/A'),
+                    'type': template.get('type', 'N/A'),
+                    'severity': template.get('severity', 'Medium'),
+                    'active': template.get('active', True),
+                    'validation_code': template.get('validation_code', ''),
+                    'message': template.get('message', '')
+                })
             
             return all_rules
         except Exception as e:
-            return {'error': f"Error loading rules: {str(e)}"}
-
-    def save_rule_status(self, rule_id: str, new_status: bool) -> dict:
-        """Save the updated rule status to the rule templates file."""
-        try:
-            rule_file_path = os.path.join(self.data_dir, 'rule_templates.json')
-            with open(rule_file_path, 'r') as f:
-                rules_data = json.load(f)
-            
-            # Update rule status in the appropriate category
-            for category, rules in rules_data.items():
-                if isinstance(rules, list):
-                    for rule in rules:
-                        if rule['id'] == rule_id:
-                            rule['active'] = new_status
-                            break
-                elif isinstance(rules, dict):
-                    for subcategory, subrules in rules.items():
-                        for rule in subrules:
-                            if rule['id'] == rule_id:
-                                rule['active'] = new_status
-                                break
-            
-            # Save updated rules back to file
-            with open(rule_file_path, 'w') as f:
-                json.dump(rules_data, f, indent=4)
-            
-            return {'success': True}
-        except Exception as e:
-            return {'error': f"Error saving rule status: {str(e)}"}
-
+            print(f"Error loading rules: {str(e)}")
+            return []
+    
     def execute_rules(self, table_name):
         """Execute active rules and return results."""
         rules = self.load_all_rules()
@@ -415,31 +462,45 @@ class DataLoader:
             'pass_rate': pass_rate,
             'fail_rate': 1 - pass_rate,
             'duration_seconds': duration,
-            'results': results
+            'results': results,
+            'table_name': table_name
         }
         
         self._store_execution_history(execution_summary)
+        
+        # Log activity
+        activity = {
+            'type': 'rule_execution',
+            'description': f'Executed {total_rules} rules on table {table_name}. {passed_rules} passed, {total_rules - passed_rules} failed.',
+            'status': 'success' if passed_rules == total_rules else 'warning',
+            'metadata': {
+                'table_name': table_name,
+                'total_rules': total_rules,
+                'passed_rules': passed_rules,
+                'failed_rules': total_rules - passed_rules,
+                'duration_seconds': duration
+            }
+        }
+        self.add_activity(activity)
         
         return execution_summary
     
     def _store_execution_history(self, execution_summary):
         """Store rule execution history in a JSON file."""
         try:
-            with open(self.execution_history_file, 'r') as f:
-                history = json.load(f)
-        except FileNotFoundError:
-            history = []
-        
-        history.append(execution_summary)
-        
-        with open(self.execution_history_file, 'w') as f:
-            json.dump(history, f, indent=2)
+            config = self._load_master_config()
+            history = config.get('execution_history', [])
+            history.append(execution_summary)
+            config['execution_history'] = history
+            self._save_master_config(config)
+        except Exception as e:
+            print(f"Error storing execution history: {str(e)}")
     
     def load_execution_history(self) -> List[Dict]:
         """Load execution history from JSON file."""
         try:
-            with open(self.execution_history_file, 'r') as f:
-                return json.load(f)
+            config = self._load_master_config()
+            return config.get('execution_history', [])
         except Exception as e:
             print(f"Error loading execution history: {str(e)}")
             return []
@@ -455,8 +516,8 @@ class DataLoader:
             List[Dict]: Filtered or full execution history
         """
         try:
-            with open(self.execution_history_file, 'r') as f:
-                history = json.load(f)
+            config = self._load_master_config()
+            history = config.get('execution_history', [])
             
             # If table_name is provided, filter the history
             if table_name:
@@ -477,8 +538,8 @@ class DataLoader:
         """
         try:
             # Load existing history
-            with open(self.execution_history_file, 'r') as f:
-                history = json.load(f)
+            config = self._load_master_config()
+            history = config.get('execution_history', [])
             
             # Add timestamp to the results
             results['table_name'] = table_name
@@ -491,56 +552,31 @@ class DataLoader:
             history = history[-50:]
             
             # Save updated history
-            with open(self.execution_history_file, 'w') as f:
-                json.dump(history, f, indent=4)
+            config['execution_history'] = history
+            self._save_master_config(config)
         
         except Exception as e:
             print(f"Error saving execution results: {str(e)}")
     
-    def get_gdpr_rules(self):
-        """Get GDPR rules."""
-        return [
-            {
-                'id': 'gdpr_001',
-                'name': 'PII Data Detection',
-                'description': 'Detect personally identifiable information in columns',
-                'category': 'gdpr',
-                'type': 'pattern_match',
-                'severity': 'Critical',
-                'active': True
-            },
-            {
-                'id': 'gdpr_002',
-                'name': 'Sensitive Data Detection',
-                'description': 'Detect sensitive information in columns',
-                'category': 'gdpr',
-                'type': 'pattern_match',
-                'severity': 'High',
-                'active': True
-            }
-        ]
-
-    def get_bespoke_gdpr_rules(self):
-        """Get bespoke GDPR rules."""
-        return [
-            {
-                'id': 'bespoke_001',
-                'name': 'Custom PII Detection',
-                'description': 'Custom rules for PII detection',
-                'category': 'bespoke_gdpr',
-                'type': 'pattern_match',
-                'severity': 'Critical',
-                'active': True
-            }
-        ]
+    def add_activity(self, activity):
+        """Add a new activity to the activities list."""
+        try:
+            config = self._load_master_config()
+            activities = config.get('activities', [])
+            activities.append(activity)
+            config['activities'] = activities
+            self._save_master_config(config)
+        except Exception as e:
+            print(f"Error adding activity: {str(e)}")
 
 def load_rule_templates() -> Dict:
     """Load rule templates from JSON file."""
     try:
-        template_path = os.path.join(os.path.dirname(__file__), 'rule_templates.json')
+        template_path = "BONUS/assets/data/rule_templates.json"
         if os.path.exists(template_path):
             with open(template_path, 'r') as f:
                 return json.load(f)
         return {}
-    except Exception:
+    except Exception as e:
+        print(f"Error loading rule templates: {str(e)}")
         return {}
