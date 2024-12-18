@@ -219,6 +219,116 @@
             "validation_code": "df[column_name].str.match(r'^[a-fA-F0-9]{32}$|^[a-fA-F0-9]{40}$|^[a-fA-F0-9]{64}$')",
             "message": "Column may contain hash values",
             "active": true
+        },
+        {
+            "id": "gdpr_021",
+            "name": "XML Pattern",
+            "description": "Detects XML content in fields",
+            "category": "gdpr",
+            "type": "pattern_match",
+            "severity": "Medium",
+            "validation_code": "df[column_name].str.contains(r'<\\?xml.*\\?>')",
+            "message": "Column may contain XML content",
+            "active": true
+        },
+        {
+            "id": "gdpr_022",
+            "name": "Binary Data Pattern",
+            "description": "Detects binary data in text fields",
+            "category": "gdpr",
+            "type": "pattern_match",
+            "severity": "High",
+            "validation_code": "df[column_name].str.contains(r'[\\x00-\\x08\\x0B\\x0C\\x0E-\\x1F]')",
+            "message": "Column may contain binary data",
+            "active": true
+        },
+        {
+            "id": "gdpr_023",
+            "name": "Script Tag Pattern",
+            "description": "Detects script tags in content",
+            "category": "gdpr",
+            "type": "pattern_match",
+            "severity": "Critical",
+            "validation_code": "df[column_name].str.contains(r'<script.*?>.*?</script>', case=False)",
+            "message": "Column may contain script tags",
+            "active": true
+        },
+        {
+            "id": "gdpr_024",
+            "name": "IBAN Format",
+            "description": "Validates International Bank Account Numbers",
+            "category": "gdpr",
+            "type": "pattern_match",
+            "severity": "High",
+            "validation_code": "df[column_name].str.match(r'^[A-Z]{2}\\d{2}[A-Z0-9]{4}\\d{7}([A-Z0-9]?){0,16}$')",
+            "message": "Column may contain invalid IBANs",
+            "active": true
+        },
+        {
+            "id": "gdpr_025",
+            "name": "Vehicle VIN Format",
+            "description": "Validates Vehicle Identification Numbers",
+            "category": "gdpr",
+            "type": "pattern_match",
+            "severity": "Medium",
+            "validation_code": "df[column_name].str.match(r'^[A-HJ-NPR-Z0-9]{17}$')",
+            "message": "Column may contain invalid VINs",
+            "active": true
+        },
+        {
+            "id": "gdpr_026",
+            "name": "OAuth Token Pattern",
+            "description": "Detects OAuth tokens in text",
+            "category": "gdpr",
+            "type": "pattern_match",
+            "severity": "Critical",
+            "validation_code": "df[column_name].str.contains(r'(Bearer|OAuth) [A-Za-z0-9\\-._~+/]+')",
+            "message": "Column may contain OAuth tokens",
+            "active": true
+        },
+        {
+            "id": "gdpr_027",
+            "name": "Geographic Coordinates",
+            "description": "Validates latitude/longitude format",
+            "category": "gdpr",
+            "type": "pattern_match",
+            "severity": "Medium",
+            "validation_code": "df[column_name].str.match(r'^-?([1-8]?\\d(\\.\\d+)?|90(\\.0+)?),\\s*-?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)$')",
+            "message": "Column may contain invalid coordinates",
+            "active": true
+        },
+        {
+            "id": "gdpr_028",
+            "name": "Color Code Format",
+            "description": "Validates hex color codes",
+            "category": "gdpr",
+            "type": "pattern_match",
+            "severity": "Low",
+            "validation_code": "df[column_name].str.match(r'^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$')",
+            "message": "Column may contain invalid color codes",
+            "active": true
+        },
+        {
+            "id": "gdpr_029",
+            "name": "ISBN Format",
+            "description": "Validates ISBN-10 and ISBN-13 formats",
+            "category": "gdpr",
+            "type": "pattern_match",
+            "severity": "Medium",
+            "validation_code": "df[column_name].str.match(r'^(?:ISBN(?:-1[03])?:? )?(?=[0-9X]{10}$|(?=(?:[0-9]+[- ]){3})[- 0-9X]{13}$|97[89][0-9]{10}$|(?=(?:[0-9]+[- ]){4})[- 0-9]{17}$)(?:97[89][- ]?)?[0-9]{1,5}[- ]?[0-9]+[- ]?[0-9]+[- ]?[0-9X]$')",
+            "message": "Column may contain invalid ISBNs",
+            "active": true
+        },
+        {
+            "id": "gdpr_030",
+            "name": "Domain Name Format",
+            "description": "Validates domain name format",
+            "category": "gdpr",
+            "type": "pattern_match",
+            "severity": "Medium",
+            "validation_code": "df[column_name].str.match(r'^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$')",
+            "message": "Column may contain invalid domain names",
+            "active": true
         }
     ],
     "data_quality_rules": [
@@ -400,6 +510,96 @@
             "type": "Accuracy",
             "severity": "High",
             "validation_code": "abs(df[column_name].pct_change()) > max_growth_rate",
+            "active": true
+        },
+        {
+            "id": "dq21",
+            "name": "Seasonality Check",
+            "description": "Validates seasonal patterns in time series",
+            "type": "Pattern",
+            "severity": "Medium",
+            "validation_code": "df.groupby(df[date_column].dt.month)[value_column].mean().std() < seasonality_threshold",
+            "active": true
+        },
+        {
+            "id": "dq22",
+            "name": "Distribution Shape",
+            "description": "Checks if distribution matches expected shape",
+            "type": "Statistical",
+            "severity": "Medium",
+            "validation_code": "abs(df[column_name].skew()) > skew_threshold or abs(df[column_name].kurtosis()) > kurtosis_threshold",
+            "active": true
+        },
+        {
+            "id": "dq23",
+            "name": "Entropy Check",
+            "description": "Validates information content in column",
+            "type": "Statistical",
+            "severity": "Low",
+            "validation_code": "-(df[column_name].value_counts(normalize=True) * np.log2(df[column_name].value_counts(normalize=True))).sum() < min_entropy",
+            "active": true
+        },
+        {
+            "id": "dq24",
+            "name": "Cardinality Ratio",
+            "description": "Checks unique value ratio in column",
+            "type": "Uniqueness",
+            "severity": "Medium",
+            "validation_code": "len(df[column_name].unique()) / len(df) < min_cardinality_ratio",
+            "active": true
+        },
+        {
+            "id": "dq25",
+            "name": "Moving Average",
+            "description": "Validates moving average within bounds",
+            "type": "Statistical",
+            "severity": "Medium",
+            "validation_code": "df[column_name].rolling(window=window_size).mean().std() > volatility_threshold",
+            "active": true
+        },
+        {
+            "id": "dq26",
+            "name": "Word Count",
+            "description": "Validates word count in text fields",
+            "type": "Content",
+            "severity": "Low",
+            "validation_code": "df[column_name].str.split().str.len() < min_words or df[column_name].str.split().str.len() > max_words",
+            "active": true
+        },
+        {
+            "id": "dq27",
+            "name": "Language Detection",
+            "description": "Validates text is in expected language",
+            "type": "Content",
+            "severity": "Medium",
+            "validation_code": "df[column_name].apply(lambda x: detect(x) != expected_language if x else False)",
+            "active": true
+        },
+        {
+            "id": "dq28",
+            "name": "Cyclic Pattern",
+            "description": "Validates cyclic patterns in data",
+            "type": "Pattern",
+            "severity": "Medium",
+            "validation_code": "df[column_name].diff().autocorr(lag=cycle_length) < min_autocorr",
+            "active": true
+        },
+        {
+            "id": "dq29",
+            "name": "Density Check",
+            "description": "Validates data density in time series",
+            "type": "Completeness",
+            "severity": "High",
+            "validation_code": "df.resample(time_interval, on=time_column).size().min() < min_density",
+            "active": true
+        },
+        {
+            "id": "dq30",
+            "name": "Format Consistency",
+            "description": "Checks consistent formatting across values",
+            "type": "Consistency",
+            "severity": "Medium",
+            "validation_code": "df[column_name].str.match(format_pattern).value_counts().size() > 1",
             "active": true
         }
     ],
@@ -603,6 +803,96 @@
             "severity": "Low",
             "validation_code": "df['points_earned'] != (df['purchase_amount'] * points_multiplier).round()",
             "active": true
+        },
+        {
+            "id": "br_021",
+            "name": "Profit Margin Trend",
+            "description": "Validates profit margin trend",
+            "type": "Business Logic",
+            "severity": "High",
+            "validation_code": "df.groupby(time_period)['profit_margin'].mean().pct_change().rolling(3).mean() < min_growth_rate",
+            "active": true
+        },
+        {
+            "id": "br_022",
+            "name": "Customer Lifetime Value",
+            "description": "Validates CLV calculations",
+            "type": "Business Logic",
+            "severity": "Medium",
+            "validation_code": "df.groupby('customer_id')['total_value'].sum() < min_clv_threshold",
+            "active": true
+        },
+        {
+            "id": "br_023",
+            "name": "Product Bundle Rules",
+            "description": "Validates product bundle combinations",
+            "type": "Business Logic",
+            "severity": "Medium",
+            "validation_code": "~df.groupby('order_id')['product_id'].apply(lambda x: set(required_bundle).issubset(set(x)))",
+            "active": true
+        },
+        {
+            "id": "br_024",
+            "name": "Seasonal Pricing",
+            "description": "Validates seasonal price adjustments",
+            "type": "Business Logic",
+            "severity": "Medium",
+            "validation_code": "df[df['season'] == peak_season]['price'] <= df[df['season'] != peak_season]['price'].mean()",
+            "active": true
+        },
+        {
+            "id": "br_025",
+            "name": "Customer Risk Score",
+            "description": "Validates customer risk assessment",
+            "type": "Business Logic",
+            "severity": "High",
+            "validation_code": "df['risk_score'] > max_acceptable_risk",
+            "active": true
+        },
+        {
+            "id": "br_026",
+            "name": "Order Fulfillment Time",
+            "description": "Validates order processing time",
+            "type": "Business Logic",
+            "severity": "High",
+            "validation_code": "(df['fulfillment_date'] - df['order_date']).dt.total_seconds() > max_processing_time",
+            "active": true
+        },
+        {
+            "id": "br_027",
+            "name": "Supplier Performance",
+            "description": "Validates supplier quality metrics",
+            "type": "Business Logic",
+            "severity": "High",
+            "validation_code": "df.groupby('supplier_id')['defect_rate'].mean() > max_defect_rate",
+            "active": true
+        },
+        {
+            "id": "br_028",
+            "name": "Employee Productivity",
+            "description": "Validates employee performance metrics",
+            "type": "Business Logic",
+            "severity": "Medium",
+            "validation_code": "df.groupby('employee_id')['tasks_completed'].mean() < min_productivity",
+            "active": true
+        },
+        {
+            "id": "br_029",
+            "name": "Marketing ROI",
+            "description": "Validates marketing campaign returns",
+            "type": "Business Logic",
+            "severity": "High",
+            "validation_code": "(df['campaign_revenue'] - df['campaign_cost']) / df['campaign_cost'] < min_roi",
+            "active": true
+        },
+        {
+            "id": "br_030",
+            "name": "Customer Churn Risk",
+            "description": "Validates customer churn predictions",
+            "type": "Business Logic",
+            "severity": "Critical",
+            "validation_code": "df['churn_probability'] > churn_threshold",
+            "active": true
         }
     ],
     "table_level_rules": [
@@ -805,6 +1095,404 @@
             "severity": "Critical",
             "validation_code": "~df['foreign_key'].isin(reference_df['primary_key'])",
             "active": true
+        },
+        {
+            "id": "tl_021",
+            "name": "Table Growth Rate",
+            "description": "Validates table growth over time",
+            "type": "Performance",
+            "severity": "Medium",
+            "validation_code": "(len(df_current) - len(df_previous)) / len(df_previous) > max_growth_rate",
+            "active": true
+        },
+        {
+            "id": "tl_022",
+            "name": "Column Value Distribution",
+            "description": "Validates column value distributions",
+            "type": "Statistical",
+            "severity": "Medium",
+            "validation_code": "df[column_name].value_counts(normalize=True).max() > max_concentration",
+            "active": true
+        },
+        {
+            "id": "tl_023",
+            "name": "Cross-Table Consistency",
+            "description": "Validates consistency across related tables",
+            "type": "Relationship",
+            "severity": "High",
+            "validation_code": "set(df1[key_column].unique()) != set(df2[key_column].unique())",
+            "active": true
+        },
+        {
+            "id": "tl_024",
+            "name": "Historical Data Retention",
+            "description": "Validates historical data availability",
+            "type": "Compliance",
+            "severity": "High",
+            "validation_code": "df[date_column].min() > (datetime.now() - timedelta(days=retention_days))",
+            "active": true
+        },
+        {
+            "id": "tl_025",
+            "name": "Column Correlation Matrix",
+            "description": "Validates correlation patterns",
+            "type": "Statistical",
+            "severity": "Medium",
+            "validation_code": "df[columns].corr().abs().where(np.triu(np.ones(df[columns].corr().shape), k=1).astype(bool)).max().max() > correlation_threshold",
+            "active": true
+        },
+        {
+            "id": "tl_026",
+            "name": "Data Freshness",
+            "description": "Validates data recency",
+            "type": "Timeliness",
+            "severity": "High",
+            "validation_code": "df[timestamp_column].max() < (datetime.now() - timedelta(hours=max_age))",
+            "active": true
+        },
+        {
+            "id": "tl_027",
+            "name": "Schema Evolution",
+            "description": "Tracks schema changes over time",
+            "type": "Structure",
+            "severity": "Critical",
+            "validation_code": "set(df.dtypes.astype(str).to_dict().items()) != set(expected_schema.items())",
+            "active": true
+        },
+        {
+            "id": "tl_028",
+            "name": "Data Skewness",
+            "description": "Validates data distribution skewness",
+            "type": "Statistical",
+            "severity": "Medium",
+            "validation_code": "abs(df[numeric_columns].skew()).max() > skew_threshold",
+            "active": true
+        },
+        {
+            "id": "tl_029",
+            "name": "Incremental Load Check",
+            "description": "Validates incremental data loads",
+            "type": "Process",
+            "severity": "High",
+            "validation_code": "len(df_new[df_new[date_column] > last_load_date]) == 0",
+            "active": true
+        },
+        {
+            "id": "tl_030",
+            "name": "Column Dependency Network",
+            "description": "Validates column dependency network",
+            "type": "Structure",
+            "severity": "High",
+            "validation_code": "not nx.is_directed_acyclic_graph(column_dependency_graph)",
+            "active": true
         }
-    ]
+    ],
+    "table_specific_rules": {
+        "people_table_rules": [
+            {
+                "id": "ppl_001",
+                "name": "Age Range Check",
+                "description": "Validates that age is within reasonable range (18-100)",
+                "type": "Data Quality",
+                "severity": "High",
+                "validation_code": "~df['age'].between(18, 100)",
+                "message": "Age values outside valid range detected",
+                "active": true
+            },
+            {
+                "id": "ppl_002",
+                "name": "Name Format",
+                "description": "Validates name format (first and last name present)",
+                "type": "Format",
+                "severity": "Medium",
+                "validation_code": "~(df['first_name'].str.match('^[A-Z][a-z]+$') & df['last_name'].str.match('^[A-Z][a-z]+$'))",
+                "message": "Invalid name format detected",
+                "active": true
+            },
+            {
+                "id": "ppl_003",
+                "name": "Email Domain Check",
+                "description": "Validates email domains against allowed list",
+                "type": "Security",
+                "severity": "High",
+                "validation_code": "~df['email'].str.extract('@(.+)$')[0].isin(allowed_domains)",
+                "message": "Unauthorized email domain detected",
+                "active": true
+            },
+            {
+                "id": "ppl_004",
+                "name": "Unique Person Check",
+                "description": "Ensures no duplicate people based on name and birthdate",
+                "type": "Uniqueness",
+                "severity": "Critical",
+                "validation_code": "df.groupby(['first_name', 'last_name', 'birthdate']).size().gt(1).any()",
+                "message": "Duplicate person records detected",
+                "active": true
+            },
+            {
+                "id": "ppl_005",
+                "name": "Department Assignment",
+                "description": "Validates department assignments against master list",
+                "type": "Reference",
+                "severity": "High",
+                "validation_code": "~df['department'].isin(valid_departments)",
+                "message": "Invalid department assignment detected",
+                "active": true
+            },
+            {
+                "id": "ppl_006",
+                "name": "Phone Number Format",
+                "description": "Validates phone number format (###-###-####)",
+                "type": "Format",
+                "severity": "Medium",
+                "validation_code": "~df['phone'].str.match('^\\d{3}-\\d{3}-\\d{4}$')",
+                "message": "Invalid phone number format detected",
+                "active": true
+            },
+            {
+                "id": "ppl_007",
+                "name": "Employee ID Format",
+                "description": "Validates employee ID format (E followed by 6 digits)",
+                "type": "Format",
+                "severity": "High",
+                "validation_code": "~df['employee_id'].str.match('^E\\d{6}$')",
+                "message": "Invalid employee ID format detected",
+                "active": true
+            },
+            {
+                "id": "ppl_008",
+                "name": "Hire Date Check",
+                "description": "Validates hire date is not in future and after birth date",
+                "type": "Logic",
+                "severity": "High",
+                "validation_code": "(df['hire_date'] > datetime.now()) | (df['hire_date'] < df['birthdate'] + pd.DateOffset(years=18))",
+                "message": "Invalid hire date detected",
+                "active": true
+            },
+            {
+                "id": "ppl_009",
+                "name": "Manager Assignment",
+                "description": "Validates manager IDs exist in employee table",
+                "type": "Reference",
+                "severity": "High",
+                "validation_code": "~df[df['manager_id'].notna()]['manager_id'].isin(df['employee_id'])",
+                "message": "Invalid manager assignment detected",
+                "active": true
+            },
+            {
+                "id": "ppl_010",
+                "name": "Salary Range",
+                "description": "Validates salary within department range",
+                "type": "Business Logic",
+                "severity": "High",
+                "validation_code": "~df.merge(salary_ranges, on='department')['salary'].between(df['min_salary'], df['max_salary'])",
+                "message": "Salary outside department range detected",
+                "active": true
+            }
+        ],
+        "assignments_table_rules": [
+            {
+                "id": "asg_001",
+                "name": "Assignment Duration",
+                "description": "Validates assignment duration is within policy limits",
+                "type": "Business Logic",
+                "severity": "High",
+                "validation_code": "(df['end_date'] - df['start_date']).dt.days > max_assignment_days",
+                "message": "Assignment duration exceeds maximum limit",
+                "active": true
+            },
+            {
+                "id": "asg_002",
+                "name": "Project Code Format",
+                "description": "Validates project code format (P-####-YY)",
+                "type": "Format",
+                "severity": "Medium",
+                "validation_code": "~df['project_code'].str.match('^P-\\d{4}-\\d{2}$')",
+                "message": "Invalid project code format detected",
+                "active": true
+            },
+            {
+                "id": "asg_003",
+                "name": "Assignment Overlap",
+                "description": "Checks for overlapping assignments for same person",
+                "type": "Logic",
+                "severity": "Critical",
+                "validation_code": "df.groupby('employee_id').apply(lambda x: (x['start_date'].shift() < x['end_date']).any())",
+                "message": "Overlapping assignments detected",
+                "active": true
+            },
+            {
+                "id": "asg_004",
+                "name": "Role Level Check",
+                "description": "Validates role level against employee grade",
+                "type": "Business Logic",
+                "severity": "High",
+                "validation_code": "df.merge(employee_grades, on='employee_id')['role_level'] > df['employee_grade']",
+                "message": "Role level exceeds employee grade",
+                "active": true
+            },
+            {
+                "id": "asg_005",
+                "name": "Assignment Status",
+                "description": "Validates assignment status values",
+                "type": "Reference",
+                "severity": "Medium",
+                "validation_code": "~df['status'].isin(['Active', 'Completed', 'Pending', 'Cancelled'])",
+                "message": "Invalid assignment status detected",
+                "active": true
+            },
+            {
+                "id": "asg_006",
+                "name": "Billable Hours Range",
+                "description": "Validates billable hours within acceptable range",
+                "type": "Business Logic",
+                "severity": "High",
+                "validation_code": "~df['billable_hours'].between(0, max_billable_hours)",
+                "message": "Invalid billable hours detected",
+                "active": true
+            },
+            {
+                "id": "asg_007",
+                "name": "Client Reference",
+                "description": "Validates client ID exists in client master",
+                "type": "Reference",
+                "severity": "High",
+                "validation_code": "~df['client_id'].isin(client_master['client_id'])",
+                "message": "Invalid client reference detected",
+                "active": true
+            },
+            {
+                "id": "asg_008",
+                "name": "Assignment Priority",
+                "description": "Validates priority level assignment",
+                "type": "Business Logic",
+                "severity": "Medium",
+                "validation_code": "~df['priority'].isin(['High', 'Medium', 'Low'])",
+                "message": "Invalid priority level detected",
+                "active": true
+            },
+            {
+                "id": "asg_009",
+                "name": "Budget Allocation",
+                "description": "Validates budget allocation within project limits",
+                "type": "Business Logic",
+                "severity": "High",
+                "validation_code": "df.groupby('project_code')['budget'].sum() > project_budgets['max_budget']",
+                "message": "Budget allocation exceeds project limit",
+                "active": true
+            },
+            {
+                "id": "asg_010",
+                "name": "Skill Match",
+                "description": "Validates required skills match employee skills",
+                "type": "Business Logic",
+                "severity": "High",
+                "validation_code": "~df.apply(lambda x: set(x['required_skills']).issubset(set(employee_skills[x['employee_id']])), axis=1)",
+                "message": "Skill mismatch detected",
+                "active": true
+            }
+        ],
+        "address_table_rules": [
+            {
+                "id": "addr_001",
+                "name": "Postal Code Format",
+                "description": "Validates postal code format by country",
+                "type": "Format",
+                "severity": "High",
+                "validation_code": "~df.apply(lambda x: postal_code_patterns[x['country']].match(x['postal_code']), axis=1)",
+                "message": "Invalid postal code format detected",
+                "active": true
+            },
+            {
+                "id": "addr_002",
+                "name": "Country Code",
+                "description": "Validates country codes against ISO 3166",
+                "type": "Reference",
+                "severity": "High",
+                "validation_code": "~df['country'].isin(iso_country_codes)",
+                "message": "Invalid country code detected",
+                "active": true
+            },
+            {
+                "id": "addr_003",
+                "name": "State/Province Format",
+                "description": "Validates state/province codes by country",
+                "type": "Format",
+                "severity": "Medium",
+                "validation_code": "~df.apply(lambda x: state_province_codes[x['country']].contains(x['state_province']), axis=1)",
+                "message": "Invalid state/province code detected",
+                "active": true
+            },
+            {
+                "id": "addr_004",
+                "name": "Address Line Length",
+                "description": "Validates address line length within limits",
+                "type": "Format",
+                "severity": "Low",
+                "validation_code": "df['address_line1'].str.len() > max_address_length | df['address_line2'].str.len() > max_address_length",
+                "message": "Address line exceeds maximum length",
+                "active": true
+            },
+            {
+                "id": "addr_005",
+                "name": "City Name Format",
+                "description": "Validates city name format (letters and spaces only)",
+                "type": "Format",
+                "severity": "Medium",
+                "validation_code": "~df['city'].str.match('^[A-Za-z\\s-]+$')",
+                "message": "Invalid city name format detected",
+                "active": true
+            },
+            {
+                "id": "addr_006",
+                "name": "Primary Address Flag",
+                "description": "Validates one primary address per person",
+                "type": "Logic",
+                "severity": "High",
+                "validation_code": "df[df['is_primary']].groupby('person_id').size() != 1",
+                "message": "Invalid primary address assignment detected",
+                "active": true
+            },
+            {
+                "id": "addr_007",
+                "name": "Address Type",
+                "description": "Validates address type values",
+                "type": "Reference",
+                "severity": "Medium",
+                "validation_code": "~df['address_type'].isin(['Home', 'Work', 'Shipping', 'Billing'])",
+                "message": "Invalid address type detected",
+                "active": true
+            },
+            {
+                "id": "addr_008",
+                "name": "Geographic Coordinates",
+                "description": "Validates latitude/longitude when present",
+                "type": "Format",
+                "severity": "Medium",
+                "validation_code": "~(df['latitude'].between(-90, 90) & df['longitude'].between(-180, 180))",
+                "message": "Invalid geographic coordinates detected",
+                "active": true
+            },
+            {
+                "id": "addr_009",
+                "name": "Address Completeness",
+                "description": "Validates required address fields are present",
+                "type": "Completeness",
+                "severity": "High",
+                "validation_code": "df[['address_line1', 'city', 'country', 'postal_code']].isnull().any(axis=1)",
+                "message": "Missing required address fields detected",
+                "active": true
+            },
+            {
+                "id": "addr_010",
+                "name": "Special Characters",
+                "description": "Checks for invalid special characters in address",
+                "type": "Format",
+                "severity": "Medium",
+                "validation_code": "df['address_line1'].str.contains('[^A-Za-z0-9\\s\\-\\#\\.\\,\\/]') | df['address_line2'].str.contains('[^A-Za-z0-9\\s\\-\\#\\.\\,\\/]')",
+                "message": "Invalid special characters in address detected",
+                "active": true
+            }
+        ]
+    }
 }
