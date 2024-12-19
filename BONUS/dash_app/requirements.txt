@@ -1,8 +1,0 @@
-dash==2.14.1
-dash-bootstrap-components==1.5.0
-pandas==2.1.4
-plotly==5.18.0
-numpy==1.26.2
-polars==0.19.19
-ydata-profiling==4.6.3
-SQLAlchemy==2.0.23 
