@@ -476,3 +476,107 @@ code {
         padding: var(--spacing-md);
     }
 }
+
+/* Profile Report Container */
+.profile-report-container {
+    width: 100%;
+    margin-top: 2rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.profile-report-container iframe {
+    width: 100%;
+    min-height: 800px;
+    border: none;
+    background: white;
+}
+
+/* Custom Scrollbar for Profile Report */
+.profile-report-container::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.profile-report-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.profile-report-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.profile-report-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Loading State */
+.loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+}
+
+.loading-spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Error States */
+.error-state {
+    padding: 2rem;
+    border-radius: 8px;
+    background-color: #fff3f3;
+    border: 1px solid #ffcdd2;
+}
+
+/* Data Quality Cards */
+.card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Navigation Styles */
+.nav-link {
+    transition: all 0.2s ease;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+}
+
+.nav-link:hover {
+    background-color: rgba(0,123,255,0.1);
+}
+
+.nav-link.active {
+    background-color: #007bff;
+    color: white !important;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .profile-report-container iframe {
+        min-height: 600px;
+    }
+    
+    .card {
+        margin-bottom: 1rem;
+    }
+}

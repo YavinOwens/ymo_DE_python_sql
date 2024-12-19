@@ -1,147 +1,179 @@
-from dash import html, dcc, dash_table, ALL, MATCH, Input, Output, State
+from dash import html, dcc, Input, Output, State, callback_context
 import dash_bootstrap_components as dbc
-import dash
 from utils.data_loader import DataLoader
-import logging
+import os
+from config import DB_PATH, DATA_DIR
 
 data_loader = DataLoader()
 
 def create_sidebar():
-    """Create the navigation sidebar with table selector."""
+    """Create the navigation sidebar with data source selection."""
     return html.Div([
         html.H4("Data Quality Dashboard", className="mb-4"),
         
-        # Table Selector
-        html.Div([
-            html.H6("Select Table", className="mb-2"),
-            dcc.Dropdown(
-                id="table-selector",
-                options=[
-                    {"label": table, "value": table}
-                    for table in data_loader.get_table_names()
-                ],
-                placeholder="Select a table...",
-                className="mb-3"
-            ),
-            
-            # Table Info
-            html.Div(
-                id="table-info",
-                className="mb-3 text-muted small"
-            )
-        ], className="mb-4"),
+        # Data Source Selection Accordion
+        dbc.Accordion([
+            dbc.AccordionItem([
+                # Database Selection
+                dbc.RadioItems(
+                    id='data-source-type',
+                    options=[
+                        {'label': 'SQLite Database', 'value': 'sqlite'},
+                        {'label': 'Data Files', 'value': 'files'}
+                    ],
+                    value='sqlite',
+                    className="mb-3"
+                ),
+                
+                # Engine Selection
+                dbc.Label("Data Processing Engine:", className="mt-3"),
+                dbc.RadioItems(
+                    id='data-engine',
+                    options=[
+                        {'label': 'Pandas', 'value': 'pandas'},
+                        {'label': 'Polars', 'value': 'polars'}
+                    ],
+                    value='polars',
+                    className="mb-3"
+                ),
+                
+                # File Selection (shown only when files are selected)
+                html.Div(
+                    id='file-selection-div',
+                    children=[
+                        dbc.Label("Select Data File:"),
+                        dcc.Dropdown(
+                            id='file-selector',
+                            options=[],
+                            placeholder="Select a data file",
+                            className="mb-3"
+                        )
+                    ],
+                    style={'display': 'none'}
+                ),
+                
+                # Table Selection (shown only when database is selected)
+                html.Div(
+                    id='table-selection-div',
+                    children=[
+                        dbc.Label("Select Database Table:"),
+                        dcc.Dropdown(
+                            id='table-selector',
+                            options=[],
+                            placeholder="Select a table",
+                            className="mb-3"
+                        )
+                    ]
+                ),
+                
+                # Load Data Button
+                dbc.Button(
+                    "Load Data",
+                    id="load-data-btn",
+                    color="primary",
+                    className="w-100 mt-2"
+                ),
+                
+                # Status Message
+                html.Div(
+                    id="data-load-status",
+                    className="mt-2"
+                )
+            ], title="Data Source Selection", item_id="data-source")
+        ], start_collapsed=False, id="sidebar-accordion"),
         
         # Navigation Links
-        html.H6("Navigation", className="mb-3"),
-        dbc.Nav(
-            [
-                dbc.NavLink(
-                    [html.I(className="bi bi-house me-2"), "Overview"],
-                    href="/",
-                    active="exact"
-                ),
-                dbc.NavLink(
-                    [html.I(className="bi bi-shield-check me-2"), "Quality Metrics"],
-                    href="/quality",
-                    active="exact"
-                ),
-                dbc.NavLink(
-                    [html.I(className="bi bi-bar-chart me-2"), "Column Analysis"],
-                    href="/column-analysis",
-                    active="exact"
-                ),
-                dbc.NavLink(
-                    [html.I(className="bi bi-table me-2"), "Data Catalogue"],
-                    href="/catalogue",
-                    active="exact"
-                ),
-                dbc.NavLink(
-                    [html.I(className="bi bi-gear me-2"), "Rule Management"],
-                    href="/rule-management",
-                    active="exact"
-                ),
-                dbc.NavLink(
-                    [html.I(className="bi bi-play-circle me-2"), "Run Management"],
-                    href="/run-management",
-                    active="exact"
-                ),
-                dbc.NavLink(
-                    [html.I(className="bi bi-exclamation-triangle me-2"), "Failed Data"],
-                    href="/failed-data",
-                    active="exact"
-                ),
-                dbc.NavLink(
-                    [html.I(className="bi bi-file-text me-2"), "Reports"],
-                    href="/report",
-                    active="exact"
-                )
-            ],
-            vertical=True,
-            pills=True,
-            className="nav-pills-custom"
-        ),
-        
-        # Database Info
-        html.Div([
-            html.Hr(),
-            html.H6("Database Info", className="mb-2"),
-            html.P(
-                f"Connected to: {data_loader.db_path}",
-                className="text-muted small mb-1",
-                style={"wordBreak": "break-all"}
-            )
-        ], className="mt-4")
-    ], className="sidebar bg-light p-4 h-100")
+        html.Hr(),
+        dbc.Nav([
+            dbc.NavLink("Overview", href="/", active="exact"),
+            dbc.NavLink("Quality Check", href="/quality", active="exact"),
+            dbc.NavLink("Column Analysis", href="/column-analysis", active="exact"),
+            dbc.NavLink("Data Catalogue", href="/catalogue", active="exact"),
+            dbc.NavLink("Rule Management", href="/rule-management", active="exact"),
+            dbc.NavLink("Run Management", href="/run-management", active="exact"),
+            dbc.NavLink("Failed Data", href="/failed-data", active="exact"),
+            dbc.NavLink("Report", href="/report", active="exact")
+        ], vertical=True, pills=True)
+    ])
 
 def init_callbacks(app):
-    """Initialize callbacks for navigation components."""
+    """Initialize navigation callbacks."""
     
     @app.callback(
-        Output("table-info", "children"),
-        [Input("table-selector", "value")]
+        [Output('file-selection-div', 'style'),
+         Output('table-selection-div', 'style'),
+         Output('file-selector', 'options'),
+         Output('table-selector', 'options')],
+        [Input('data-source-type', 'value')]
     )
-    def update_table_info(selected_table):
-        """Update the table information display."""
-        if not selected_table:
-            return "No table selected"
-        
+    def update_source_selection(source_type):
+        """Update the visibility and options of source selection components."""
         try:
-            metadata = data_loader.get_table_metadata(selected_table)
-            if not metadata:
-                return "Error loading table metadata"
-            
-            return html.Div([
-                html.P(f"Rows: {metadata['row_count']:,}", className="mb-1"),
-                html.P(f"Columns: {metadata['column_count']}", className="mb-1"),
-                html.P(
-                    f"Last Validated: {metadata['last_validated'] or 'Never'}",
-                    className="mb-1"
+            if source_type == 'files':
+                # Get available data files from DATA_DIR
+                files = [f for f in os.listdir(DATA_DIR) 
+                        if f.endswith(('.csv', '.json', '.parquet'))]
+                file_options = [{'label': f, 'value': f} for f in files]
+                return (
+                    {'display': 'block'},
+                    {'display': 'none'},
+                    file_options,
+                    []
                 )
-            ])
-        
+            else:
+                # Get available tables from database
+                tables = data_loader.get_table_names()
+                table_options = [{'label': t, 'value': t} for t in tables]
+                return (
+                    {'display': 'none'},
+                    {'display': 'block'},
+                    [],
+                    table_options
+                )
         except Exception as e:
-            logging.error(f"Error updating table info: {str(e)}")
-            return f"Error: {str(e)}"
+            return (
+                {'display': 'none'},
+                {'display': 'block'},
+                [],
+                []
+            )
     
     @app.callback(
-        Output("data-loader-store", "data"),
-        [Input("table-selector", "value")]
+        [Output('data-load-status', 'children'),
+         Output('data-loader-store', 'data')],
+        [Input('load-data-btn', 'n_clicks')],
+        [State('data-source-type', 'value'),
+         State('data-engine', 'value'),
+         State('file-selector', 'value'),
+         State('table-selector', 'value')]
     )
-    def update_data_source(selected_table):
-        """Update the data source in the store."""
-        if not selected_table:
-            return {}
+    def load_data_source(n_clicks, source_type, engine, file_name, table_name):
+        """Load the selected data source with the chosen engine."""
+        if not n_clicks:
+            return "", {}
         
         try:
-            metadata = data_loader.get_table_metadata(selected_table)
-            if not metadata:
-                return {"error": "Failed to load table metadata"}
-            
-            return {
-                "table": selected_table,
-                "metadata": metadata
+            # Create data source configuration
+            data_config = {
+                'source_type': source_type,
+                'engine': engine,
+                'source': file_name if source_type == 'files' else table_name
             }
-        
+            
+            # Validate selection
+            if source_type == 'files' and not file_name:
+                return dbc.Alert("Please select a data file", color="warning"), {}
+            elif source_type == 'sqlite' and not table_name:
+                return dbc.Alert("Please select a database table", color="warning"), {}
+            
+            # Store the configuration
+            return (
+                dbc.Alert(
+                    f"Successfully loaded data from {data_config['source']} using {engine}",
+                    color="success"
+                ),
+                data_config
+            )
+            
         except Exception as e:
-            logging.error(f"Error updating data source: {str(e)}")
-            return {"error": str(e)}
+            return dbc.Alert(f"Error loading data: {str(e)}", color="danger"), {}
