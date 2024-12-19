@@ -1,31 +1,52 @@
 import os
 
-# Database Configuration
-DB_PATH = r"C:\Users\ymowe\Documents\DE_PYTHON_SQL\ymo_DE_python_sql\dummy_data\hr_database.sqlite"
+# Base paths
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+ASSETS_DIR = os.path.join(BASE_DIR, 'assets')
+DATA_DIR = os.path.join(ASSETS_DIR, 'data')
+DUMMY_DATA_DIR = os.path.join(ASSETS_DIR, 'dummy_data')
 
-# Ensure the database path exists
-if not os.path.exists(DB_PATH):
-    raise FileNotFoundError(f"Database file not found at: {DB_PATH}")
+# Database path
+DB_PATH = os.path.join(DATA_DIR, 'data_quality.db')
 
-# Rule Templates Configuration
-RULE_TEMPLATES_PATH = os.path.join('BONUS', 'assets', 'data', 'rule_templates.json')
+# JSON file paths
+RULE_TEMPLATES_PATH = os.path.join(DATA_DIR, 'rule_templates.json')
+MASTER_CONFIG_PATH = os.path.join(DATA_DIR, 'master_config.json')
+DATA_CONFIG_PATH = os.path.join(DATA_DIR, 'data_config.json')
+EXECUTION_HISTORY_PATH = os.path.join(DATA_DIR, 'execution_history.json')
+RULE_EXECUTION_HISTORY_PATH = os.path.join(DATA_DIR, 'rule_execution_history.json')
 
-# Default rule patterns
+# Cache file paths
+COLUMN_STATS_CACHE_PATH = os.path.join(DATA_DIR, 'column_statistics_cache.json')
+RULE_MANAGEMENT_CACHE_PATH = os.path.join(DATA_DIR, 'rule_management_content_cache.json')
+RULE_EXECUTION_CACHE_PATH = os.path.join(DATA_DIR, 'rule_execution_cache.json')
+RULES_PROCESSING_CACHE_PATH = os.path.join(DATA_DIR, 'rules_processing_cache.json')
+
+# Default patterns for data validation
 DEFAULT_PATTERNS = {
     'email': r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
     'phone': r'^\+?1?\d{9,15}$',
     'date': r'^\d{4}-\d{2}-\d{2}$',
-    'numeric': r'^\d+(\.\d+)?$',
-    'text': r'^[a-zA-Z\s]+$'
+    'url': r'^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_\+.~#?&\/=]*)$'
 }
 
-# Data quality thresholds
+# Quality thresholds
 QUALITY_THRESHOLDS = {
-    'completeness': 0.95,  # 95% non-null values
-    'uniqueness': 0.98,    # 98% unique values
-    'validity': 0.99       # 99% valid values
+    'completeness': 0.95,
+    'uniqueness': 0.98,
+    'consistency': 0.95,
+    'validity': 0.98
 }
 
 # Logging Configuration
 LOG_PATH = os.path.join('BONUS', 'assets', 'logs', 'app.log')
-os.makedirs(os.path.dirname(LOG_PATH), exist_ok=True)
+
+# Only create directories if they don't exist
+required_dirs = [
+    os.path.join(ASSETS_DIR, 'data'),
+    os.path.join(ASSETS_DIR, 'dummy_data')
+]
+
+for directory in required_dirs:
+    if not os.path.exists(directory):
+        os.makedirs(directory, exist_ok=True)

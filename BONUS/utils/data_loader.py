@@ -6,7 +6,13 @@ import sqlite3
 import logging
 from datetime import datetime
 import re
-from config import DB_PATH, RULE_TEMPLATES_PATH, DEFAULT_PATTERNS, QUALITY_THRESHOLDS
+from config import (
+    DB_PATH, RULE_TEMPLATES_PATH, DEFAULT_PATTERNS, QUALITY_THRESHOLDS,
+    MASTER_CONFIG_PATH, DATA_CONFIG_PATH, EXECUTION_HISTORY_PATH,
+    RULE_EXECUTION_HISTORY_PATH, COLUMN_STATS_CACHE_PATH,
+    RULE_MANAGEMENT_CACHE_PATH, RULE_EXECUTION_CACHE_PATH,
+    RULES_PROCESSING_CACHE_PATH, DATA_DIR
+)
 
 class DataLoader:
     """Data loader class to handle database operations and rule validation."""
@@ -16,8 +22,111 @@ class DataLoader:
         self.rule_templates_path = RULE_TEMPLATES_PATH
         self.patterns = DEFAULT_PATTERNS
         self.thresholds = QUALITY_THRESHOLDS
-        self._initialize_rule_templates()
+        self._initialize_paths()
         self._verify_database_connection()
+    
+    def _initialize_paths(self):
+        """Initialize all necessary paths and create directories if needed."""
+        os.makedirs(DATA_DIR, exist_ok=True)
+        
+        # Initialize JSON files if they don't exist
+        self._initialize_json_file(self.rule_templates_path, {
+            "gdpr_rules": [],
+            "data_quality_rules": [],
+            "validation_rules": [],
+            "business_rules": [],
+            "table_level_rules": []
+        })
+        
+        self._initialize_json_file(MASTER_CONFIG_PATH, {
+            "database": {"name": "data_quality", "version": "1.0"},
+            "tables": {},
+            "rules": {},
+            "validation_settings": {}
+        })
+        
+        self._initialize_json_file(DATA_CONFIG_PATH, {
+            "source_tables": [],
+            "data_types": {},
+            "validation_rules": {}
+        })
+        
+        # Initialize cache files
+        self._initialize_json_file(COLUMN_STATS_CACHE_PATH, {})
+        self._initialize_json_file(RULE_MANAGEMENT_CACHE_PATH, {})
+        self._initialize_json_file(RULE_EXECUTION_CACHE_PATH, {})
+        self._initialize_json_file(RULES_PROCESSING_CACHE_PATH, {})
+        
+        # Initialize history files
+        self._initialize_json_file(EXECUTION_HISTORY_PATH, {"executions": []})
+        self._initialize_json_file(RULE_EXECUTION_HISTORY_PATH, {"rule_executions": []})
+    
+    def _initialize_json_file(self, file_path: str, default_content: Dict):
+        """Initialize a JSON file with default content if it doesn't exist."""
+        if not os.path.exists(file_path):
+            with open(file_path, 'w') as f:
+                json.dump(default_content, f, indent=4)
+    
+    def load_json_file(self, file_path: str) -> Dict:
+        """Load and return contents of a JSON file."""
+        try:
+            with open(file_path, 'r') as f:
+                return json.load(f)
+        except Exception as e:
+            logging.error(f"Error loading JSON file {file_path}: {str(e)}")
+            return {}
+    
+    def save_json_file(self, file_path: str, content: Dict):
+        """Save content to a JSON file."""
+        try:
+            with open(file_path, 'w') as f:
+                json.dump(content, f, indent=4)
+        except Exception as e:
+            logging.error(f"Error saving JSON file {file_path}: {str(e)}")
+
+    def get_master_config(self) -> Dict:
+        """Get the master configuration."""
+        return self.load_json_file(MASTER_CONFIG_PATH)
+    
+    def get_data_config(self) -> Dict:
+        """Get the data configuration."""
+        return self.load_json_file(DATA_CONFIG_PATH)
+    
+    def get_rule_templates(self) -> Dict:
+        """Get the rule templates."""
+        return self.load_json_file(RULE_TEMPLATES_PATH)
+    
+    def update_execution_history(self, execution_result: Dict):
+        """Update the execution history."""
+        history = self.load_json_file(EXECUTION_HISTORY_PATH)
+        history["executions"].append({
+            **execution_result,
+            "timestamp": datetime.now().isoformat()
+        })
+        self.save_json_file(EXECUTION_HISTORY_PATH, history)
+    
+    def update_rule_execution_history(self, rule_result: Dict):
+        """Update the rule execution history."""
+        history = self.load_json_file(RULE_EXECUTION_HISTORY_PATH)
+        history["rule_executions"].append({
+            **rule_result,
+            "timestamp": datetime.now().isoformat()
+        })
+        self.save_json_file(RULE_EXECUTION_HISTORY_PATH, history)
+    
+    def cache_column_stats(self, table_name: str, stats: Dict):
+        """Cache column statistics."""
+        cache = self.load_json_file(COLUMN_STATS_CACHE_PATH)
+        cache[table_name] = {
+            "stats": stats,
+            "timestamp": datetime.now().isoformat()
+        }
+        self.save_json_file(COLUMN_STATS_CACHE_PATH, cache)
+    
+    def get_cached_column_stats(self, table_name: str) -> Optional[Dict]:
+        """Get cached column statistics."""
+        cache = self.load_json_file(COLUMN_STATS_CACHE_PATH)
+        return cache.get(table_name, {}).get("stats")
     
     def _verify_database_connection(self):
         """Verify database connection and log available tables."""
@@ -28,19 +137,6 @@ class DataLoader:
         except Exception as e:
             logging.error(f"Failed to connect to database: {str(e)}")
             raise
-    
-    def _initialize_rule_templates(self):
-        """Initialize rule templates if they don't exist."""
-        os.makedirs(os.path.dirname(self.rule_templates_path), exist_ok=True)
-        if not os.path.exists(self.rule_templates_path):
-            with open(self.rule_templates_path, 'w') as f:
-                json.dump({
-                    "gdpr_rules": [],
-                    "data_quality_rules": [],
-                    "validation_rules": [],
-                    "business_rules": [],
-                    "table_level_rules": []
-                }, f, indent=4)
     
     @property
     def connection(self):
