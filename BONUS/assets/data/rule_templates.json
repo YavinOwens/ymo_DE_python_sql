@@ -10,14 +10,19 @@
             "validation_code": "df[column_name].str.match(r'\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b')",
             "validation_code_sql": "SELECT column_name FROM table_name WHERE column_name REGEXP '\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b'",
             "message": "Column may contain email addresses (PII data)",
-            "active": true,
+            "active": false,
             "created_date": "2024-12-19",
             "activation_history": [
                 {
                     "activated_date": "2024-12-19",
                     "deactivated_date": null
+                },
+                {
+                    "activated_date": "2024-12-19T15:43:48.180458",
+                    "deactivated_date": "2024-12-19T15:43:48.180458"
                 }
-            ]
+            ],
+            "last_modified": "2024-12-19T15:43:48.180458"
         },
         {
             "id": "gdpr_002",
@@ -571,7 +576,7 @@
             ]
         },
         {
-            "id": "gdpr_015",
+            "id": "gdpr_015_a",
             "name": "Credit Card Detection",
             "description": "Identifies potential credit card numbers",
             "category": "gdpr",
@@ -589,7 +594,7 @@
             ]
         },
         {
-            "id": "gdpr_016",
+            "id": "gdpr_016_a",
             "name": "Passport Number Detection",
             "description": "Identifies potential passport numbers",
             "category": "gdpr",
@@ -607,7 +612,7 @@
             ]
         },
         {
-            "id": "gdpr_017",
+            "id": "gdpr_017_a",
             "name": "Date of Birth Detection",
             "description": "Identifies potential dates of birth",
             "category": "gdpr",
@@ -625,7 +630,7 @@
             ]
         },
         {
-            "id": "gdpr_018",
+            "id": "gdpr_018_a",
             "name": "National ID Detection",
             "description": "Identifies potential national ID numbers",
             "category": "gdpr",
@@ -643,7 +648,7 @@
             ]
         },
         {
-            "id": "gdpr_019",
+            "id": "gdpr_019_a",
             "name": "Bank Account Detection",
             "description": "Identifies potential bank account numbers",
             "category": "gdpr",
@@ -661,7 +666,7 @@
             ]
         },
         {
-            "id": "gdpr_020",
+            "id": "gdpr_020_a",
             "name": "Healthcare ID Detection",
             "description": "Identifies potential healthcare ID numbers",
             "category": "gdpr",
@@ -679,7 +684,7 @@
             ]
         },
         {
-            "id": "gdpr_021",
+            "id": "gdpr_021_a",
             "name": "Driver License Detection",
             "description": "Identifies potential driver license numbers",
             "category": "gdpr",
@@ -697,7 +702,7 @@
             ]
         },
         {
-            "id": "gdpr_022",
+            "id": "gdpr_022_a",
             "name": "IP Address Detection",
             "description": "Identifies IP addresses",
             "category": "gdpr",
@@ -715,7 +720,7 @@
             ]
         },
         {
-            "id": "gdpr_023",
+            "id": "gdpr_023_a",
             "name": "GPS Coordinate Detection",
             "description": "Identifies GPS coordinates",
             "category": "gdpr",
@@ -733,7 +738,7 @@
             ]
         },
         {
-            "id": "gdpr_024",
+            "id": "gdpr_024_a",
             "name": "Password Hash Detection",
             "description": "Identifies potential password hashes",
             "category": "gdpr",
@@ -751,7 +756,7 @@
             ]
         },
         {
-            "id": "gdpr_025",
+            "id": "gdpr_025_a",
             "name": "JWT Token Detection",
             "description": "Identifies JWT tokens",
             "category": "gdpr",
@@ -769,7 +774,7 @@
             ]
         },
         {
-            "id": "gdpr_026",
+            "id": "gdpr_026_a",
             "name": "MAC Address Detection",
             "description": "Identifies MAC addresses",
             "category": "gdpr",
@@ -787,7 +792,7 @@
             ]
         },
         {
-            "id": "gdpr_027",
+            "id": "gdpr_027_a",
             "name": "URL with Auth Detection",
             "description": "Identifies URLs containing authentication information",
             "category": "gdpr",
@@ -805,7 +810,7 @@
             ]
         },
         {
-            "id": "gdpr_028",
+            "id": "gdpr_028_a",
             "name": "OAuth Token Detection",
             "description": "Identifies OAuth tokens",
             "category": "gdpr",
@@ -823,7 +828,7 @@
             ]
         },
         {
-            "id": "gdpr_029",
+            "id": "gdpr_029_a",
             "name": "API Key Detection",
             "description": "Identifies potential API keys",
             "category": "gdpr",
@@ -2655,24 +2660,6 @@
                     "deactivated_date": null
                 }
             ]
-        },
-        {
-            "id": "cross_002",
-            "name": "Salary Budget Compliance",
-            "description": "Validates department salary totals against budget",
-            "type": "Business Logic",
-            "severity": "High",
-            "validation_code": "df_emp.groupby('department_id')['salary'].sum() <= df_dept['salary_budget']",
-            "validation_code_sql": "SELECT d.department_id, d.salary_budget, SUM(e.salary) as total_salary FROM department_table d JOIN employee_table e ON d.department_id = e.department_id GROUP BY d.department_id HAVING total_salary > d.salary_budget",
-            "message": "Department salary total exceeds budget",
-            "active": true,
-            "created_date": "2024-12-19",
-            "activation_history": [
-                {
-                    "activated_date": "2024-12-19",
-                    "deactivated_date": null
-                }
-            ]
         }
     ],
     "complex_business_rules": [
@@ -2703,14 +2690,19 @@
             "validation_code": "def validate_resource_allocation(df_assignments, df_skills, df_projects):\n    # Check skill requirements\n    skill_match = df_assignments.merge(df_skills, on='employee_id').merge(\n        df_projects[['project_id', 'required_skills']], on='project_id'\n    ).apply(lambda x: set(x['skills']).intersection(x['required_skills']), axis=1)\n    \n    # Check availability\n    availability = df_assignments.groupby('employee_id')['allocation_percentage'].sum() <= 100\n    \n    return skill_match.map(len) > 0 & availability",
             "validation_code_sql": "WITH resource_allocation AS (\n    SELECT \n        employee_id,\n        SUM(allocation_percentage) as total_allocation\n    FROM project_assignments\n    GROUP BY employee_id\n),\nskill_requirements AS (\n    SELECT \n        pa.employee_id,\n        COUNT(DISTINCT ps.skill_id) as matching_skills\n    FROM project_assignments pa\n    JOIN project_skills ps ON pa.project_id = ps.project_id\n    JOIN employee_skills es ON pa.employee_id = es.employee_id \n        AND ps.skill_id = es.skill_id\n    GROUP BY pa.employee_id\n)\nSELECT \n    ra.employee_id\nFROM resource_allocation ra\nLEFT JOIN skill_requirements sr ON ra.employee_id = sr.employee_id\nWHERE ra.total_allocation > 100 \n   OR sr.matching_skills = 0",
             "message": "Invalid resource allocation detected",
-            "active": true,
+            "active": false,
             "created_date": "2024-12-19",
             "activation_history": [
                 {
                     "activated_date": "2024-12-19",
                     "deactivated_date": null
+                },
+                {
+                    "activated_date": "2024-12-19T15:43:28.365926",
+                    "deactivated_date": "2024-12-19T15:43:28.365926"
                 }
-            ]
+            ],
+            "last_modified": "2024-12-19T15:43:28.365926"
         }
     ]
 }
