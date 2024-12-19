@@ -1,0 +1,4 @@
+department_id,department_name,manager_id,location,budget,employee_count
+1,IT,1.0,New York,1000000,50
+2,HR,2.0,London,500000,-5
+3,Finance,,Paris,invalid,30

@@ -1,0 +1,97 @@
+[
+    {
+        "run_id": "RUN_20241218_221919",
+        "start_time": "2024-12-18 22:19:19",
+        "end_time": "2024-12-18 22:19:19",
+        "status": "failed",
+        "data_source": "Sample CSV",
+        "rules_executed": 12,
+        "failed_rules": 3,
+        "rule_results": [
+            {
+                "rule_name": "Null Check",
+                "column": "street_address",
+                "message": "Pass",
+                "severity": "high",
+                "status": "success"
+            },
+            {
+                "rule_name": "Unique Check",
+                "column": "street_address",
+                "message": "Pass",
+                "severity": "medium",
+                "status": "success"
+            },
+            {
+                "rule_name": "Format Check",
+                "column": "street_address",
+                "message": "Pass",
+                "severity": "medium",
+                "status": "success"
+            },
+            {
+                "rule_name": "Null Check",
+                "column": "city",
+                "message": "Pass",
+                "severity": "high",
+                "status": "success"
+            },
+            {
+                "rule_name": "Unique Check",
+                "column": "city",
+                "message": "Column 'city' contains duplicate values",
+                "severity": "medium",
+                "status": "failed"
+            },
+            {
+                "rule_name": "Format Check",
+                "column": "city",
+                "message": "Pass",
+                "severity": "medium",
+                "status": "success"
+            },
+            {
+                "rule_name": "Null Check",
+                "column": "country",
+                "message": "Pass",
+                "severity": "high",
+                "status": "success"
+            },
+            {
+                "rule_name": "Unique Check",
+                "column": "country",
+                "message": "Column 'country' contains duplicate values",
+                "severity": "medium",
+                "status": "failed"
+            },
+            {
+                "rule_name": "Format Check",
+                "column": "country",
+                "message": "Pass",
+                "severity": "medium",
+                "status": "success"
+            },
+            {
+                "rule_name": "Null Check",
+                "column": "postcode",
+                "message": "Pass",
+                "severity": "high",
+                "status": "success"
+            },
+            {
+                "rule_name": "Unique Check",
+                "column": "postcode",
+                "message": "Column 'postcode' contains duplicate values",
+                "severity": "medium",
+                "status": "failed"
+            },
+            {
+                "rule_name": "Format Check",
+                "column": "postcode",
+                "message": "Pass",
+                "severity": "medium",
+                "status": "success"
+            }
+        ]
+    }
+]

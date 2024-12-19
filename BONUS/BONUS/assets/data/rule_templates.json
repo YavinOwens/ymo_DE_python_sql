@@ -1,0 +1,32 @@
+{
+    "gdpr_rules": [
+        {
+            "name": "Email Format Check",
+            "description": "Validates email format",
+            "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+            "category": "GDPR",
+            "severity": "High",
+            "active": true
+        }
+    ],
+    "data_quality_rules": [
+        {
+            "name": "Not Null Check",
+            "description": "Ensures the field is not null",
+            "pattern": "NOT NULL",
+            "category": "Data Quality",
+            "severity": "High",
+            "active": true
+        }
+    ],
+    "validation_rules": [
+        {
+            "name": "Date Format Check",
+            "description": "Validates date format",
+            "pattern": "YYYY-MM-DD",
+            "category": "Format",
+            "severity": "Medium",
+            "active": true
+        }
+    ]
+}

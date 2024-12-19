@@ -8,10 +8,13 @@ import os
 from datetime import datetime
 from config import DB_PATH
 import pandas as pd
+import logging
+import numpy as np
 
 class DataLoader:
     def __init__(self):
         self.base_path = os.path.join(os.path.dirname(__file__), 'assets', 'data')
+        os.makedirs(self.base_path, exist_ok=True)  # Ensure data directory exists
         self.master_config_path = os.path.join(self.base_path, 'master_config.json')
         self._ensure_master_config_exists()
         
@@ -35,6 +38,7 @@ class DataLoader:
     def _load_master_config(self):
         """Load the master configuration file."""
         try:
+            self._ensure_master_config_exists()  # Ensure config exists before loading
             with open(self.master_config_path, 'r') as f:
                 return json.load(f)
         except Exception as e:
@@ -68,18 +72,13 @@ class DataLoader:
         self._save_master_config(config)
     
     def get_activities(self):
-        """Get activities."""
-        config = self._load_master_config()
-        return config.get('activities', [])
-    
+        """Get activities (deprecated)."""
+        return []
+
     def save_activity(self, activity):
-        """Save a new activity."""
-        config = self._load_master_config()
-        activities = config.get('activities', [])
-        activities.append(activity)
-        config['activities'] = activities
-        self._save_master_config(config)
-    
+        """Save a new activity (deprecated)."""
+        pass
+
     def get_execution_history(self):
         """Get execution history."""
         config = self._load_master_config()
@@ -405,85 +404,134 @@ class DataLoader:
     def load_all_rules(self):
         """Load all rules from the rule templates file."""
         try:
-            config = self._load_master_config()
-            templates = config.get('rule_templates', [])
+            rule_templates_path = os.path.join(self.base_path, 'rule_templates.json')
+            if not os.path.exists(rule_templates_path):
+                return []
+            
+            with open(rule_templates_path, 'r') as f:
+                templates = json.load(f)
             
             all_rules = []
             
-            for template in templates:
-                all_rules.append({
-                    'id': template['id'],
-                    'name': template['name'],
-                    'description': template['description'],
-                    'category': template.get('category', 'N/A'),
-                    'type': template.get('type', 'N/A'),
-                    'severity': template.get('severity', 'Medium'),
-                    'active': template.get('active', True),
-                    'validation_code': template.get('validation_code', ''),
-                    'message': template.get('message', '')
-                })
+            # Add GDPR rules
+            for rule in templates.get('gdpr_rules', []):
+                rule['type'] = 'GDPR'
+                all_rules.append(rule)
+            
+            # Add Data Quality rules
+            for rule in templates.get('data_quality_rules', []):
+                rule['type'] = 'Data Quality'
+                all_rules.append(rule)
+            
+            # Add Validation rules
+            for rule in templates.get('validation_rules', []):
+                rule['type'] = 'Validation'
+                all_rules.append(rule)
+            
+            # Add Business rules
+            for rule in templates.get('business_rules', []):
+                rule['type'] = 'Business'
+                all_rules.append(rule)
+            
+            # Add Table Level rules
+            for rule in templates.get('table_level_rules', []):
+                rule['type'] = 'Table Level'
+                all_rules.append(rule)
             
             return all_rules
         except Exception as e:
-            print(f"Error loading rules: {str(e)}")
+            logging.error(f"Error loading rules: {str(e)}")
             return []
     
     def execute_rules(self, table_name):
         """Execute active rules and return results."""
-        rules = self.load_all_rules()
-        active_rules = [rule for rule in rules if rule.get('active', False)]
-        
-        start_time = datetime.now()
-        results = []
-        
-        for rule in active_rules:
-            # Mock rule execution for now
-            # In production, this would actually evaluate the rule against the data
-            result = {
-                'rule_id': rule['id'],
-                'rule_name': rule['name'],
-                'passed': True,  # Mock result
-                'execution_time': 0.5  # Mock execution time
+        try:
+            # Load table data
+            table_data = self.load_table_data(table_name)
+            if 'error' in table_data:
+                raise Exception(f"Error loading table data: {table_data['error']}")
+            
+            df = table_data['data']
+            
+            # Load all rules
+            rules = self.load_all_rules()
+            active_rules = [rule for rule in rules if rule.get('active', False)]
+            
+            start_time = datetime.now()
+            results = []
+            
+            for rule in active_rules:
+                try:
+                    # Skip rules without validation code
+                    if not rule.get('validation_code'):
+                        continue
+                    
+                    # Create a safe environment for eval
+                    env = {
+                        'df': df,
+                        'pd': pd,
+                        'np': np,
+                        'datetime': datetime,
+                        'timedelta': pd.Timedelta
+                    }
+                    
+                    # Execute the validation code
+                    validation_result = eval(rule['validation_code'], env)
+                    
+                    result = {
+                        'rule_id': rule['id'],
+                        'rule_name': rule['name'],
+                        'rule_type': rule['type'],
+                        'passed': bool(validation_result),
+                        'execution_time': 0.0,  # Will be updated
+                        'message': rule.get('message', 'No message provided'),
+                        'severity': rule.get('severity', 'Medium')
+                    }
+                    
+                    results.append(result)
+                    
+                except Exception as rule_error:
+                    logging.error(f"Error executing rule {rule['name']}: {str(rule_error)}")
+                    results.append({
+                        'rule_id': rule['id'],
+                        'rule_name': rule['name'],
+                        'rule_type': rule['type'],
+                        'passed': False,
+                        'execution_time': 0.0,
+                        'message': f"Error executing rule: {str(rule_error)}",
+                        'severity': rule.get('severity', 'Medium')
+                    })
+            
+            end_time = datetime.now()
+            duration = (end_time - start_time).total_seconds()
+            
+            # Calculate summary statistics
+            total_rules = len(results)
+            passed_rules = sum(1 for r in results if r['passed'])
+            pass_rate = passed_rules / total_rules if total_rules > 0 else 0
+            
+            # Store execution history
+            execution_summary = {
+                'timestamp': datetime.now().isoformat(),
+                'rules_executed': total_rules,
+                'pass_rate': pass_rate,
+                'fail_rate': 1 - pass_rate,
+                'duration_seconds': duration,
+                'results': results,
+                'table_name': table_name
             }
-            results.append(result)
-        
-        end_time = datetime.now()
-        duration = (end_time - start_time).total_seconds()
-        
-        # Calculate summary statistics
-        total_rules = len(results)
-        passed_rules = sum(1 for r in results if r['passed'])
-        pass_rate = passed_rules / total_rules if total_rules > 0 else 0
-        
-        # Store execution history
-        execution_summary = {
-            'timestamp': datetime.now().isoformat(),
-            'rules_executed': total_rules,
-            'pass_rate': pass_rate,
-            'fail_rate': 1 - pass_rate,
-            'duration_seconds': duration,
-            'results': results,
-            'table_name': table_name
-        }
-        
-        self._store_execution_history(execution_summary)
-        
-        # Log activity
-        activity = {
-            'type': 'rule_execution',
-            'description': f'Executed {total_rules} rules on table {table_name}. {passed_rules} passed, {total_rules - passed_rules} failed.',
-            'status': 'success' if passed_rules == total_rules else 'warning',
-            'metadata': {
-                'table_name': table_name,
-                'total_rules': total_rules,
-                'passed_rules': passed_rules,
-                'failed_rules': total_rules - passed_rules,
-                'duration_seconds': duration
+            
+            self._store_execution_history(execution_summary)
+            
+            return execution_summary
+            
+        except Exception as e:
+            logging.error(f"Error in execute_rules: {str(e)}")
+            return {
+                'error': str(e),
+                'timestamp': datetime.now().isoformat(),
+                'table_name': table_name
             }
-        }
-        self.add_activity(activity)
-        
-        return execution_summary
     
     def _store_execution_history(self, execution_summary):
         """Store rule execution history in a JSON file."""
@@ -559,15 +607,8 @@ class DataLoader:
             print(f"Error saving execution results: {str(e)}")
     
     def add_activity(self, activity):
-        """Add a new activity to the activities list."""
-        try:
-            config = self._load_master_config()
-            activities = config.get('activities', [])
-            activities.append(activity)
-            config['activities'] = activities
-            self._save_master_config(config)
-        except Exception as e:
-            print(f"Error adding activity: {str(e)}")
+        """Add a new activity to the activities list (deprecated)."""
+        pass
 
 def load_rule_templates() -> Dict:
     """Load rule templates from JSON file."""

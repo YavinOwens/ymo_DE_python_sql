@@ -1,0 +1,11 @@
+employee_id,first_name,last_name,email,salary,department,hire_date,status
+1,John,Smith,john.smith@email.com,50000,IT,2020-01-01,Active
+2,Jane,Doe,jane.doe@email.com,-1000,HR,2020-02-15,Active
+3,,Johnson,invalid-email,60000,IT,2020-03-30,Inactive
+4,Mike,Brown,,55000,Finance,invalid-date,Active
+5,Sarah,Wilson,sarah.wilson@email.com,,HR,2020-05-15,Active
+6,David,Davis,david.davis@email.com,70000,IT,2020-06-30,Active
+7,Lisa,Miller,lisa.miller@email.com,invalid,Finance,2020-07-15,Inactive
+8,Tom,Wilson,tom.wilson@email.com,65000,HR,2020-08-30,Active
+9,Emma,Davis,emma.davis@email.com,75000,IT,2020-09-15,Active
+10,James,Miller,james.miller@email.com,80000,Finance,2020-10-30,Active

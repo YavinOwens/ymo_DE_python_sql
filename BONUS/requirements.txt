@@ -1,6 +1,7 @@
 dash==2.14.1
 dash-bootstrap-components==1.5.0
-plotly==5.18.0
-polars==0.19.19
-sqlalchemy==2.0.23
 pandas==2.1.4
+polars==0.19.19
+plotly==5.18.0
+numpy==1.26.2
+apscheduler==3.10.4
