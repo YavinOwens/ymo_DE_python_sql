@@ -1,6 +1,7 @@
 .venv
 /archive
 BONUS
+visualisation_project_solution
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
