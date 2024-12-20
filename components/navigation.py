@@ -5,9 +5,10 @@ def create_navigation():
     return dbc.NavbarSimple(
         children=[
             dbc.NavItem(dbc.NavLink("Overview", href="/")),
-            dbc.NavItem(dbc.NavLink("Quality Analysis", href="/quality")),
+            dbc.NavItem(dbc.NavLink("Quality", href="/quality")),
             dbc.NavItem(dbc.NavLink("Column Analysis", href="/column-analysis")),
             dbc.NavItem(dbc.NavLink("Rule Management", href="/rule-management")),
+            dbc.NavItem(dbc.NavLink("Configured Rules", href="/configured-rules")),
         ],
         brand="Data Quality Dashboard",
         brand_href="/",

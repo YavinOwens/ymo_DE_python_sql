@@ -5,577 +5,332 @@ from pathlib import Path
 from functools import lru_cache
 import os
 import sqlite3  # or your preferred database connector
+from datetime import datetime
+import threading
+from contextlib import contextmanager
 
 logger = logging.getLogger(__name__)
 
 class DataLoader:
     def __init__(self):
-        self.db_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 
-                                   'assets', 'data', 'hr_database.sqlite')
-        self.rules_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 
-                                      'assets', 'data', 'rule_templates.json')
-        self.results_json_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 
-                                          'assets', 'data', 'validation_results.json')
-        self.rule_config_json_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 
-                                                'assets', 'data', 'rule_configurations.json')
-        self._ensure_directories()
-        self._ensure_tables()
-        self.rules = self._load_rules()
-        
-        if os.path.exists(self.db_path):
-            logger.info(f"Database found at {self.db_path}")
-        else:
-            logger.warning(f"Database not found at {self.db_path}")
+        self.rules_path = 'assets/data/rule_templates.json'
+        self.config_path = 'assets/data/rule_configurations.json'
+        self.db_path = 'assets/data/hr_database.sqlite'
+        self._rules_cache = None
+        self._config_cache = None
+        self._data_cache = {}
+        self._local = threading.local()
+        self._init_control_tables()
 
-        self.clear_cache()
-
-    def _ensure_directories(self):
-        """Ensure necessary directories exist"""
-        os.makedirs(os.path.dirname(self.rules_path), exist_ok=True)
-        os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
-
-    @lru_cache(maxsize=1)
-    def _load_rules(self):
-        """Load and cache rule templates from JSON file."""
+    @contextmanager
+    def _get_connection(self):
+        """Get SQLite connection in a thread-safe way."""
         try:
-            if os.path.exists(self.rules_path):
-                with open(self.rules_path, 'r') as f:
-                    rules = json.load(f)
-                logger.info("Successfully loaded rule templates")
-                return rules
-            else:
-                # Create default rules if file doesn't exist
-                default_rules = {
-                    "data_quality_rules": [
-                        {
-                            "id": "dq_001",
-                            "name": "Null Check",
-                            "description": "Check for null values",
-                            "severity": "High",
-                            "active": True
-                        }
-                    ]
-                }
-                with open(self.rules_path, 'w') as f:
-                    json.dump(default_rules, f, indent=4)
-                logger.info(f"Created default rule templates at {self.rules_path}")
-                return default_rules
+            if not hasattr(self._local, 'connection') or self._local.connection is None:
+                self._local.connection = sqlite3.connect(self.db_path)
+            yield self._local.connection
         except Exception as e:
-            logger.error(f"Error loading rules: {str(e)}")
-            return {}
+            logger.error(f"Error connecting to database: {str(e)}")
+            yield None
+        finally:
+            if hasattr(self._local, 'connection') and self._local.connection is not None:
+                self._local.connection.close()
+                self._local.connection = None
+
+    def get_rules(self):
+        """Load rules from rule_templates.json with caching."""
+        if self._rules_cache is None:
+            try:
+                with open(self.rules_path, 'r') as f:
+                    self._rules_cache = json.load(f)
+                logger.debug(f"Loaded {len(self._rules_cache)} rule categories")
+            except Exception as e:
+                logger.error(f"Error loading rules: {str(e)}")
+                self._rules_cache = {}
+        return self._rules_cache
+
+    def get_rule_configuration(self, rule_id):
+        """Get configuration for a specific rule."""
+        if self._config_cache is None:
+            try:
+                if os.path.exists(self.config_path):
+                    with open(self.config_path, 'r') as f:
+                        config_data = json.load(f)
+                        self._config_cache = config_data.get('rule_configs', {})
+                else:
+                    # Initialize with empty structure
+                    self._config_cache = {}
+                    with open(self.config_path, 'w') as f:
+                        json.dump({'rule_configs': {}}, f, indent=2)
+            except Exception as e:
+                logger.error(f"Error loading rule configurations: {str(e)}")
+                self._config_cache = {}
+        
+        return self._config_cache.get(rule_id)
+
+    def save_rule_configuration(self, rule_id, config):
+        """Save configuration for a specific rule."""
+        try:
+            # Load existing configurations
+            if os.path.exists(self.config_path):
+                with open(self.config_path, 'r') as f:
+                    config_data = json.load(f)
+            else:
+                config_data = {'rule_configs': {}}
+            
+            # Update configuration
+            if 'rule_configs' not in config_data:
+                config_data['rule_configs'] = {}
+            
+            config_data['rule_configs'][rule_id] = config
+            
+            # Save back to file
+            with open(self.config_path, 'w') as f:
+                json.dump(config_data, f, indent=2)
+            
+            # Update cache
+            if self._config_cache is None:
+                self._config_cache = {}
+            self._config_cache[rule_id] = config
+            
+            logger.debug(f"Saved configuration for rule {rule_id}")
+            return True
+        except Exception as e:
+            logger.error(f"Error saving rule configuration: {str(e)}")
+            return False
+
+    def get_table_data(self, table_name):
+        """Get data for a specific table with caching."""
+        if table_name not in self._data_cache:
+            try:
+                with self._get_connection() as conn:
+                    if conn is not None:
+                        query = f"SELECT * FROM {table_name}"
+                        df = pd.read_sql_query(query, conn)
+                        self._data_cache[table_name] = df
+                        logger.info(f"Retrieved {len(df)} rows from {table_name}")
+                        return df
+                return pd.DataFrame()
+            except Exception as e:
+                logger.error(f"Error loading table {table_name}: {str(e)}")
+                return pd.DataFrame()
+        return self._data_cache[table_name]
+
+    def execute_rule(self, rule, df, column_name=None):
+        """Execute a validation rule on the dataframe."""
+        try:
+            rule_id = rule.get('id', '')
+            
+            # Get rule configuration
+            if not column_name:
+                rule_config = self.get_rule_configuration(rule_id)
+                if rule_config:
+                    column_name = rule_config.get('column_name')
+                    table_name = rule_config.get('table_name')
+                else:
+                    # Try to determine table from rule category
+                    table_name = None
+                    for category, rules in self.get_rules().items():
+                        if category.endswith('_table_rules'):
+                            table_name = category.replace('_rules', '')
+                            if isinstance(rules, list) and any(r['id'] == rule_id for r in rules):
+                                break
+
+            # Handle special rules that don't require column_name
+            if 'validation_code' in rule:
+                validation_code = rule['validation_code']
+                
+                # Special handling for isin() operations
+                if 'isin' in validation_code:
+                    # If checking against the same dataframe
+                    if "df['" in validation_code and ".isin(df['" in validation_code:
+                        # No modification needed as it's comparing within same dataframe
+                        pass
+                    # If checking against reference data
+                    elif any(ref in validation_code for ref in ['valid_departments', 'approved_authorities']):
+                        local_vars = {'df': df}
+                        local_vars.update(self._get_reference_data_for_rule(rule))
+                    else:
+                        # Convert the validation code to use values instead of column names
+                        validation_code = validation_code.replace('.isin(', '.isin(df[')
+                
+                # Regular column name replacement
+                if 'column_name' in validation_code:
+                    if not column_name:
+                        raise ValueError(f"Column name required for rule {rule_id}")
+                    if column_name not in df.columns:
+                        logger.error(f"Column {column_name} not found in dataframe. Available columns: {df.columns.tolist()}")
+                        raise ValueError(f"Column {column_name} not found in dataframe")
+                    validation_code = validation_code.replace('column_name', f"df['{column_name}']")
+
+                # Execute the validation code
+                local_vars = {'df': df}
+                result = eval(validation_code, {}, local_vars)
+                return result
+                
+            return None
+        except Exception as e:
+            logger.error(f"Error executing rule {rule.get('id', '')}: {str(e)}")
+            return None
+
+    def _get_reference_data_for_rule(self, rule):
+        """Get all necessary reference data for a rule."""
+        reference_data = {}
+        validation_code = rule.get('validation_code', '')
+        
+        if 'valid_departments' in validation_code:
+            reference_data['valid_departments'] = self.get_reference_data('valid_departments')
+        if 'approved_authorities' in validation_code:
+            reference_data['approved_authorities'] = self.get_reference_data('approved_authorities')
+        if 'salary_ranges' in validation_code:
+            reference_data['salary_ranges'] = self.get_reference_data('salary_ranges')
+        if 'postal_code_patterns' in validation_code:
+            reference_data['postal_code_patterns'] = self.get_reference_data('postal_code_patterns')
+            
+        return reference_data
+
+    def get_reference_data(self, data_type):
+        """Get reference data for validation rules."""
+        try:
+            with self._get_connection() as conn:
+                if conn is not None:
+                    if data_type == 'valid_departments':
+                        df = pd.read_sql_query("SELECT id FROM departments", conn)
+                        return df['id'].tolist()
+                    elif data_type == 'salary_ranges':
+                        df = pd.read_sql_query("SELECT * FROM salary_ranges", conn)
+                        return {row['grade']: {'min': row['min_salary'], 'max': row['max_salary']} 
+                                for _, row in df.iterrows()}
+                    elif data_type == 'postal_code_patterns':
+                        return {
+                            'US': r'^\d{5}(-\d{4})?$',
+                            'UK': r'^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$',
+                            'DE': r'^\d{5}$'
+                        }
+            return None
+        except Exception as e:
+            logger.error(f"Error getting reference data: {str(e)}")
+            return None
+
+    def process_validation_result(self, rule, df, validation_result, table_name):
+        """Process the validation result and return formatted output."""
+        try:
+            if isinstance(validation_result, pd.Series):
+                failed_rows = df[validation_result]
+                status = 'failed' if not failed_rows.empty else 'passed'
+                return [{
+                    'rule_id': rule['id'],
+                    'table_name': table_name,
+                    'status': status,
+                    'failed_count': len(failed_rows),
+                    'message': rule['message'],
+                    'timestamp': datetime.now().isoformat()
+                }]
+            return []
+        except Exception as e:
+            logger.error(f"Error processing validation result: {str(e)}")
+            return []
+
+    def get_rule_categories(self):
+        """Get list of available rule categories."""
+        try:
+            rules_data = self.get_rules()
+            # Extract top-level categories from rule_templates.json
+            categories = [
+                'gdpr_rules',
+                'data_quality_rules',
+                'validation_rules',
+                'business_rules',
+                'cross_table_rules',
+                'complex_business_rules'
+            ]
+            # Add table-specific rules if they exist
+            if 'table_specific_rules' in rules_data:
+                for table_category in rules_data['table_specific_rules'].keys():
+                    categories.append(table_category)
+            
+            logger.debug(f"Found {len(categories)} rule categories")
+            return categories
+        except Exception as e:
+            logger.error(f"Error getting rule categories: {str(e)}")
+            return []
 
     def get_available_tables(self):
-        """Get list of available tables from hr_database."""
+        """Get list of available tables from SQLite database."""
         try:
-            # First try to connect to the database
-            if os.path.exists(self.db_path):
-                with sqlite3.connect(self.db_path) as conn:
-                    cursor = conn.cursor()
-                    cursor.execute("""
-                        SELECT name FROM sqlite_master 
-                        WHERE type='table' 
-                        AND name NOT LIKE 'sqlite_%'
-                    """)
-                    tables = cursor.fetchall()
-                    table_list = [table[0] for table in tables]
-                    logger.info(f"Found tables: {table_list}")
-                    return table_list
-            else:
-                logger.error(f"Database file not found: {self.db_path}")
-                return []
+            with self._get_connection() as conn:
+                if conn is not None:
+                    query = """
+                    SELECT name FROM sqlite_master 
+                    WHERE type='table' AND name NOT LIKE 'sqlite_%'
+                    """
+                    df = pd.read_sql_query(query, conn)
+                    tables = df['name'].tolist()
+                    logger.debug(f"Found {len(tables)} available tables")
+                    return sorted(tables)
+            return []
         except Exception as e:
             logger.error(f"Error getting available tables: {str(e)}")
             return []
 
     def get_table_columns(self, table_name):
-        """Get list of columns for a specific table."""
+        """Get columns for a specific table from SQLite database."""
         try:
-            if os.path.exists(self.db_path):
-                with sqlite3.connect(self.db_path) as conn:
-                    cursor = conn.cursor()
-                    cursor.execute(f"PRAGMA table_info({table_name})")
-                    columns = cursor.fetchall()
-                    column_names = [col[1] for col in columns]
-                    logger.info(f"Found columns for {table_name}: {column_names}")
-                    return column_names
-            else:
-                logger.error(f"Database file not found: {self.db_path}")
-                return []
+            with self._get_connection() as conn:
+                if conn is not None:
+                    query = f"PRAGMA table_info({table_name})"
+                    df = pd.read_sql_query(query, conn)
+                    columns = df['name'].tolist()
+                    logger.debug(f"Found {len(columns)} columns for table {table_name}")
+                    return columns
+            return []
         except Exception as e:
             logger.error(f"Error getting columns for table {table_name}: {str(e)}")
             return []
 
-    def get_table_data(self, table_name, columns=None):
-        """Get data from specified table and columns."""
+    def _init_control_tables(self):
+        """Initialize control tables for rule execution tracking."""
         try:
-            if os.path.exists(self.db_path):
-                with sqlite3.connect(self.db_path) as conn:
-                    column_str = '*' if not columns else ', '.join(columns)
-                    query = f"SELECT {column_str} FROM {table_name}"
-                    df = pd.read_sql_query(query, conn)
-                    logger.info(f"Retrieved {len(df)} rows from {table_name}")
-                    return df
-            else:
-                logger.error(f"Database file not found: {self.db_path}")
-                return pd.DataFrame()
+            with self._get_connection() as conn:
+                if conn is not None:
+                    cursor = conn.cursor()
+                    # Create tables (same SQL as before)
+                    cursor.execute("""
+                        CREATE TABLE IF NOT EXISTS rule_execution_control (
+                            rule_id TEXT PRIMARY KEY,
+                            last_execution_timestamp DATETIME,
+                            cache_valid_until DATETIME,
+                            execution_count INTEGER DEFAULT 0,
+                            last_status TEXT,
+                            cache_key TEXT
+                        )
+                    """)
+                    cursor.execute("""
+                        CREATE TABLE IF NOT EXISTS rule_results_cache (
+                            cache_key TEXT PRIMARY KEY,
+                            rule_id TEXT,
+                            result_data TEXT,
+                            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                            valid_until DATETIME,
+                            FOREIGN KEY (rule_id) REFERENCES rule_execution_control(rule_id)
+                        )
+                    """)
+                    conn.commit()
+                    logger.debug("Control tables initialized")
         except Exception as e:
-            logger.error(f"Error getting data from table {table_name}: {str(e)}")
-            return pd.DataFrame()
+            logger.error(f"Error initializing control tables: {str(e)}")
 
-    def get_rule_execution_results(self):
-        """Get results of rule executions from the database."""
+    def get_all_rule_configurations(self):
+        """Get all rule configurations."""
         try:
-            if os.path.exists(self.db_path):
-                with sqlite3.connect(self.db_path) as conn:
-                    query = """
-                    SELECT r.rule_id, r.name, r.description, r.severity,
-                           CASE 
-                               WHEN re.failed_count = 0 THEN 'passed'
-                               ELSE 'failed'
-                           END as status,
-                           re.failed_count,
-                           re.passed_count
-                    FROM rules r
-                    LEFT JOIN rule_executions re ON r.rule_id = re.rule_id
-                    WHERE re.execution_date = (
-                        SELECT MAX(execution_date) 
-                        FROM rule_executions
-                    )
-                    """
-                    df = pd.read_sql_query(query, conn)
-                    return df.to_dict('records')
-            else:
-                logger.error(f"Database file not found: {self.db_path}")
-                return []
+            if self._config_cache is None:
+                if os.path.exists(self.config_path):
+                    with open(self.config_path, 'r') as f:
+                        config_data = json.load(f)
+                        self._config_cache = config_data.get('rule_configs', {})
+                else:
+                    self._config_cache = {}
+            return self._config_cache
         except Exception as e:
-            logger.error(f"Error getting rule execution results: {str(e)}")
-            return []
-
-    def get_rule_failed_records(self, rule_id):
-        """Get failed records for a specific rule."""
-        try:
-            if os.path.exists(self.db_path):
-                with sqlite3.connect(self.db_path) as conn:
-                    query = f"""
-                    SELECT *
-                    FROM rule_validation_results
-                    WHERE rule_id = ? AND status = 'failed'
-                    """
-                    return pd.read_sql_query(query, conn, params=(rule_id,))
-            else:
-                logger.error(f"Database file not found: {self.db_path}")
-                return pd.DataFrame()
-        except Exception as e:
-            logger.error(f"Error getting failed records for rule {rule_id}: {str(e)}")
-            return pd.DataFrame()
-
-    def get_rule_passed_records(self, rule_id):
-        """Get passed records for a specific rule."""
-        try:
-            if os.path.exists(self.db_path):
-                with sqlite3.connect(self.db_path) as conn:
-                    query = f"""
-                    SELECT *
-                    FROM rule_validation_results
-                    WHERE rule_id = ? AND status = 'passed'
-                    """
-                    return pd.read_sql_query(query, conn, params=(rule_id,))
-            else:
-                logger.error(f"Database file not found: {self.db_path}")
-                return pd.DataFrame()
-        except Exception as e:
-            logger.error(f"Error getting passed records for rule {rule_id}: {str(e)}")
-            return pd.DataFrame()
-
-    def _load_rules(self):
-        """Load and cache rule templates from JSON file."""
-        try:
-            if os.path.exists(self.rules_path):
-                with open(self.rules_path, 'r') as f:
-                    rules = json.load(f)
-                logger.info("Successfully loaded rule templates")
-                return rules
-            else:
-                logger.warning(f"Rules file not found: {self.rules_path}")
-                return {}
-        except Exception as e:
-            logger.error(f"Error loading rules: {str(e)}")
+            logger.error(f"Error loading all rule configurations: {str(e)}")
             return {}
-
-    def get_rules(self, category=None):
-        """Get rules, optionally filtered by category."""
-        if category and category in self.rules:
-            return self.rules[category]
-        return self.rules
-
-    def get_rule_categories(self):
-        """Get list of available rule categories."""
-        return list(self.rules.keys())
-
-    def refresh_rules(self):
-        """Force refresh of cached rules."""
-        self._load_rules.cache_clear()
-        self.rules = self._load_rules()
-        return self.rules
-
-    def _ensure_rule_validation_table(self):
-        """Ensure rule_validation_results and rule_execution_status tables exist."""
-        try:
-            if os.path.exists(self.db_path):
-                with sqlite3.connect(self.db_path) as conn:
-                    cursor = conn.cursor()
-                    
-                    # Create rule_validation_results if not exists
-                    cursor.execute("""
-                        CREATE TABLE IF NOT EXISTS rule_validation_results (
-                            id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            rule_id TEXT NOT NULL,
-                            table_name TEXT NOT NULL,
-                            column_name TEXT,
-                            record_id TEXT,
-                            status TEXT NOT NULL,
-                            error_message TEXT,
-                            validation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                            validation_value TEXT,
-                            additional_info TEXT
-                        )
-                    """)
-                    
-                    # Create rule_execution_status if not exists
-                    cursor.execute("""
-                        CREATE TABLE IF NOT EXISTS rule_execution_status (
-                            id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            rule_id TEXT NOT NULL,
-                            rule_category TEXT NOT NULL,
-                            last_execution_date TIMESTAMP,
-                            execution_status TEXT,
-                            error_message TEXT,
-                            execution_count INTEGER DEFAULT 0,
-                            UNIQUE(rule_id)
-                        )
-                    """)
-                    
-                    conn.commit()
-                    logger.info("Database tables created successfully")
-        except Exception as e:
-            logger.error(f"Error creating database tables: {str(e)}")
-
-    def get_rules(self):
-        """Load rules from rule_templates.json with proper structure."""
-        try:
-            if os.path.exists(self.rules_path):
-                with open(self.rules_path, 'r') as f:
-                    rule_templates = json.load(f)
-                
-                all_rules = []
-                
-                # Process GDPR rules
-                if 'gdpr_rules' in rule_templates:
-                    all_rules.extend(rule_templates['gdpr_rules'])
-                
-                # Process validation rules
-                if 'validation_rules' in rule_templates:
-                    all_rules.extend(rule_templates['validation_rules'])
-                
-                # Process business rules
-                if 'business_rules' in rule_templates:
-                    all_rules.extend(rule_templates['business_rules'])
-                
-                # Process table-specific rules
-                if 'table_specific_rules' in rule_templates:
-                    for table_rules in rule_templates['table_specific_rules'].values():
-                        all_rules.extend(table_rules)
-                
-                # Process cross-table rules
-                if 'cross_table_rules' in rule_templates:
-                    all_rules.extend(rule_templates['cross_table_rules'])
-                
-                # Process complex business rules
-                if 'complex_business_rules' in rule_templates:
-                    all_rules.extend(rule_templates['complex_business_rules'])
-                
-                logger.info(f"Loaded {len(all_rules)} rules from templates")
-                return all_rules
-            else:
-                logger.error(f"Rule templates file not found: {self.rules_path}")
-                return []
-        except Exception as e:
-            logger.error(f"Error loading rules: {str(e)}")
-            return []
-
-    def update_rule_execution_status(self, rule_id, category, status, error_message=None):
-        """Update the execution status of a rule."""
-        try:
-            if os.path.exists(self.db_path):
-                with sqlite3.connect(self.db_path) as conn:
-                    cursor = conn.cursor()
-                    cursor.execute("""
-                        INSERT INTO rule_execution_status 
-                        (rule_id, rule_category, last_execution_date, execution_status, error_message, execution_count)
-                        VALUES (?, ?, CURRENT_TIMESTAMP, ?, ?, 1)
-                        ON CONFLICT(rule_id) DO UPDATE SET
-                        last_execution_date = CURRENT_TIMESTAMP,
-                        execution_status = ?,
-                        error_message = ?,
-                        execution_count = execution_count + 1
-                    """, (rule_id, category, status, error_message, status, error_message))
-                    conn.commit()
-        except Exception as e:
-            logger.error(f"Error updating rule execution status: {str(e)}")
-
-    def execute_rule(self, rule, df):
-        """Execute a single rule and handle errors."""
-        try:
-            if not rule.get('active', True):
-                return None
-            
-            validation_code = rule.get('validation_code')
-            if not validation_code:
-                raise ValueError("No validation code provided")
-            
-            # Execute the rule
-            result = eval(validation_code)
-            
-            # Update execution status
-            self.update_rule_execution_status(
-                rule['id'],
-                rule.get('category', 'unknown'),
-                'success'
-            )
-            
-            return result
-        except Exception as e:
-            error_msg = f"Error executing rule: {str(e)}"
-            logger.error(error_msg)
-            
-            # Update execution status with error
-            self.update_rule_execution_status(
-                rule['id'],
-                rule.get('category', 'unknown'),
-                'failed',
-                error_msg
-            )
-            return None
-
-    def get_failed_rules(self):
-        """Get list of rules that failed execution."""
-        try:
-            if os.path.exists(self.db_path):
-                with sqlite3.connect(self.db_path) as conn:
-                    query = """
-                    SELECT rule_id, rule_category, last_execution_date, 
-                           execution_status, error_message, execution_count
-                    FROM rule_execution_status
-                    WHERE execution_status = 'failed'
-                    ORDER BY last_execution_date DESC
-                    """
-                    return pd.read_sql_query(query, conn)
-            return pd.DataFrame()
-        except Exception as e:
-            logger.error(f"Error getting failed rules: {str(e)}")
-            return pd.DataFrame()
-
-    def _ensure_tables(self):
-        """Ensure all necessary tables exist."""
-        try:
-            if os.path.exists(self.db_path):
-                with sqlite3.connect(self.db_path) as conn:
-                    cursor = conn.cursor()
-                    
-                    # Create validation_results table
-                    cursor.execute("""
-                        CREATE TABLE IF NOT EXISTS validation_results (
-                            id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            rule_id TEXT NOT NULL,
-                            table_name TEXT NOT NULL,
-                            column_name TEXT,
-                            record_id TEXT,
-                            status TEXT NOT NULL,
-                            error_message TEXT,
-                            validation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                            validation_value TEXT,
-                            additional_info TEXT
-                        )
-                    """)
-                    
-                    # Create rule_configurations table
-                    cursor.execute("""
-                        CREATE TABLE IF NOT EXISTS rule_configurations (
-                            id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            rule_id TEXT NOT NULL,
-                            table_name TEXT NOT NULL,
-                            column_name TEXT,
-                            active BOOLEAN DEFAULT TRUE,
-                            created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                            last_modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                            configuration_json TEXT,
-                            UNIQUE(rule_id, table_name, column_name)
-                        )
-                    """)
-                    
-                    # Create rule_execution_status table
-                    cursor.execute("""
-                        CREATE TABLE IF NOT EXISTS rule_execution_status (
-                            id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            rule_id TEXT NOT NULL,
-                            rule_category TEXT NOT NULL,
-                            last_execution_date TIMESTAMP,
-                            execution_status TEXT,
-                            error_message TEXT,
-                            execution_count INTEGER DEFAULT 0,
-                            UNIQUE(rule_id)
-                        )
-                    """)
-                    
-                    conn.commit()
-                    logger.info("Database tables created successfully")
-        except Exception as e:
-            logger.error(f"Error creating database tables: {str(e)}")
-
-    def save_validation_results(self, results):
-        """Save validation results to database or JSON."""
-        try:
-            if os.path.exists(self.db_path):
-                with sqlite3.connect(self.db_path) as conn:
-                    cursor = conn.cursor()
-                    cursor.executemany("""
-                        INSERT INTO validation_results 
-                        (rule_id, table_name, column_name, record_id, status, 
-                         error_message, validation_value, additional_info)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                    """, [
-                        (r['rule_id'], r['table_name'], r.get('column_name'), 
-                         r.get('record_id'), r['status'], r.get('error_message'),
-                         str(r.get('validation_value')), json.dumps(r.get('additional_info', {})))
-                        for r in results
-                    ])
-                    conn.commit()
-                    logger.info(f"Saved {len(results)} validation results to database")
-            else:
-                self._save_results_to_json(results)
-        except Exception as e:
-            logger.error(f"Error saving to database: {str(e)}")
-            self._save_results_to_json(results)
-
-    def save_rule_configuration(self, rule_id, table_name, column_name, configuration=None):
-        """Save rule configuration to database."""
-        try:
-            if os.path.exists(self.db_path):
-                with sqlite3.connect(self.db_path) as conn:
-                    cursor = conn.cursor()
-                    cursor.execute("""
-                        INSERT INTO rule_configurations 
-                        (rule_id, table_name, column_name, configuration_json, last_modified)
-                        VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
-                        ON CONFLICT(rule_id, table_name, column_name) 
-                        DO UPDATE SET 
-                            configuration_json = ?,
-                            last_modified = CURRENT_TIMESTAMP
-                    """, (rule_id, table_name, column_name, 
-                          json.dumps(configuration or {}),
-                          json.dumps(configuration or {})))
-                    conn.commit()
-                    logger.info(f"Saved configuration for rule {rule_id}")
-            else:
-                self._save_configuration_to_json(rule_id, table_name, column_name, configuration)
-        except Exception as e:
-            logger.error(f"Error saving rule configuration: {str(e)}")
-            self._save_configuration_to_json(rule_id, table_name, column_name, configuration)
-
-    def get_table_rules(self, table_name):
-        """Get rules configured for a specific table."""
-        try:
-            if os.path.exists(self.db_path):
-                with sqlite3.connect(self.db_path) as conn:
-                    query = """
-                    SELECT r.* 
-                    FROM rule_configurations rc
-                    JOIN rule_templates r ON rc.rule_id = r.id
-                    WHERE rc.table_name = ?
-                    """
-                    return pd.read_sql_query(query, conn, params=(table_name,)).to_dict('records')
-            return []
-        except Exception as e:
-            logger.error(f"Error getting table rules: {str(e)}")
-            return []
-
-    def get_rule_configuration(self, rule_id):
-        """Get configuration for a specific rule."""
-        try:
-            if os.path.exists(self.db_path):
-                with sqlite3.connect(self.db_path) as conn:
-                    query = """
-                    SELECT * FROM rule_configurations
-                    WHERE rule_id = ?
-                    """
-                    result = pd.read_sql_query(query, conn, params=(rule_id,))
-                    return result.to_dict('records')[0] if not result.empty else None
-            return None
-        except Exception as e:
-            logger.error(f"Error getting rule configuration: {str(e)}")
-            return None
-
-    def process_validation_result(self, rule, df, validation_result, table_name):
-        """Process validation results and format for storage."""
-        results = []
-        if isinstance(validation_result, pd.Series):
-            failed_indices = df[~validation_result].index
-            passed_indices = df[validation_result].index
-            
-            column_name = rule.get('column_name')
-            
-            # Process failed records
-            for idx in failed_indices:
-                results.append({
-                    'rule_id': rule['id'],
-                    'table_name': table_name,
-                    'column_name': column_name,
-                    'record_id': str(df.iloc[idx].name),
-                    'status': 'failed',
-                    'error_message': rule.get('message', 'Validation failed'),
-                    'validation_value': str(df.iloc[idx][column_name]) if column_name else None,
-                    'additional_info': {
-                        'rule_category': rule.get('category'),
-                        'rule_type': rule.get('type'),
-                        'severity': rule.get('severity')
-                    }
-                })
-            
-            # Process passed records
-            for idx in passed_indices:
-                results.append({
-                    'rule_id': rule['id'],
-                    'table_name': table_name,
-                    'column_name': column_name,
-                    'record_id': str(df.iloc[idx].name),
-                    'status': 'passed',
-                    'validation_value': str(df.iloc[idx][column_name]) if column_name else None,
-                    'additional_info': {
-                        'rule_category': rule.get('category'),
-                        'rule_type': rule.get('type'),
-                        'severity': rule.get('severity')
-                    }
-                })
-        
-        return results
-
-    def clear_cache(self):
-        """Clear any cached data and connections."""
-        try:
-            # Clear any existing database connections
-            if hasattr(self, '_conn'):
-                self._conn.close()
-                delattr(self, '_conn')
-            
-            # Clear cached rules
-            if hasattr(self, '_rules_cache'):
-                delattr(self, '_rules_cache')
-            
-            # Clear method caches if they exist
-            for method in ['get_rules', 'get_table_columns', 'get_available_tables']:
-                if hasattr(self, f'_{method}_cache'):
-                    delattr(self, f'_{method}_cache')
-            
-            logger.info("Cache cleared successfully")
-        except Exception as e:
-            logger.error(f"Error clearing cache: {str(e)}")

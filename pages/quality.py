@@ -157,17 +157,35 @@ def update_column_selector(table_name):
     [Input('rule-category-selector', 'value')]
 )
 def update_rule_options(category):
+    """Update the rule selector options based on the selected category."""
     if not category:
         return []
+    
     try:
-        # Add debug logging
+        # Get all rules from the JSON file
         rules = data_loader.get_rules()
-        logger.debug(f"Retrieved rules: {rules}")
-        filtered_rules = [r for r in rules if r.get('category') == category]
-        logger.debug(f"Filtered rules for category {category}: {filtered_rules}")
-        return [{'label': f"{r['id']} - {r['name']}", 'value': r['id']} for r in filtered_rules]
+        
+        # Filter rules based on the selected category
+        if category == 'table_specific_rules':
+            # Handle table-specific rules differently as they're nested
+            filtered_rules = []
+            for table_rules in rules.get(category, {}).values():
+                filtered_rules.extend(table_rules)
+        else:
+            # Get rules directly from the category
+            filtered_rules = rules.get(category, [])
+        
+        # Create options for dropdown
+        options = [
+            {'label': f"{rule['id']} - {rule['name']}", 
+             'value': rule['id']} 
+            for rule in filtered_rules
+        ]
+        
+        logger.debug(f"Found {len(options)} rules for category {category}")
+        return options
     except Exception as e:
-        logger.error(f"Error getting rules for category {category}: {str(e)}")
+        logger.error(f"Error updating rule options: {str(e)}")
         return []
 
 # Callback to initialize rule categories
@@ -176,8 +194,22 @@ def update_rule_options(category):
     Input('rule-category-selector', 'id')
 )
 def initialize_rule_categories(_):
-    categories = data_loader.get_rule_categories()
-    return [{'label': cat, 'value': cat} for cat in categories]
+    """Initialize the rule category dropdown with options from the JSON structure."""
+    try:
+        # Define the main categories from our rule_templates.json structure
+        categories = [
+            {'label': 'GDPR Rules', 'value': 'gdpr_rules'},
+            {'label': 'Data Quality Rules', 'value': 'data_quality_rules'},
+            {'label': 'Validation Rules', 'value': 'validation_rules'},
+            {'label': 'Business Rules', 'value': 'business_rules'},
+            {'label': 'Cross Table Rules', 'value': 'cross_table_rules'},
+            {'label': 'Complex Business Rules', 'value': 'complex_business_rules'}
+        ]
+        logger.debug(f"Loaded {len(categories)} rule categories")
+        return categories
+    except Exception as e:
+        logger.error(f"Error loading rule categories: {str(e)}")
+        return []
 
 # Callback to initialize table selector
 @callback(
@@ -185,8 +217,13 @@ def initialize_rule_categories(_):
     Input('table-selector', 'id')
 )
 def initialize_table_selector(_):
-    tables = data_loader.get_available_tables()
-    return [{'label': table, 'value': table} for table in tables]
+    """Initialize the table selector with available tables."""
+    try:
+        tables = data_loader.get_available_tables()
+        return [{'label': table, 'value': table} for table in tables]
+    except Exception as e:
+        logger.error(f"Error loading tables: {str(e)}")
+        return []
 
 # Callback to save rule configuration
 @callback(
@@ -201,10 +238,20 @@ def save_rule_configuration(n_clicks, rule_id, table_name, column_name):
         return ""
     
     try:
-        data_loader.save_rule_configuration(rule_id, table_name, column_name)
-        return html.Div("Configuration saved successfully!", className="text-success")
+        config = {
+            'rule_id': rule_id,
+            'table_name': table_name,
+            'column_name': column_name,
+            'last_updated': datetime.now().isoformat()
+        }
+        
+        if data_loader.save_rule_configuration(rule_id, config):
+            return html.Div("Configuration saved successfully!", className="text-success")
+        else:
+            return html.Div("Error saving configuration", className="text-danger")
     except Exception as e:
-        return html.Div(f"Error saving configuration: {str(e)}", className="text-danger")
+        logger.error(f"Error saving configuration: {str(e)}")
+        return html.Div(f"Error: {str(e)}", className="text-danger")
 
 # Combined assessment callback
 @callback(
@@ -234,57 +281,76 @@ def run_assessment(n_all, n_selected, n_table, selected_rule, selected_table):
         
         if trigger_id == 'run-all-button':
             # Run all rules logic
-            rules = data_loader.get_rules()
-            for rule in rules:
+            rules_data = data_loader.get_rules()
+            all_rules = []
+            
+            # Collect rules from all categories
+            for category in rules_data:
+                if isinstance(rules_data[category], list):
+                    all_rules.extend(rules_data[category])
+                elif isinstance(rules_data[category], dict):
+                    # Handle nested table-specific rules
+                    for table_rules in rules_data[category].values():
+                        all_rules.extend(table_rules)
+            
+            for rule in all_rules:
                 rule_config = data_loader.get_rule_configuration(rule['id'])
                 if rule_config:
                     df = data_loader.get_table_data(rule_config['table_name'])
-                    validation_result = data_loader.execute_rule(rule, df)
+                    validation_result = data_loader.execute_rule(rule, df, rule_config['column_name'])
                     if validation_result is not None:
-                        results.extend(data_loader.process_validation_result(
+                        result = data_loader.process_validation_result(
                             rule, df, validation_result, rule_config['table_name']
-                        ))
-                        if any(r['status'] == 'failed' for r in results):
+                        )
+                        results.extend(result)
+                        if any(r['status'] == 'failed' for r in result):
                             failed_count += 1
                         else:
                             passed_count += 1
                             
         elif trigger_id == 'run-selected-button' and selected_rule:
             # Run selected rule logic
-            rule_config = data_loader.get_rule_configuration(selected_rule)
-            if not rule_config:
-                return "No configuration found for selected rule", "0", "0", "0"
+            rules_data = data_loader.get_rules()
+            selected_rule_obj = None
             
-            df = data_loader.get_table_data(rule_config['table_name'])
-            rule = next((r for r in data_loader.get_rules() if r['id'] == selected_rule), None)
-            if rule:
-                validation_result = data_loader.execute_rule(rule, df)
-                if validation_result is not None:
-                    results.extend(data_loader.process_validation_result(
-                        rule, df, validation_result, rule_config['table_name']
-                    ))
-                    if any(r['status'] == 'failed' for r in results):
-                        failed_count += 1
-                    else:
-                        passed_count += 1
-                        
-        elif trigger_id == 'run-table-button' and selected_table:
-            # Run table rules logic
-            table_rules = data_loader.get_table_rules(selected_table)
-            if not table_rules:
-                return f"No rules configured for table {selected_table}", "0", "0", "0"
+            # Find the selected rule in all categories
+            for category, rules in rules_data.items():
+                if isinstance(rules, list):
+                    for rule in rules:
+                        if rule['id'] == selected_rule:
+                            selected_rule_obj = rule
+                            break
+                elif isinstance(rules, dict):
+                    for table_rules in rules.values():
+                        for rule in table_rules:
+                            if rule['id'] == selected_rule:
+                                selected_rule_obj = rule
+                                break
+                if selected_rule_obj:
+                    break
             
-            df = data_loader.get_table_data(selected_table)
-            for rule in table_rules:
-                validation_result = data_loader.execute_rule(rule, df)
-                if validation_result is not None:
-                    results.extend(data_loader.process_validation_result(
-                        rule, df, validation_result, selected_table
-                    ))
-                    if any(r['status'] == 'failed' for r in results):
-                        failed_count += 1
-                    else:
-                        passed_count += 1
+            if selected_rule_obj:
+                rule_config = data_loader.get_rule_configuration(selected_rule)
+                if rule_config:
+                    df = data_loader.get_table_data(rule_config['table_name'])
+                    validation_result = data_loader.execute_rule(
+                        selected_rule_obj, 
+                        df,
+                        rule_config['column_name']
+                    )
+                    if validation_result is not None:
+                        result = data_loader.process_validation_result(
+                            selected_rule_obj, df, validation_result, rule_config['table_name']
+                        )
+                        results.extend(result)
+                        if any(r['status'] == 'failed' for r in result):
+                            failed_count += 1
+                        else:
+                            passed_count += 1
+                else:
+                    return "No configuration found for selected rule", "0", "0", "0"
+            else:
+                return "Selected rule not found", "0", "0", "0"
         
         # Save results
         if results:

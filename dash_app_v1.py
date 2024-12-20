@@ -18,7 +18,7 @@ app = dash.Dash(__name__,
                 suppress_callback_exceptions=True)
 
 # Import your pages after app initialization to avoid circular imports
-from pages import quality, rule_management, column_analysis, overview
+from pages import quality, rule_management, column_analysis, overview, configured_rules
 
 # Create the layout
 app.layout = dbc.Container([
@@ -43,6 +43,8 @@ def display_page(pathname):
         return column_analysis.layout
     elif pathname == '/rule-management':
         return rule_management.layout
+    elif pathname == '/configured-rules':
+        return configured_rules.layout
     else:
         return overview.layout
 
