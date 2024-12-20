@@ -1,0 +1,10 @@
+{
+  "rule_configs": {
+    "gdpr_001": {
+      "rule_id": "gdpr_001",
+      "table_name": "",
+      "column_name": "",
+      "last_updated": ""
+    }
+  }
+}
