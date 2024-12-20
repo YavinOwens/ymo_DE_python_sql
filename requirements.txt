@@ -230,3 +230,8 @@ widgetsnbextension==4.0.13
 y-py==0.5.9
 ypy-websocket==0.8.2
 zipp==3.8.0
+
+# Dash App
+dash==2.14.1
+dash-bootstrap-components==1.5.0
+plotly==5.18.0
