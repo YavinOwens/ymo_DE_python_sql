@@ -1,5 +1,6 @@
 .venv
 venv
+ata_matching
 /archive
 BONUS
 visualisation_project_solution
@@ -168,3 +169,6 @@ cython_debug/
 
 # Archive folder
 archive/
+data_matching/address_analysis.ipynb
+data_matching/addressbase-core-sample.csv
+learning/.DS_Store
