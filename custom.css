@@ -4,6 +4,12 @@ body {
     background-color: #f8f9fa;
 }
 
+/* Global Spacing */
+.block-container {
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
 /* Navigation styles */
 .nav-link {
     color: #495057;
@@ -27,12 +33,18 @@ body {
     border-radius: 0.5rem;
     box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
     margin-bottom: 1rem;
+    padding: 1rem;
 }
 
 .card-header {
     background-color: #fff;
     border-bottom: 1px solid #e9ecef;
-    padding: 1rem;
+    padding: 0.75rem;
+}
+
+/* Header Spacing */
+h1, h2, h3, h4, h5 {
+    margin-bottom: 0.75rem;
 }
 
 /* Table styles */
@@ -75,12 +87,16 @@ body {
 .metric-card {
     text-align: center;
     padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    margin-bottom: 0.75rem;
 }
 
 .metric-value {
     font-size: 2rem;
     font-weight: bold;
     color: #007bff;
+    margin-bottom: 0.25rem;
 }
 
 .metric-label {
@@ -131,4 +147,58 @@ body {
     font-size: 0.875rem;
     font-weight: 500;
     border-radius: 0.25rem;
+}
+
+/* Tab styles */
+.stTabs {
+    margin-bottom: 1rem;
+}
+
+.stTabs [data-baseweb="tab-list"] {
+    gap: 0.75rem;
+    padding: 0.25rem 0;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.stTabs [data-baseweb="tab"] {
+    padding: 0.5rem 1rem;
+    color: #495057;
+    border-radius: 0.25rem 0.25rem 0 0;
+    transition: all 0.2s ease-in-out;
+}
+
+.stTabs [data-baseweb="tab"]:hover {
+    background-color: #e9ecef;
+}
+
+.stTabs [aria-selected="true"] {
+    color: #007bff;
+    background-color: #fff;
+    border-color: #dee2e6 #dee2e6 #fff;
+}
+
+/* Form control spacing */
+.stSelectbox, .stTextInput, .stNumberInput {
+    margin-bottom: 0.75rem;
+}
+
+/* Alert spacing */
+.stAlert {
+    margin-bottom: 1rem;
+}
+
+/* Button spacing */
+.stButton {
+    margin-right: 0.25rem;
+    margin-bottom: 0.25rem;
+}
+
+/* Container Spacing */
+.element-container {
+    margin-bottom: 1rem;
+}
+
+/* Column Spacing */
+.row-widget.stHorizontal {
+    gap: 1rem;
 } 

@@ -194,7 +194,8 @@ session_state_vars = {
     'assessment_results': pd.DataFrame().to_dict(),
     'last_assessment': None,
     'report_view': "All",
-    'selected_check': "All"
+    'selected_check': "All",
+    'report_radio': "All"
 }
 
 for var, default in session_state_vars.items():
@@ -227,6 +228,10 @@ def deactivate_all_rules():
             json.dump(st.session_state.configurations, f, indent=2)
         return True
     return False
+
+def update_report_view():
+    """Update the report view based on the radio button selection"""
+    st.session_state.report_view = st.session_state.report_radio
 
 def create_data_table(df, key=None, height=400):
     return st.dataframe(
@@ -497,12 +502,12 @@ with tab5:
                     create_card("Pass/Fail Report")
                     
                     col1, col2, col3 = st.columns(3)
-                    report_view = col1.radio(
+                    col1.radio(
                         "Show Records",
                         ["Failed", "Passed", "All"],
                         horizontal=True,
                         key='report_radio',
-                        on_change=update_report_view
+                        args=st.session_state
                     )
                     
                     if selected_column != 'All':
@@ -556,13 +561,13 @@ with tab5:
                             
                             # Apply filters using session state values
                             filtered_results = combined_results.copy()
-                            if st.session_state.report_view != "All":
-                                filtered_results = filtered_results[filtered_results['status'] == st.session_state.report_view]
+                            if st.session_state.report_radio != "All":
+                                filtered_results = filtered_results[filtered_results['status'] == st.session_state.report_radio]
                             if st.session_state.selected_check != "All":
                                 filtered_results = filtered_results[filtered_results['check_name'] == st.session_state.selected_check]
                             
                             # Display filtered results with consistent styling
-                            create_card(f"{st.session_state.report_view} Records")
+                            create_card(f"{st.session_state.report_radio} Records")
                             display_cols = [col for col in filtered_results.columns if col not in ['check_name', 'status', 'column_checked']]
                             st.dataframe(filtered_results[display_cols], use_container_width=True)
                         else:
@@ -600,13 +605,6 @@ def load_assessment_results():
             return pd.DataFrame.from_dict(data['results'])
     except (FileNotFoundError, json.JSONDecodeError):
         return pd.DataFrame()
-
-def update_report_view():
-    """Update the report view in session state"""
-    if 'report_radio' not in st.session_state:
-        st.session_state.report_view = "All"
-    else:
-        st.session_state.report_view = st.session_state.report_radio
 
 def update_selected_check():
     """Update the selected check in session state"""
